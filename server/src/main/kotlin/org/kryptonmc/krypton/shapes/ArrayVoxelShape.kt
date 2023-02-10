@@ -104,8 +104,8 @@ class ArrayVoxelShape(
     private inline fun forBoundingBoxes(action: (Double, Double, Double, Double, Double, Double) -> Unit) {
         boundingBoxesRepresentation.forEach {
             action(
-                it.minimumX + offsetX, it.minimumY + offsetY, it.minimumZ + offsetZ,
-                it.maximumX + offsetX, it.maximumY + offsetY, it.maximumZ + offsetZ
+                it.minX + offsetX, it.minY + offsetY, it.minZ + offsetZ,
+                it.maxX + offsetX, it.maxY + offsetY, it.maxZ + offsetZ
             )
         }
     }

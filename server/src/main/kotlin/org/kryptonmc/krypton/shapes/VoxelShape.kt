@@ -27,7 +27,6 @@ import org.kryptonmc.api.util.Direction.Axis
 import org.kryptonmc.krypton.shapes.discrete.DiscreteVoxelShape
 import org.kryptonmc.krypton.shapes.util.BooleanOperator
 import org.kryptonmc.krypton.shapes.util.OffsetDoubleList
-import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.math.AxisCycle
 import kotlin.math.abs
@@ -58,7 +57,7 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
 
     open fun bounds(): BoundingBox {
         if (isEmpty()) throw UnsupportedOperationException("Empty shapes do not have bounds! They are empty!")
-        return KryptonBoundingBox(min(Axis.X), min(Axis.Y), min(Axis.Z), max(Axis.X), max(Axis.Y), max(Axis.Z))
+        return BoundingBox(min(Axis.X), min(Axis.Y), min(Axis.Z), max(Axis.X), max(Axis.Y), max(Axis.Z))
     }
 
     abstract fun getCoordinates(axis: Axis): DoubleList
@@ -94,7 +93,7 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
 
     open fun toBoundingBoxes(): List<BoundingBox> {
         val boxes = persistentListOf<BoundingBox>().builder()
-        forAllBoxes { x1, y1, z1, x2, y2, z2 -> boxes.add(KryptonBoundingBox(x1, y1, z1, x2, y2, z2)) }
+        forAllBoxes { x1, y1, z1, x2, y2, z2 -> boxes.add(BoundingBox(x1, y1, z1, x2, y2, z2)) }
         return boxes.build()
     }
 
@@ -140,22 +139,26 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
         return SliceShape(this, direction.axis, findIndex(direction.axis, position))
     }
 
-    open fun collide(axis: Axis, box: BoundingBox, maxDistance: Double): Double = collideX(AxisCycle.between(axis, Axis.X), box, maxDistance)
+    open fun collide(axis: Axis, box: BoundingBox, maxDistance: Double): Double {
+        return collideX(AxisCycle.between(axis, Axis.X), box, maxDistance)
+    }
 
     private fun collideX(cycle: AxisCycle, box: BoundingBox, maxDistance: Double): Double {
         if (isEmpty()) return maxDistance
         if (abs(maxDistance) < Shapes.EPSILON) return 0.0
+
         val inverse = cycle.inverse()
         val axisX = cycle.cycle(Axis.X)
         val axisY = cycle.cycle(Axis.Y)
         val axisZ = cycle.cycle(Axis.Z)
-        val minIndexY = kotlin.math.max(0, findIndex(axisY, box.minimum(axisY) + Shapes.EPSILON))
-        val maxIndexY = kotlin.math.min(shape.size(axisY), findIndex(axisY, box.maximum(axisY) - Shapes.EPSILON) + 1)
-        val minIndexZ = kotlin.math.max(0, findIndex(axisZ, box.minimum(axisZ) + Shapes.EPSILON))
-        val maxIndexZ = kotlin.math.min(shape.size(axisZ), findIndex(axisZ, box.maximum(axisZ) - Shapes.EPSILON) + 1)
+        val minIndexY = kotlin.math.max(0, findIndex(axisY, box.min(axisY) + Shapes.EPSILON))
+        val maxIndexY = kotlin.math.min(shape.size(axisY), findIndex(axisY, box.max(axisY) - Shapes.EPSILON) + 1)
+        val minIndexZ = kotlin.math.max(0, findIndex(axisZ, box.min(axisZ) + Shapes.EPSILON))
+        val maxIndexZ = kotlin.math.min(shape.size(axisZ), findIndex(axisZ, box.max(axisZ) - Shapes.EPSILON) + 1)
+
         var tempMaxDistance = maxDistance
         if (tempMaxDistance > 0.0) {
-            val maxX = box.maximum(axisX)
+            val maxX = box.max(axisX)
             for (x in findIndex(axisX, maxX - Shapes.EPSILON) + 1 until shape.size(axisX)) {
                 for (y in minIndexY until maxIndexY) {
                     for (z in minIndexZ until maxIndexZ) {
@@ -167,7 +170,7 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
                 }
             }
         } else if (tempMaxDistance < 0.0) {
-            val minX = box.minimum(axisX)
+            val minX = box.min(axisX)
             for (x in findIndex(axisX, minX + Shapes.EPSILON) - 1 downTo 0) {
                 for (y in minIndexY until maxIndexY) {
                     for (z in minIndexZ until maxIndexZ) {

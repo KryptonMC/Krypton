@@ -163,7 +163,7 @@ object BlockPos {
 
     @JvmStatic
     fun betweenClosedStream(box: BoundingBox): Stream<Vec3i> = betweenClosedStream(
-        Maths.floor(box.minimumX), Maths.floor(box.minimumY), Maths.floor(box.minimumZ),
-        Maths.floor(box.maximumX), Maths.floor(box.maximumY), Maths.floor(box.maximumZ)
+        Maths.floor(box.minX), Maths.floor(box.minY), Maths.floor(box.minZ),
+        Maths.floor(box.maxX), Maths.floor(box.maxY), Maths.floor(box.maxZ)
     )
 }

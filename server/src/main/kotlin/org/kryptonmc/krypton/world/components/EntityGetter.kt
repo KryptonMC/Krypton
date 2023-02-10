@@ -31,14 +31,19 @@ interface EntityGetter {
 
     fun getEntities(area: BoundingBox, filter: Predicate<in KryptonEntity>): List<KryptonEntity> = getEntities(null, area, filter)
 
-    fun getEntities(except: KryptonEntity?, area: BoundingBox): List<KryptonEntity> = getEntities(except, area, EntityPredicates.NO_SPECTATORS)
+    fun getEntities(except: KryptonEntity?, area: BoundingBox): List<KryptonEntity> {
+        return getEntities(except, area, EntityPredicates.NO_SPECTATORS)
+    }
 
     fun getEntities(area: BoundingBox): List<KryptonEntity> = getEntities(null, area)
 
-    fun <T : KryptonEntity> getEntities(test: EntityTypeTest<KryptonEntity, T>, area: BoundingBox, filter: Predicate<in T>): List<T> = emptyList()
+    fun <T : KryptonEntity> getEntities(test: EntityTypeTest<KryptonEntity, T>, area: BoundingBox, filter: Predicate<in T>): List<T> {
+        return emptyList()
+    }
 
     fun <T : KryptonEntity> getEntitiesOfType(type: Class<T>, area: BoundingBox, filter: Predicate<in T>): List<T> = emptyList()
 
-    fun <T : KryptonEntity> getEntitiesOfType(type: Class<T>, area: BoundingBox): List<T> =
-        getEntitiesOfType(type, area, EntityPredicates.NO_SPECTATORS)
+    fun <T : KryptonEntity> getEntitiesOfType(type: Class<T>, area: BoundingBox): List<T> {
+        return getEntitiesOfType(type, area, EntityPredicates.NO_SPECTATORS)
+    }
 }

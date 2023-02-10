@@ -32,44 +32,52 @@ object Collisions {
     const val EPSILON: Double = Shapes.EPSILON
 
     @JvmStatic
-    fun isEmpty(box: BoundingBox): Boolean = box.maximumX - box.minimumX < EPSILON &&
-            box.maximumY - box.minimumY < EPSILON &&
-            box.maximumZ - box.minimumZ < EPSILON
+    fun isEmpty(box: BoundingBox): Boolean {
+        return box.maxX - box.minX < EPSILON &&
+                box.maxY - box.minY < EPSILON &&
+                box.maxZ - box.minZ < EPSILON
+    }
 
     @JvmStatic
-    fun voxelShapeIntersect(box1: BoundingBox, box2: BoundingBox): Boolean = box1.minimumX - box2.maximumX < -EPSILON &&
-            box1.maximumX - box2.minimumX > EPSILON &&
-            box1.minimumY - box2.maximumY < -EPSILON &&
-            box1.maximumY - box2.minimumY > EPSILON &&
-            box1.minimumZ - box2.maximumZ < -EPSILON &&
-            box1.maximumZ - box2.minimumZ > EPSILON
+    fun voxelShapeIntersect(box1: BoundingBox, box2: BoundingBox): Boolean {
+        return box1.minX - box2.maxX < -EPSILON &&
+                box1.maxX - box2.minX > EPSILON &&
+                box1.minY - box2.maxY < -EPSILON &&
+                box1.maxY - box2.minY > EPSILON &&
+                box1.minZ - box2.maxZ < -EPSILON &&
+                box1.maxZ - box2.minZ > EPSILON
+    }
 
     @JvmStatic
-    fun voxelShapeIntersect(box: BoundingBox, minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): Boolean =
-        box.minimumX - maxX < -EPSILON && box.maximumX - minX > EPSILON &&
-                box.minimumY - maxY < -EPSILON && box.maximumY - minY > EPSILON &&
-                box.minimumZ - maxZ < -EPSILON && box.maximumZ - minZ > EPSILON
+    fun voxelShapeIntersect(box: BoundingBox, minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): Boolean {
+        return box.minX - maxX < -EPSILON && box.maxX - minX > EPSILON &&
+                box.minY - maxY < -EPSILON && box.maxY - minY > EPSILON &&
+                box.minZ - maxZ < -EPSILON && box.maxZ - minZ > EPSILON
+    }
 
     @JvmStatic
-    fun collideX(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double =
-        collide(sourceMove, { target.minimumX - source.maximumX }, { target.maximumX - source.minimumX }) {
-            source.minimumY - target.maximumY < -EPSILON && source.maximumY - target.minimumY > EPSILON &&
-                    source.minimumZ - target.maximumZ < -EPSILON && source.maximumZ - target.minimumZ > EPSILON
+    fun collideX(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double {
+        return collide(sourceMove, { target.minX - source.maxX }, { target.maxX - source.minX }) {
+            source.minY - target.maxY < -EPSILON && source.maxY - target.minY > EPSILON &&
+                    source.minZ - target.maxZ < -EPSILON && source.maxZ - target.minZ > EPSILON
         }
+    }
 
     @JvmStatic
-    fun collideY(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double =
-        collide(sourceMove, { target.minimumY - source.maximumY }, { target.maximumY - source.minimumY }) {
-            source.minimumX - target.maximumX < -EPSILON && source.maximumX - target.minimumX > EPSILON &&
-                    source.minimumZ - target.maximumZ < -EPSILON && source.maximumZ - target.minimumZ > EPSILON
+    fun collideY(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double {
+        return collide(sourceMove, { target.minY - source.maxY }, { target.maxY - source.minY }) {
+            source.minX - target.maxX < -EPSILON && source.maxX - target.minX > EPSILON &&
+                    source.minZ - target.maxZ < -EPSILON && source.maxZ - target.minZ > EPSILON
         }
+    }
 
     @JvmStatic
-    fun collideZ(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double =
-        collide(sourceMove, { target.minimumZ - source.maximumZ }, { target.maximumZ - source.minimumZ }) {
-            source.minimumX - target.maximumX < -EPSILON && source.maximumX - target.minimumX > EPSILON &&
-                    source.minimumY - target.maximumY < -EPSILON && source.maximumY - target.minimumY > EPSILON
+    fun collideZ(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double {
+        return collide(sourceMove, { target.minZ - source.maxZ }, { target.maxZ - source.minZ }) {
+            source.minX - target.maxX < -EPSILON && source.maxX - target.minX > EPSILON &&
+                    source.minY - target.maxY < -EPSILON && source.maxY - target.minY > EPSILON
         }
+    }
 
     @JvmStatic
     private inline fun collide(sourceMove: Double, positiveMaxMove: () -> Double, negativeMaxMove: () -> Double, runChecks: () -> Boolean): Double {

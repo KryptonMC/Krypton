@@ -8,272 +8,191 @@
  */
 package org.kryptonmc.api.util
 
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.internal.annotations.ImmutableType
-import org.kryptonmc.internal.annotations.TypeFactory
+import kotlin.math.max
 
 /**
- * A bounding box.
+ * An area in 3D space defined by two sets of points, a minimum and a maximum.
  *
- * These are immutable to guarantee thread-safe usage.
+ * This area forms a box, which can be used for collision detection. If a
+ * bounding box intersects with something, we know that the two objects are
+ * colliding.
+ *
+ * This is immutable, and as such, any method that would alter the state of the
+ * bounding box returns a new instance with the requested changes.
+ *
+ * @property minX The minimum X value.
+ * @property minY The minimum Y value.
+ * @property minZ The minimum Z value.
+ * @property maxX The maximum X value.
+ * @property maxY The maximum Y value.
+ * @property maxZ The maximum Z value.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
+@JvmRecord
 @ImmutableType
-public interface BoundingBox {
+@Suppress("TooManyFunctions")
+public data class BoundingBox(
+    public val minX: Double,
+    public val minY: Double,
+    public val minZ: Double,
+    public val maxX: Double,
+    public val maxY: Double,
+    public val maxZ: Double
+) {
+
+    init {
+        require(minX <= maxX) { "Maximum X cannot be less than than minimum X!" }
+        require(minY <= maxY) { "Maximum Y cannot be less than than minimum Y!" }
+        require(minZ <= maxZ) { "Maximum Z cannot be less than than minimum Z!" }
+    }
 
     /**
-     * The minimum X value.
-     */
-    @get:JvmName("minimumX")
-    public val minimumX: Double
-
-    /**
-     * The minimum Y value.
-     */
-    @get:JvmName("minimumY")
-    public val minimumY: Double
-
-    /**
-     * The minimum Z value.
-     */
-    @get:JvmName("minimumZ")
-    public val minimumZ: Double
-
-    /**
-     * The maximum X value.
-     */
-    @get:JvmName("maximumX")
-    public val maximumX: Double
-
-    /**
-     * The maximum Y value.
-     */
-    @get:JvmName("maximumY")
-    public val maximumY: Double
-
-    /**
-     * The maximum Z value.
-     */
-    @get:JvmName("maximumZ")
-    public val maximumZ: Double
-
-    /**
-     * The size of this bounding box on the X axis.
-     */
-    @get:JvmName("sizeX")
-    public val sizeX: Double
-
-    /**
-     * The size of this bounding box on the Y axis.
-     */
-    @get:JvmName("sizeY")
-    public val sizeY: Double
-
-    /**
-     * The size of this bounding box on the Z axis.
-     */
-    @get:JvmName("sizeZ")
-    public val sizeZ: Double
-
-    /**
-     * The total size of this bounding box.
+     * Creates a new bounding box with the given [min] and [max] values.
      *
-     * This is a mean average of the sizes on the 3 axes, calculated with the
-     * formula:
-     * `(xSize + ySize + zSize) / 3.0`
+     * @param min the minimum vector
+     * @param max the maximum vector
      */
-    @get:JvmName("size")
-    public val size: Double
+    public constructor(min: Vec3d, max: Vec3d) : this(min.x, min.y, min.z, max.x, max.y, max.z)
 
     /**
-     * The total volume of this bounding box.
+     * Creates a new bounding box with the given [min] and [max] values.
      *
-     * This is calculated by multiplying the 3 sizes together.
+     * @param min the minimum vector
+     * @param max the maximum vector
      */
-    @get:JvmName("volume")
-    public val volume: Double
+    public constructor(
+        min: Vec3i,
+        max: Vec3i
+    ) : this(min.x.toDouble(), min.y.toDouble(), min.z.toDouble(), max.x.toDouble(), max.y.toDouble(), max.z.toDouble())
 
     /**
-     * The centre value on the X axis.
+     * Gets the minimum vector of this bounding box.
      *
-     * This is calculated using a non-traditional method, in that the minimum
-     * and maximum X value are linear interpolated with percentage 0.5.
+     * @return the minimum vector
      */
-    @get:JvmName("centerX")
-    public val centerX: Double
+    public fun min(): Vec3d = Vec3d(minX, minY, minZ)
 
     /**
-     * The centre value on the Y axis.
+     * Gets the maximum vector of this bounding box.
      *
-     * This is calculated using a non-traditional method, in that the minimum
-     * and maximum Y value are linear interpolated with percentage 0.5.
+     * @return the maximum vector
      */
-    @get:JvmName("centerY")
-    public val centerY: Double
+    public fun max(): Vec3d = Vec3d(maxX, maxY, maxZ)
 
     /**
-     * The centre value on the Z axis.
+     * Gets a vector representing the size of this bounding box on the X, Y,
+     * and Z axes.
      *
-     * This is calculated using a non-traditional method, in that the minimum
-     * and maximum Z value are linear interpolated with percentage 0.5.
+     * @return the size of this bounding box
      */
-    @get:JvmName("centerZ")
-    public val centerZ: Double
+    public fun size(): Vec3d = Vec3d(maxX - minX, maxY - minY, maxZ - minZ)
 
     /**
-     * Gets the minimum value for the given [axis].
+     * Calculates the total size of this bounding box.
      *
-     * @param axis the axis
-     * @return the minimum value for the axis
+     * @return the total size
      */
-    public fun minimum(axis: Direction.Axis): Double = axis.select(minimumX, minimumY, minimumZ)
+    public fun totalSize(): Double = ((maxX - minX) + (maxY - minY) + (maxZ - minZ)) / 3.0
 
     /**
-     * Gets the maximum value for the given [axis].
+     * Gets a vector representing the center of this bounding box on the X, Y,
+     * and Z axes.
      *
-     * @param axis the axis
-     * @return the maximum value for the axis
+     * @return the center of this bounding box
      */
-    public fun maximum(axis: Direction.Axis): Double = axis.select(maximumX, maximumY, maximumZ)
+    public fun center(): Vec3d = Vec3d((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2)
 
     /**
-     * Creates a new bounding box with its border inflated by the given
-     * [x], [y], and [z].
+     * Calculates the volume of this bounding box.
      *
-     * @param x the X factor to inflate the border by
-     * @param y the Y factor to inflate the border by
-     * @param z the Z factor to inflate the border by
-     * @return a new bounding box
+     * @return the volume
      */
-    @Contract("_ -> new", pure = true)
-    public fun inflate(x: Double, y: Double, z: Double): BoundingBox
+    public fun volume(): Double = (maxX - minX) * (maxY - minY) * (maxZ - minZ)
 
     /**
-     * Creates a new bounding box with its border inflated by the given
-     * [factor].
+     * Gets the minimum value on the given [axis].
      *
-     * @param factor the factor to inflate the border by
-     * @return a new bounding box
+     * @return the minimum value on the axis
      */
-    @Contract("_ -> new", pure = true)
+    public fun min(axis: Direction.Axis): Double = axis.select(minX, minY, minZ)
+
+    /**
+     * Gets the maximum value on the given [axis].
+     *
+     * @return the maximum value on the axis
+     */
+    public fun max(axis: Direction.Axis): Double = axis.select(minX, minY, minZ)
+
+    /**
+     * Inflates this bounding box by the given [x], [y], and [z] amounts and
+     * returns the result.
+     *
+     * @param x the X amount to inflate by
+     * @param y the Y amount to inflate by
+     * @param z the Z amount to inflate by
+     * @return the resulting box
+     */
+    public fun inflate(x: Double, y: Double, z: Double): BoundingBox {
+        return BoundingBox(minX - x, minY - y, minZ - z, maxX + x, maxY + y, maxZ + z)
+    }
+
+    /**
+     * Deflates this bounding box by the given [factor] and returns the
+     * result.
+     *
+     * @param factor the factor to inflate by
+     * @return the resulting box
+     */
     public fun inflate(factor: Double): BoundingBox = inflate(factor, factor, factor)
 
     /**
-     * Creates a new bounding box with its border deflated by the given
-     * [x], [y], and [z].
+     * Deflates this bounding box by the given [x], [y], and [z] amounts and
+     * returns the result.
      *
-     * This is equivalent to calling `inflate(-xFactor, -yFactor, -zFactor)`
-     *
-     * @param x the X factor to deflate the border by
-     * @param y the Y factor to deflate the border by
-     * @param z the Z factor to deflate the border by
-     * @return a new bounding box
+     * @param x the X amount to deflate by
+     * @param y the Y amount to deflate by
+     * @param z the Z amount to deflate by
+     * @return the resulting box
      */
-    @Contract("_ -> new", pure = true)
-    public fun deflate(x: Double, y: Double, z: Double): BoundingBox = inflate(-x, -y, -z)
+    public fun deflate(x: Double, y: Double, z: Double): BoundingBox {
+        return BoundingBox(minX + x, minY + y, minZ + z, maxX - x, maxY - y, maxZ - z)
+    }
 
     /**
-     * Creates a new bounding box with its border deflated by the given
-     * [factor].
+     * Deflates this bounding box by the given [factor] and returns the
+     * result.
      *
-     * This is equivalent to calling `inflate(-factor)`
-     *
-     * @param factor the factor to deflate the border by
-     * @return a new bounding box
+     * @param factor the factor to deflate by
+     * @return the resulting box
      */
-    @Contract("_ -> new", pure = true)
-    public fun deflate(factor: Double): BoundingBox = inflate(-factor)
-
-    /**
-     * Creates a new bounding box that is the result of intersecting this box
-     * with the given [other] box.
-     *
-     * @param other the other box to intersect with
-     * @return a new bounding box
-     */
-    @Contract("_ -> new", pure = true)
-    public fun intersect(other: BoundingBox): BoundingBox
-
-    /**
-     * Creates a new bounding box that is the result of moving this box by the
-     * given [x], [y], and [z] amounts.
-     *
-     * @param x the X amount
-     * @param y the Y amount
-     * @param z the Z amount
-     * @return a new bounding box
-     */
-    @Contract("_ -> new", pure = true)
-    public fun move(x: Double, y: Double, z: Double): BoundingBox
-
-    /**
-     * Creates a new bounding box that is the result of moving this box by the
-     * given [amount].
-     *
-     * @param amount the amount
-     * @return a new bounding box
-     */
-    @Contract("_ -> new", pure = true)
-    public fun move(amount: Vec3d): BoundingBox = move(amount.x, amount.y, amount.z)
-
-    /**
-     * Creates a new bounding box that is the result of expanding this box by
-     * the given [x], [y], and [z] amounts.
-     *
-     * @param x the X amount
-     * @param y the Y amount
-     * @param z the Z amount
-     * @return a new bounding box
-     */
-    @Contract("_ -> new", pure = true)
-    public fun expand(x: Double, y: Double, z: Double): BoundingBox
-
-    /**
-     * Creates a new bounding box that is the result of expanding this box by
-     * the given [amount].
-     *
-     * @param amount the amount
-     * @return a new bounding box
-     */
-    @Contract("_ -> new", pure = true)
-    public fun expand(amount: Vec3d): BoundingBox = expand(amount.x, amount.y, amount.z)
-
-    /**
-     * Creates a new bounding box that is the result of contracting this box by
-     * the given [x], [y], and [z] amounts.
-     *
-     * @param x the X amount
-     * @param y the Y amount
-     * @param z the Z amount
-     * @return a new bounding box
-     */
-    @Contract("_ -> new", pure = true)
-    public fun contract(x: Double, y: Double, z: Double): BoundingBox
-
-    /**
-     * Checks if this bounding box intersects with the given minimum and
-     * maximum values.
-     *
-     * @param minX the minimum X value
-     * @param minY the minimum Y value
-     * @param minZ the minimum Z value
-     * @param maxX the maximum X value
-     * @param maxY the maximum Y value
-     * @param maxZ the maximum Z value
-     * @return true if this box intersects with the values, false otherwise
-     */
-    public fun intersects(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): Boolean
+    public fun deflate(factor: Double): BoundingBox = deflate(factor, factor, factor)
 
     /**
      * Checks if this bounding box intersects with the given [other] box.
      *
      * @param other the other bounding box
-     * @return true if this box intersects with the other box, false otherwise
+     * @return true if this box intersects with the other box
      */
-    public fun intersects(other: BoundingBox): Boolean =
-        intersects(other.minimumX, other.minimumY, other.minimumZ, other.maximumX, other.maximumY, other.maximumZ)
+    public fun intersects(other: BoundingBox): Boolean {
+        return minX < other.maxX && maxX > other.minX && minY < other.maxY && maxY > other.minY && minZ < other.maxZ && maxZ > other.minZ
+    }
+
+    /**
+     * Intersects this bounding box with the given [other] box and returns the
+     * result.
+     *
+     * @param other the box to intersect with
+     * @return the resulting box
+     */
+    public fun intersect(other: BoundingBox): BoundingBox {
+        val newMinX = max(minX, other.minX)
+        val newMinY = max(minY, other.minY)
+        val newMinZ = max(minZ, other.minZ)
+        val newMaxX = max(maxX, other.maxX)
+        val newMaxY = max(maxY, other.maxY)
+        val newMaxZ = max(maxZ, other.maxZ)
+        return BoundingBox(newMinX, newMinY, newMinZ, newMaxX, newMaxY, newMaxZ)
+    }
 
     /**
      * Checks if the given [x], [y], and [z] values are inside the bounds of
@@ -284,102 +203,136 @@ public interface BoundingBox {
      * @param z the Z value
      * @return true if this box contains the values, false otherwise
      */
-    public fun contains(x: Double, y: Double, z: Double): Boolean
+    public fun contains(x: Double, y: Double, z: Double): Boolean {
+        return x >= minX && x < maxX && y >= minY && y < maxY && z >= minZ && z < maxZ
+    }
 
     /**
-     * Checks if the given [position] is inside the bounds of this box.
+     * Moves this bounding box by the given [x], [y], and [z] amounts and
+     * returns the result.
      *
-     * @param position the position
-     * @return true if this box contains the position, false otherwise
+     * @param x the X amount
+     * @param y the Y amount
+     * @param z the Z amount
+     * @return the resulting box
      */
-    public fun contains(position: Vec3d): Boolean = contains(position.x, position.y, position.z)
-
-    @ApiStatus.Internal
-    @TypeFactory
-    public interface Factory {
-
-        public fun zero(): BoundingBox
-
-        public fun unit(): BoundingBox
-
-        public fun of(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): BoundingBox
+    public fun move(x: Double, y: Double, z: Double): BoundingBox {
+        return BoundingBox(minX + x, minY + y, minZ + z, maxX + x, maxY + y, maxZ + z)
     }
+
+    /**
+     * Moves this bounding box by the given [amount] and returns the result.
+     *
+     * @param amount the amount
+     * @return the resulting box
+     */
+    public fun move(amount: Double): BoundingBox = move(amount, amount, amount)
+
+    /**
+     * Moves this bounding box by the given [amount] and returns the result.
+     *
+     * @param amount the amount
+     * @return the resulting box
+     */
+    public fun move(amount: Vec3d): BoundingBox = move(amount.x, amount.y, amount.z)
+
+    /**
+     * Expands this bounding box by the given [x], [y], and [z] amounts and
+     * returns the result.
+     *
+     * This differs from inflating in that it will only change either the
+     * minimum or maximum value of any given axis, not both. An inflation
+     * changes the area of the bounding box but does not change the center,
+     * an expansion changes the area and the center.
+     *
+     * If any of the values are negative, the minimum value will be increased
+     * on the respective axis, otherwise the maximum value will be increased.
+     *
+     * @param x the X amount to expand by
+     * @param y the Y amount to expand by
+     * @param z the Z amount to expand by
+     * @return the resulting box
+     */
+    public fun expand(x: Double, y: Double, z: Double): BoundingBox {
+        var minX = minX
+        var minY = minY
+        var minZ = minZ
+        var maxX = maxX
+        var maxY = maxY
+        var maxZ = maxZ
+        if (x < 0.0) minX += x else if (x > 0.0) maxX += x
+        if (y < 0.0) minY += y else if (y > 0.0) maxY += y
+        if (z < 0.0) minZ += z else if (z > 0.0) maxZ += z
+        return BoundingBox(minX, minY, minZ, maxX, maxY, maxZ)
+    }
+
+    /**
+     * Expands this bounding box by the given [amount] and returns the result.
+     *
+     * @param amount the amount to expand by
+     * @return the resulting box
+     */
+    public fun expand(amount: Double): BoundingBox = expand(amount, amount, amount)
+
+    /**
+     * Expands this bounding box by the given [amount] and returns the result.
+     *
+     * @param amount the amount to expand by
+     * @return the resulting box
+     */
+    public fun expand(amount: Vec3d): BoundingBox = expand(amount.x, amount.y, amount.z)
+
+    /**
+     * Contracts this bounding box by the given [x], [y], and [z] amounts and
+     * returns the result.
+     *
+     * This is the opposite of an expansion. If any of the values are negative,
+     * the minimum value will be decreased on the respective axis, otherwise
+     * the maximum value will be decreased.
+     *
+     * @param x the X amount to contract by
+     * @param y the Y amount to contract by
+     * @param z the Z amount to contract by
+     * @return the resulting box
+     */
+    public fun contract(x: Double, y: Double, z: Double): BoundingBox {
+        var minX = minX
+        var minY = minY
+        var minZ = minZ
+        var maxX = maxX
+        var maxY = maxY
+        var maxZ = maxZ
+        if (x < 0.0) minX -= x else if (x > 0.0) maxX -= x
+        if (y < 0.0) minY -= y else if (y > 0.0) maxY -= y
+        if (z < 0.0) minZ -= z else if (z > 0.0) maxZ -= z
+        return BoundingBox(minX, minY, minZ, maxX, maxY, maxZ)
+    }
+
+    /**
+     * Contracts this bounding box by the given [amount] and returns the
+     * result.
+     *
+     * @param amount the amount to contract by
+     * @return the resulting box
+     */
+    public fun contract(amount: Double): BoundingBox = contract(amount, amount, amount)
+
+    /**
+     * Contracts this bounding box by the given [amount] and returns the
+     * result.
+     *
+     * @param amount the amount to contract by
+     * @return the resulting box
+     */
+    public fun contract(amount: Vec3d): BoundingBox = contract(amount.x, amount.y, amount.z)
 
     public companion object {
 
         /**
-         * Gets the bounding box that has minimum and maximum values all set
-         * to 0, meaning it is 0 in size on all axes, and has a volume and
-         * centre of 0.
+         * The bounding box that has a size of zero and is located at the
+         * origin.
          */
-        @JvmStatic
-        @Contract(pure = true)
-        public fun zero(): BoundingBox = Krypton.factory<Factory>().zero()
-
-        /**
-         * Gets the bounding box that has minimum values set to 0, and maximum
-         * values set to 1, meaning it is 1 in size on all axes, has a volume
-         * of 1, and a centre of 0.5, 0.5, 0.5.
-         */
-        @JvmStatic
-        @Contract(pure = true)
-        public fun unit(): BoundingBox = Krypton.factory<Factory>().unit()
-
-        /**
-         * Creates a new bounding box from the given values.
-         *
-         * The minimum values given here must all be less than their respective
-         * maximum values.
-         *
-         * @param min the minimum vector
-         * @param max the maximum vector
-         * @return a new bounding box
-         * @throws IllegalArgumentException if any of the minimum values are
-         * greater than their respective maximum values, e.g. the maximum X is
-         * greater than the minimum X
-         */
-        @JvmStatic
-        @Contract("_, _ -> new", pure = true)
-        public fun of(min: Vec3d, max: Vec3d): BoundingBox = of(min.x, min.y, min.z, max.x, max.y, max.z)
-
-        /**
-         * Creates a new bounding box from the given values.
-         *
-         * The minimum values given here must all be less than their respective
-         * maximum values.
-         *
-         * @param min the minimum vector
-         * @param max the maximum vector
-         * @return a new bounding box
-         * @throws IllegalArgumentException if any of the minimum values are
-         * greater than their respective maximum values, e.g. the maximum X is
-         * greater than the minimum X
-         */
-        @JvmStatic
-        @Contract("_, _ -> new", pure = true)
-        public fun of(min: Vec3i, max: Vec3i): BoundingBox =
-            of(min.x.toDouble(), min.y.toDouble(), min.z.toDouble(), max.x.toDouble(), max.y.toDouble(), max.z.toDouble())
-
-        /**
-         * Creates a new bounding box from the given values.
-         *
-         * The minimum values given here must all be less than their respective
-         * maximum values.
-         *
-         * @param minX the minimum X value
-         * @param minY the minimum Y value
-         * @param minZ the minimum Z value
-         * @param maxX the maximum X value
-         * @param maxY the maximum Y value
-         * @param maxZ the maximum Y value
-         * @return a new bounding box
-         * @throws IllegalArgumentException if any of the minimum values are
-         * greater than their respective maximum values, e.g. the maximum X is
-         * greater than the minimum X
-         */
-        @JvmStatic
-        @Contract("_, _, _, _, _, _ -> new", pure = true)
-        public fun of(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): BoundingBox =
-            Krypton.factory<Factory>().of(minX, minY, minZ, maxX, maxY, maxZ)
+        @JvmField
+        public val ZERO: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 }

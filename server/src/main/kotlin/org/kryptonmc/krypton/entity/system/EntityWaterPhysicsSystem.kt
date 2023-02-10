@@ -79,12 +79,12 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
     }
 
     private fun updateFluidHeightAndFlow(tag: TagKey<Fluid>, flowScale: Double): Boolean {
-        val minX = Maths.floor(entity.boundingBox.minimumX + BOUNDING_BOX_EPSILON)
-        val minY = Maths.floor(entity.boundingBox.minimumY + BOUNDING_BOX_EPSILON)
-        val minZ = Maths.floor(entity.boundingBox.minimumZ + BOUNDING_BOX_EPSILON)
-        val maxX = Maths.ceil(entity.boundingBox.maximumX - BOUNDING_BOX_EPSILON)
-        val maxY = Maths.ceil(entity.boundingBox.maximumY - BOUNDING_BOX_EPSILON)
-        val maxZ = Maths.ceil(entity.boundingBox.maximumZ - BOUNDING_BOX_EPSILON)
+        val minX = Maths.floor(entity.boundingBox.minX + BOUNDING_BOX_EPSILON)
+        val minY = Maths.floor(entity.boundingBox.minY + BOUNDING_BOX_EPSILON)
+        val minZ = Maths.floor(entity.boundingBox.minZ + BOUNDING_BOX_EPSILON)
+        val maxX = Maths.ceil(entity.boundingBox.maxX - BOUNDING_BOX_EPSILON)
+        val maxY = Maths.ceil(entity.boundingBox.maxY - BOUNDING_BOX_EPSILON)
+        val maxZ = Maths.ceil(entity.boundingBox.maxZ - BOUNDING_BOX_EPSILON)
 
         var amount = 0.0
         val pushed = entity.isPushedByFluid()
@@ -135,7 +135,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
         val y = entity.position.y + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
         val vehicle = entity.vehicleSystem.vehicle()
-        if (vehicle is KryptonBoat && !vehicle.isUnderwater() && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
+        if (vehicle is KryptonBoat && !vehicle.isUnderwater() && vehicle.boundingBox.maxY >= y && vehicle.boundingBox.minY <= y) return
 
         val pos = entity.position.withY(y).asVec3i()
         val fluid = entity.world.getFluid(pos)

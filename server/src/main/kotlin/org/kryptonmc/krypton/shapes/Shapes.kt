@@ -33,7 +33,6 @@ import org.kryptonmc.krypton.shapes.merger.IndirectMerger
 import org.kryptonmc.krypton.shapes.merger.NonOverlappingMerger
 import org.kryptonmc.krypton.shapes.util.BooleanOperator
 import org.kryptonmc.krypton.shapes.util.CubePointRange
-import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.math.AxisCycle
 import java.util.Objects
@@ -46,7 +45,7 @@ object Shapes {
     private val UNOPTIMIZED_BLOCK = CubeVoxelShape(BitSetDiscreteVoxelShape(1, 1, 1).apply { fill(0, 0, 0) })
     private val EMPTY = ArrayVoxelShape(BitSetDiscreteVoxelShape(0, 0, 0), emptyList(), emptyList(), emptyList())
     @JvmField
-    val OPTIMIZED_BLOCK: BoundingBoxVoxelShape = BoundingBoxVoxelShape(KryptonBoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+    val OPTIMIZED_BLOCK: BoundingBoxVoxelShape = BoundingBoxVoxelShape(BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
     @JvmField
     val INFINITY: VoxelShape = box(N_INFINITY, N_INFINITY, N_INFINITY, P_INFINITY, P_INFINITY, P_INFINITY)
 
@@ -74,7 +73,7 @@ object Shapes {
     fun create(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): VoxelShape {
         @Suppress("SimplifyNegatedBinaryExpression") // Any of these could be NaN
         if (!(maxX - minX < EPSILON) && !(maxY - minY < EPSILON) && !(maxZ - minZ < EPSILON)) {
-            return BoundingBoxVoxelShape(KryptonBoundingBox(minX, minY, minZ, maxX, maxY, maxZ))
+            return BoundingBoxVoxelShape(BoundingBox(minX, minY, minZ, maxX, maxY, maxZ))
         }
         return empty()
     }
@@ -164,30 +163,30 @@ object Shapes {
             when (direction) {
                 Direction.WEST, Direction.EAST -> { // -X, +X
                     val useEmpty = if (direction == Direction.EAST) {
-                        !DoubleMath.fuzzyEquals(box.maximumX, 1.0, Collisions.EPSILON)
+                        !DoubleMath.fuzzyEquals(box.maxX, 1.0, Collisions.EPSILON)
                     } else {
-                        !DoubleMath.fuzzyEquals(box.minimumX, 0.0, Collisions.EPSILON)
+                        !DoubleMath.fuzzyEquals(box.minX, 0.0, Collisions.EPSILON)
                     }
                     if (useEmpty) return empty()
-                    return BoundingBoxVoxelShape(KryptonBoundingBox(0.0, box.minimumY, box.minimumZ, 1.0, box.maximumY, box.maximumZ)).optimize()
+                    return BoundingBoxVoxelShape(BoundingBox(0.0, box.minY, box.minZ, 1.0, box.maxY, box.maxZ)).optimize()
                 }
                 Direction.DOWN, Direction.UP -> { // -Y, +Y
                     val useEmpty = if (direction == Direction.UP) {
-                        !DoubleMath.fuzzyEquals(box.maximumY, 1.0, Collisions.EPSILON)
+                        !DoubleMath.fuzzyEquals(box.maxY, 1.0, Collisions.EPSILON)
                     } else {
-                        !DoubleMath.fuzzyEquals(box.minimumY, 0.0, Collisions.EPSILON)
+                        !DoubleMath.fuzzyEquals(box.minY, 0.0, Collisions.EPSILON)
                     }
                     if (useEmpty) return empty()
-                    return BoundingBoxVoxelShape(KryptonBoundingBox(box.minimumX, 0.0, box.minimumZ, box.maximumX, 1.0, box.maximumZ)).optimize()
+                    return BoundingBoxVoxelShape(BoundingBox(box.minX, 0.0, box.minZ, box.maxX, 1.0, box.maxZ)).optimize()
                 }
                 Direction.NORTH, Direction.SOUTH -> { // -Z, +Z
                     val useEmpty = if (direction == Direction.SOUTH) {
-                        !DoubleMath.fuzzyEquals(box.maximumZ, 1.0, Collisions.EPSILON)
+                        !DoubleMath.fuzzyEquals(box.maxZ, 1.0, Collisions.EPSILON)
                     } else {
-                        !DoubleMath.fuzzyEquals(box.minimumZ, 0.0, Collisions.EPSILON)
+                        !DoubleMath.fuzzyEquals(box.minZ, 0.0, Collisions.EPSILON)
                     }
                     if (useEmpty) return empty()
-                    return BoundingBoxVoxelShape(KryptonBoundingBox(box.minimumX, box.minimumY, 0.0, box.maximumX, box.maximumY, 1.0)).optimize()
+                    return BoundingBoxVoxelShape(BoundingBox(box.minX, box.minY, 0.0, box.maxX, box.maxY, 1.0)).optimize()
                 }
             }
         }

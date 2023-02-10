@@ -41,7 +41,6 @@ import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scheduling.TaskAction
 import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.api.tags.TagKey
-import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.TypeNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.register
@@ -117,7 +116,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ResourcePack.Factory>(KryptonResourcePack.Factory)
         register<Property.Factory>(KryptonPropertyFactory)
         register<TagKey.Factory>(KryptonTagKey.Factory)
-        register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
         register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
         register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)
         register<AmbientParticleSettings.Factory>(KryptonAmbientParticleSettings.Factory)

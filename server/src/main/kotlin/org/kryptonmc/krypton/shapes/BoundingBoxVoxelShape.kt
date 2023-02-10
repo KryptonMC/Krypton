@@ -23,7 +23,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.shapes.collision.Collisions
-import org.kryptonmc.krypton.util.KryptonBoundingBox
 
 class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimizedBlock().shape) {
 
@@ -31,43 +30,35 @@ class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimize
     private var cachedYs: DoubleList? = null
     private var cachedZs: DoubleList? = null
 
-    override fun min(axis: Direction.Axis): Double = when (axis) {
-        Direction.Axis.X -> box.minimumX
-        Direction.Axis.Y -> box.minimumY
-        Direction.Axis.Z -> box.minimumZ
-    }
+    override fun min(axis: Direction.Axis): Double = box.min(axis)
 
-    override fun max(axis: Direction.Axis): Double = when (axis) {
-        Direction.Axis.X -> box.maximumX
-        Direction.Axis.Y -> box.maximumY
-        Direction.Axis.Z -> box.maximumZ
-    }
+    override fun max(axis: Direction.Axis): Double = box.max(axis)
 
     override fun bounds(): BoundingBox = box
 
     override fun getCoordinates(axis: Direction.Axis): DoubleList = when (axis) {
         Direction.Axis.X -> {
-            if (cachedXs == null) cachedXs = DoubleArrayList.wrap(doubleArrayOf(box.minimumX, box.maximumX))
+            if (cachedXs == null) cachedXs = DoubleArrayList.wrap(doubleArrayOf(box.minX, box.maxX))
             cachedXs!!
         }
         Direction.Axis.Y -> {
-            if (cachedYs == null) cachedYs = DoubleArrayList.wrap(doubleArrayOf(box.minimumY, box.maximumY))
+            if (cachedYs == null) cachedYs = DoubleArrayList.wrap(doubleArrayOf(box.minY, box.maxY))
             cachedYs!!
         }
         Direction.Axis.Z -> {
-            if (cachedZs == null) cachedZs = DoubleArrayList.wrap(doubleArrayOf(box.minimumZ, box.maximumZ))
+            if (cachedZs == null) cachedZs = DoubleArrayList.wrap(doubleArrayOf(box.minZ, box.maxZ))
             cachedZs!!
         }
     }
 
     @Suppress("MagicNumber")
     override fun get(axis: Direction.Axis, index: Int): Double = when (axis.ordinal or (index shl 2)) {
-        0 or 0 shl 2 -> box.minimumX
-        1 or (0 shl 2) -> box.minimumY
-        2 or (0 shl 2) -> box.minimumZ
-        0 or (1 shl 2) -> box.maximumX
-        1 or (1 shl 2) -> box.maximumY
-        2 or (1 shl 2) -> box.maximumZ
+        0 or 0 shl 2 -> box.minX
+        1 or (0 shl 2) -> box.minY
+        2 or (0 shl 2) -> box.minZ
+        0 or (1 shl 2) -> box.maxX
+        1 or (1 shl 2) -> box.maxY
+        2 or (1 shl 2) -> box.maxZ
         else -> error("Unknown axis requested! Axis: $axis, Index: $index")
     }
 
@@ -84,15 +75,15 @@ class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimize
     }
 
     override fun forAllBoxes(consumer: Shapes.DoubleLineConsumer) {
-        consumer.consume(box.minimumX, box.minimumY, box.minimumZ, box.maximumX, box.maximumY, box.maximumZ)
+        consumer.consume(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)
     }
 
     override fun toBoundingBoxes(): List<BoundingBox> = listOf(box)
 
     override fun findIndex(axis: Direction.Axis, position: Double): Int = when (axis) {
-        Direction.Axis.X -> findIndex(position, BoundingBox::minimumX, BoundingBox::maximumX)
-        Direction.Axis.Y -> findIndex(position, BoundingBox::minimumY, BoundingBox::maximumY)
-        Direction.Axis.Z -> findIndex(position, BoundingBox::minimumZ, BoundingBox::maximumZ)
+        Direction.Axis.X -> findIndex(position, BoundingBox::minX, BoundingBox::maxX)
+        Direction.Axis.Y -> findIndex(position, BoundingBox::minY, BoundingBox::maxY)
+        Direction.Axis.Z -> findIndex(position, BoundingBox::minZ, BoundingBox::maxZ)
     }
 
     override fun calculateFace(direction: Direction): VoxelShape {
@@ -101,18 +92,18 @@ class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimize
         when (direction) {
             Direction.EAST, Direction.WEST -> { // +X, -X
                 val from = if (direction == Direction.EAST) 1.0 - Collisions.EPSILON else Collisions.EPSILON
-                if (from > box.maximumX || box.minimumX > from) return Shapes.empty()
-                return BoundingBoxVoxelShape(KryptonBoundingBox(0.0, box.minimumY, box.minimumZ, 1.0, box.maximumY, box.maximumZ)).optimize()
+                if (from > box.maxX || box.minX > from) return Shapes.empty()
+                return BoundingBoxVoxelShape(BoundingBox(0.0, box.minY, box.minZ, 1.0, box.maxY, box.maxZ)).optimize()
             }
             Direction.UP, Direction.DOWN -> { // +Y, -Y
                 val from = if (direction == Direction.UP) 1.0 - Collisions.EPSILON else Collisions.EPSILON
-                if (from > box.maximumY || box.minimumY > from) return Shapes.empty()
-                return BoundingBoxVoxelShape(KryptonBoundingBox(box.minimumX, 0.0, box.minimumZ, box.maximumX, 1.0, box.maximumZ)).optimize()
+                if (from > box.maxY || box.minY > from) return Shapes.empty()
+                return BoundingBoxVoxelShape(BoundingBox(box.minX, 0.0, box.minZ, box.maxX, 1.0, box.maxZ)).optimize()
             }
             Direction.SOUTH, Direction.NORTH -> {
                 val from = if (direction == Direction.SOUTH) 1.0 - Collisions.EPSILON else Collisions.EPSILON
-                if (from > box.maximumZ || box.minimumZ > from) return Shapes.empty()
-                return BoundingBoxVoxelShape(KryptonBoundingBox(box.minimumX, box.minimumY, 0.0, box.maximumX, box.maximumY, 1.0)).optimize()
+                if (from > box.maxZ || box.minZ > from) return Shapes.empty()
+                return BoundingBoxVoxelShape(BoundingBox(box.minX, box.minY, 0.0, box.maxX, box.maxY, 1.0)).optimize()
             }
         }
     }

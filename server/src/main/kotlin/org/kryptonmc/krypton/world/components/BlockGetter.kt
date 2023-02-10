@@ -43,12 +43,12 @@ interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntity
     fun isEmptyBlock(pos: Vec3i): Boolean = getBlock(pos).isAir()
 
     fun containsAnyLiquid(area: BoundingBox): Boolean {
-        val minX = Maths.floor(area.minimumX)
-        val maxX = Maths.ceil(area.maximumX)
-        val minY = Maths.floor(area.minimumY)
-        val maxY = Maths.ceil(area.maximumY)
-        val minZ = Maths.floor(area.minimumZ)
-        val maxZ = Maths.ceil(area.maximumX)
+        val minX = Maths.floor(area.minX)
+        val maxX = Maths.ceil(area.maxX)
+        val minY = Maths.floor(area.minY)
+        val maxY = Maths.ceil(area.maxY)
+        val minZ = Maths.floor(area.minZ)
+        val maxZ = Maths.ceil(area.maxZ)
         for (x in minX..maxX) {
             for (y in minY..maxY) {
                 for (z in minZ..maxZ) {

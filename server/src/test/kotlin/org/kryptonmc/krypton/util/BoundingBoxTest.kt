@@ -19,28 +19,28 @@
 package org.kryptonmc.krypton.util
 
 import org.junit.jupiter.api.Test
+import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Vec3d
 import kotlin.test.assertEquals
 
 class BoundingBoxTest {
 
     @Test
     fun `test size of box calculations`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(6.0, box.size)
+        val box = BoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        assertEquals(6.0, box.totalSize())
     }
 
     @Test
     fun `test volume calculation`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val box = BoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
         val expectedVolume = 6.0 * 6.0 * 6.0 // size.x * size.y * size.z
-        assertEquals(expectedVolume, box.volume)
+        assertEquals(expectedVolume, box.volume())
     }
 
     @Test
     fun `ensure center of box with negative and equal minimum values and equal maximum values is zero`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(0.0, box.centerX)
-        assertEquals(0.0, box.centerY)
-        assertEquals(0.0, box.centerZ)
+        val box = BoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        assertEquals(Vec3d.ZERO, box.center())
     }
 }

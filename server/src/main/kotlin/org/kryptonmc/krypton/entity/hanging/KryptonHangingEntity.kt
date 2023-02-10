@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.entity.hanging
 
 import org.kryptonmc.api.entity.hanging.HangingEntity
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.hanging.HangingEntitySerializer
 import org.kryptonmc.krypton.util.enumhelper.Directions
-import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world), HangingEntity {
@@ -77,7 +77,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
         widthX /= TWO_BLOCKS_PICTURE_PIXELS
         height /= TWO_BLOCKS_PICTURE_PIXELS
         widthZ /= TWO_BLOCKS_PICTURE_PIXELS
-        boundingBox = KryptonBoundingBox(x - widthX, y - height, z - widthZ, x + widthX, y + height, z + widthZ)
+        boundingBox = BoundingBox(x - widthX, y - height, z - widthZ, x + widthX, y + height, z + widthZ)
     }
 
     companion object {
