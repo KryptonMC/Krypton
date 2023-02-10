@@ -22,6 +22,8 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.player.KryptonEntityEnterViewEvent
+import org.kryptonmc.krypton.event.player.KryptonEntityExitViewEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoRemove
@@ -45,12 +47,14 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
         viewer.connection.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
         viewer.connection.send(PacketOutSetHeadRotation(entity.id, entity.position.yaw))
         if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes.create(entity.id, entity.attributes.syncable()))
+        entity.server.eventNode.fire(KryptonEntityEnterViewEvent(viewer, entity))
         return true
     }
 
     open fun removeViewer(viewer: KryptonPlayer): Boolean {
         if (!viewers.remove(viewer)) return false
         viewer.connection.send(PacketOutRemoveEntities.removeSingle(entity))
+        entity.server.eventNode.fire(KryptonEntityExitViewEvent(viewer, entity))
         return true
     }
 
