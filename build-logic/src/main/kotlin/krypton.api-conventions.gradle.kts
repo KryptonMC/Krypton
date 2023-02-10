@@ -1,7 +1,6 @@
 plugins {
     id("krypton.common-conventions")
     `maven-publish`
-    signing
 }
 
 tasks {
@@ -71,8 +70,4 @@ publishing {
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["maven"])
 }
