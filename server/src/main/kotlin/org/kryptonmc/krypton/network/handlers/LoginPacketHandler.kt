@@ -106,8 +106,9 @@ class LoginPacketHandler(
 
         // Initialize the player and setup their permissions.
         val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
-        val event = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-        player.permissionFunction = event.createFunction(player)
+        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSION_FUNCTION))
+        player.permissionFunction = permissionsEvent.result?.function ?: permissionsEvent.defaultFunction
+
         finishLogin(player)
     }
 
@@ -135,8 +136,8 @@ class LoginPacketHandler(
         if (!callLoginEvent(profile)) return
         val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
 
-        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-        player.permissionFunction = permissionsEvent.createFunction(player)
+        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSION_FUNCTION))
+        player.permissionFunction = permissionsEvent.result?.function ?: permissionsEvent.defaultFunction
         finishLogin(player)
     }
 
@@ -175,8 +176,8 @@ class LoginPacketHandler(
         val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
 
         // Setup permissions for the player
-        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-        player.permissionFunction = permissionsEvent.createFunction(player)
+        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSION_FUNCTION))
+        player.permissionFunction = permissionsEvent.result?.function ?: permissionsEvent.defaultFunction
         finishLogin(player)
     }
 

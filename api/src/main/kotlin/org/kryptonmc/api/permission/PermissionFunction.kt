@@ -15,7 +15,7 @@ package org.kryptonmc.api.permission
 import net.kyori.adventure.util.TriState
 
 /**
- * A function that calculates the permission settings for a given [Subject].
+ * A function that provides permission settings.
  */
 public fun interface PermissionFunction {
 
@@ -23,7 +23,7 @@ public fun interface PermissionFunction {
      * Gets the value for the given [permission].
      *
      * @param permission the permission
-     * @return the value for the given permission
+     * @return the value
      */
     public fun getPermissionValue(permission: String): TriState
 

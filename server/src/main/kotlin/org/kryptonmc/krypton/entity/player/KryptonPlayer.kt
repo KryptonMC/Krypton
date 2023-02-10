@@ -36,7 +36,6 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
-import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
@@ -398,9 +397,8 @@ class KryptonPlayer(
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
         private const val WATER_FLYING_DESTROY_SPEED_FACTOR = 5F
 
-        private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_NOT_SET
         @JvmField
-        val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { DEFAULT_PERMISSION_FUNCTION }
+        val DEFAULT_PERMISSION_FUNCTION: PermissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
         private const val DEFAULT_ATTACK_DAMAGE = 1.0
         private const val DEFAULT_MOVEMENT_SPEED = 0.1

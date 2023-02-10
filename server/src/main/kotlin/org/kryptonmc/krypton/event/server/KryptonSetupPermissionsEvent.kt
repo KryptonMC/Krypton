@@ -19,17 +19,11 @@
 package org.kryptonmc.krypton.event.server
 
 import org.kryptonmc.api.event.server.SetupPermissionsEvent
+import org.kryptonmc.api.event.type.AbstractEventWithResult
 import org.kryptonmc.api.permission.PermissionFunction
-import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.permission.Subject
 
-class KryptonSetupPermissionsEvent(override val subject: Subject, private val defaultProvider: PermissionProvider) : SetupPermissionsEvent {
-
-    override var provider: PermissionProvider = defaultProvider
-
-    override fun resetProvider() {
-        provider = defaultProvider
-    }
-
-    override fun createFunction(subject: Subject): PermissionFunction = provider.createFunction(subject)
-}
+class KryptonSetupPermissionsEvent(
+    override val subject: Subject,
+    override val defaultFunction: PermissionFunction
+) : AbstractEventWithResult<SetupPermissionsEvent.Result>(), SetupPermissionsEvent

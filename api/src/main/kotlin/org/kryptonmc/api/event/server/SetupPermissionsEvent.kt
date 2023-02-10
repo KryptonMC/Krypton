@@ -12,15 +12,15 @@
  */
 package org.kryptonmc.api.event.server
 
-import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.type.EventWithResult
 import org.kryptonmc.api.permission.PermissionFunction
-import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.permission.Subject
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
- * Called when the given [subject]'s permissions are initially being set up.
+ * Called when a subject's permissions are initially being set up.
  */
-public interface SetupPermissionsEvent : Event {
+public interface SetupPermissionsEvent : EventWithResult<SetupPermissionsEvent.Result> {
 
     /**
      * The subject that is having their permissions set up.
@@ -28,22 +28,20 @@ public interface SetupPermissionsEvent : Event {
     public val subject: Subject
 
     /**
-     * The provider that should be used to provide permissions for the subject.
+     * The default permission provider that will be used if no plugin
+     * specifies one by setting the result of this event.
      */
-    public var provider: PermissionProvider
+    public val defaultFunction: PermissionFunction
 
     /**
-     * Resets the provider back to the default provider that the server would
-     * use if this event did not modify the provider.
-     */
-    public fun resetProvider()
-
-    /**
-     * Gets a permission function for the given [subject] using the provider
-     * from this event.
+     * The result of a setup permissions event.
      *
-     * @param subject the subject to get a function for
-     * @return the permission function
+     * This is used to modify the function that is used to provide permissions
+     * for the subject.
+     *
+     * @param function the permission function to use
      */
-    public fun createFunction(subject: Subject): PermissionFunction
+    @JvmRecord
+    @ImmutableType
+    public data class Result(public val function: PermissionFunction)
 }
