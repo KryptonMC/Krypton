@@ -23,7 +23,6 @@ import io.netty.buffer.ByteBuf
 import kotlinx.collections.immutable.PersistentList
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.util.readAvailableBytes
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readPersistentList
@@ -56,13 +55,11 @@ object VelocityProxy {
     @JvmStatic
     fun readData(buf: ByteBuf): VelocityForwardedData {
         val address = InetAddresses.forString(buf.readString())
-        return VelocityForwardedData(address, UUID(buf.readLong(), buf.readLong()), buf.readString(16), readProperties(buf), readKey(buf))
+        return VelocityForwardedData(address, UUID(buf.readLong(), buf.readLong()), buf.readString(16), readProperties(buf))
     }
 
     @JvmStatic
-    private fun readProperties(buf: ByteBuf): PersistentList<ProfileProperty> =
-        buf.readPersistentList { KryptonProfileProperty(buf.readString(), buf.readString(), buf.readNullable(ByteBuf::readString)) }
-
-    @JvmStatic
-    private fun readKey(buf: ByteBuf): PlayerPublicKey.Data = PlayerPublicKey.Data(buf)
+    private fun readProperties(buf: ByteBuf): PersistentList<ProfileProperty> {
+        return buf.readPersistentList { KryptonProfileProperty(buf.readString(), buf.readString(), buf.readNullable(ByteBuf::readString)) }
+    }
 }
