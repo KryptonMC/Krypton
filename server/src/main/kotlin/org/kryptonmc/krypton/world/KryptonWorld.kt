@@ -248,10 +248,11 @@ class KryptonWorld(
         return true
     }
 
-    private fun canUpdateLighting(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState): Boolean =
-        newState.getLightBlock(this, pos) != oldState.getLightBlock(this, pos) ||
+    private fun canUpdateLighting(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState): Boolean {
+        return newState.getLightBlock(this, pos) != oldState.getLightBlock(this, pos) ||
                 newState.lightEmission != oldState.lightEmission ||
                 newState.useShapeForLightOcclusion != oldState.useShapeForLightOcclusion
+    }
 
     @Suppress("UnusedPrivateMember")
     fun sendBlockUpdated(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
@@ -259,7 +260,8 @@ class KryptonWorld(
         // TODO: Update pathfinding mobs
     }
 
-    private fun updateNeighbourForOutputSignal(pos: Vec3i, block: KryptonBlock) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun updateNeighbourForOutputSignal(pos: Vec3i, block: KryptonBlock) {
         Directions.Plane.HORIZONTAL.forEach { direction ->
             var neighbourPos = pos.relative(direction)
             if (!hasChunkAt(neighbourPos)) return@forEach
@@ -274,16 +276,18 @@ class KryptonWorld(
         }
     }
 
-    private fun updateNeighboursAt(pos: Vec3i, block: KryptonBlock) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun updateNeighboursAt(pos: Vec3i, block: KryptonBlock) {
         neighbourUpdater.updateNeighboursAtExceptFromFacing(pos, block, null)
     }
 
-    private fun neighbourChanged(state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun neighbourChanged(state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean) {
         neighbourUpdater.neighbourChanged(state, pos, block, neighbourPos, moving)
     }
 
-    @Suppress("UnusedPrivateMember")
-    private fun onBlockStateChange(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun onBlockStateChange(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
         // TODO: Do POI updates
     }
 
