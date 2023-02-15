@@ -286,7 +286,7 @@ class KryptonWorld(
         neighbourUpdater.neighbourChanged(state, pos, block, neighbourPos, moving)
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
+    @Suppress("MemberVisibilityCanBePrivate", "UnusedPrivateMember")
     fun onBlockStateChange(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
         // TODO: Do POI updates
     }
