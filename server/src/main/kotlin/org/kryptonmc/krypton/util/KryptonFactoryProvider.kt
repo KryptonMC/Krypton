@@ -50,6 +50,7 @@ import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
+import org.kryptonmc.api.world.chunk.BlockChangeFlags
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
@@ -81,6 +82,7 @@ import org.kryptonmc.krypton.world.biome.data.KryptonClimate
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.tags.KryptonTagKey
+import org.kryptonmc.krypton.world.chunk.flag.KryptonBlockChangeFlags
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
@@ -130,5 +132,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<TaskAction.Factory>(KryptonTaskAction.Factory)
         register<EventNode.Factory>(KryptonEventNode.Factory)
         register<EventListener.Factory>(KryptonEventListener.Factory)
+        register<BlockChangeFlags.Factory>(KryptonBlockChangeFlags.Factory)
     }
 }

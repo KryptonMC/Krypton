@@ -8,7 +8,10 @@
  */
 package org.kryptonmc.api.world.chunk
 
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A set of flags used to determine what happens when a block is changed.
@@ -133,4 +136,32 @@ public interface BlockChangeFlags {
      * @return the resulting flags
      */
     public fun or(other: BlockChangeFlags): BlockChangeFlags
+
+    @TypeFactory
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun none(): BlockChangeFlags
+
+        public fun all(): BlockChangeFlags
+    }
+
+    public companion object {
+
+        /**
+         * A set of flags with no flags set.
+         *
+         * @return a flag set with no flags set
+         */
+        @JvmStatic
+        public fun none(): BlockChangeFlags = Krypton.factory<Factory>().none()
+
+        /**
+         * A set of flags with all the flags set.
+         *
+         * @return a flag set with all flags set
+         */
+        @JvmStatic
+        public fun all(): BlockChangeFlags = Krypton.factory<Factory>().all()
+    }
 }

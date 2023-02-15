@@ -71,4 +71,11 @@ data class KryptonBlockChangeFlags(override val raw: Int) : BlockChangeFlags {
     override fun and(other: BlockChangeFlags): BlockChangeFlags = KryptonBlockChangeFlags(raw and other.raw)
 
     override fun or(other: BlockChangeFlags): BlockChangeFlags = KryptonBlockChangeFlags(raw or other.raw)
+
+    object Factory : BlockChangeFlags.Factory {
+
+        override fun none(): BlockChangeFlags = KryptonBlockChangeFlags(0)
+
+        override fun all(): BlockChangeFlags = KryptonBlockChangeFlags(SetBlockFlag.ALL)
+    }
 }
