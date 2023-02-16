@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.redstone.NeighbourUpdater
 
-interface WorldAccessor : EntityGetter, ReadOnlyWorld, WriteOnlyWorld, WorldTimeAccessor {
+interface WorldAccessor : ReadOnlyWorld, WriteOnlyWorld, WorldTimeAccessor {
 
     val data: WorldData
     val chunkManager: ChunkManager

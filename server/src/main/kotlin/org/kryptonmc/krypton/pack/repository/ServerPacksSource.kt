@@ -25,9 +25,7 @@ import org.kryptonmc.krypton.pack.PackResources
 import org.kryptonmc.krypton.pack.PackType
 import org.kryptonmc.krypton.pack.VanillaPackResources
 import org.kryptonmc.krypton.pack.VanillaPackResourcesBuilder
-import org.kryptonmc.krypton.pack.metadata.FeatureFlagsMetadataSection
 import org.kryptonmc.krypton.pack.metadata.PackMetadataSection
-import org.kryptonmc.krypton.world.flag.FeatureFlags
 import java.nio.file.Path
 
 class ServerPacksSource : BuiltInPackSource(PackType.SERVER_DATA, createVanillaPackSource(), PACKS_DIRECTORY) {
@@ -46,20 +44,22 @@ class ServerPacksSource : BuiltInPackSource(PackType.SERVER_DATA, createVanillaP
             Component.translatable("dataPack.vanilla.description"),
             PackType.SERVER_DATA.version()
         )
-        private val FEATURE_FLAGS_METADATA_SECTION = FeatureFlagsMetadataSection(FeatureFlags.DEFAULT_FLAGS)
-        private val BUILT_IN_METADATA = BuiltInMetadata.of(
-            PackMetadataSection.Serializer, VERSION_METADATA_SECTION,
-            FeatureFlagsMetadataSection.SERIALIZER, FEATURE_FLAGS_METADATA_SECTION
-        )
+        private val BUILT_IN_METADATA = BuiltInMetadata.of(PackMetadataSection.Serializer, VERSION_METADATA_SECTION)
         private val VANILLA_NAME = Component.translatable("dataPack.vanilla.name")
         private val PACKS_DIRECTORY = Key.key(Key.MINECRAFT_NAMESPACE, "datapacks")
 
         @JvmStatic
-        private fun createVanillaPackSource(): VanillaPackResources =
-            VanillaPackResourcesBuilder().metadata(BUILT_IN_METADATA).exposeNamespaces(Key.MINECRAFT_NAMESPACE).pushJarResources().build()
+        private fun createVanillaPackSource(): VanillaPackResources {
+            return VanillaPackResourcesBuilder()
+                .metadata(BUILT_IN_METADATA)
+                .exposeNamespaces(Key.MINECRAFT_NAMESPACE)
+                .pushJarResources()
+                .build()
+        }
 
         @JvmStatic
-        fun createPackRepository(path: Path): PackRepository =
-            PackRepository(ServerPacksSource(), FolderRepositorySource(path, PackType.SERVER_DATA, PackSource.WORLD))
+        fun createPackRepository(path: Path): PackRepository {
+            return PackRepository(ServerPacksSource(), FolderRepositorySource(path, PackType.SERVER_DATA, PackSource.WORLD))
+        }
     }
 }

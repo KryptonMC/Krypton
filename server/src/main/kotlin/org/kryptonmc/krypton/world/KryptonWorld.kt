@@ -61,11 +61,9 @@ import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
-import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.components.BaseWorld
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
@@ -208,18 +206,6 @@ class KryptonWorld(
     }
 
     override fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
-
-    override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
-        if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
-            val chunkX = SectionPos.sectionToBlock(x)
-            val chunkZ = SectionPos.sectionRelative(z)
-            val sectionX = SectionPos.sectionRelative(x)
-            val sectionZ = SectionPos.sectionRelative(z)
-            if (hasChunk(chunkX, chunkZ)) return getChunk(chunkX, chunkZ)!!.getHeight(type, sectionX, sectionZ) + 1
-            return minimumBuildHeight()
-        }
-        return seaLevel() + 1
-    }
 
     override fun setBlock(pos: Vec3i, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
         if (isOutsideBuildHeight(pos)) return false
@@ -433,15 +419,5 @@ class KryptonWorld(
 
     override fun skyDarken(): Int = skyDarken
 
-    override fun seaLevel(): Int = 63
-
-    override fun enabledFeatures(): FeatureFlagSet = data.enabledFeatures()
-
     override fun toString(): String = "KryptonWorld[${data.name}]"
-
-    companion object {
-
-        private const val MINIMUM_SIZE = -30000000
-        private const val MAXIMUM_SIZE = -MINIMUM_SIZE
-    }
 }

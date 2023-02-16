@@ -18,37 +18,13 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.api.util.Vec3i
-import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 
 interface ReadOnlyWorld : ChunkGetter, BlockGetter, BiomeGetter, BrightnessGetter {
 
     val dimensionType: KryptonDimensionType
 
-    fun seaLevel(): Int
-
-    fun enabledFeatures(): FeatureFlagSet
-
     override fun height(): Int = dimensionType.height
 
     override fun minimumBuildHeight(): Int = dimensionType.minimumY
-
-    fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
-
-    fun getHeightmapPos(type: Heightmap.Type, pos: Vec3i): Vec3i = Vec3i(pos.x, getHeight(type, pos.x, pos.z), pos.z)
-
-    fun canSeeSkyFromBelowWater(pos: Vec3i): Boolean {
-        if (pos.y >= seaLevel()) return canSeeSky(pos)
-        if (!canSeeSky(pos.x, seaLevel(), pos.z)) return false
-        var currentY = seaLevel()
-        while (currentY > pos.y) {
-            val currentPos = Vec3i(pos.x, currentY, pos.z)
-            val state = getBlock(currentPos)
-            if (state.getLightBlock(this, currentPos) > 0 && !state.material.liquid) return false
-            currentY--
-        }
-        return true
-    }
 }

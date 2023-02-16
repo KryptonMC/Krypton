@@ -25,9 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.PackResources
 import org.kryptonmc.krypton.pack.PackType
-import org.kryptonmc.krypton.pack.metadata.FeatureFlagsMetadataSection
 import org.kryptonmc.krypton.pack.metadata.PackMetadataSection
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import java.util.function.Function
 
 class Pack(
@@ -43,7 +41,6 @@ class Pack(
 ) {
 
     private val description = info.description
-    private val requestedFeatures = info.requestedFeatures
 
     fun id(): String = id
 
@@ -52,8 +49,6 @@ class Pack(
     fun isRequired(): Boolean = required
 
     fun isFixedPosition(): Boolean = fixedPosition
-
-    fun requestedFeatures(): FeatureFlagSet = requestedFeatures
 
     fun getChatLink(green: Boolean): Component = Component.translatable().key("chat.square_brackets").args(source.decorate(Component.text(id)))
         .style {
@@ -73,7 +68,7 @@ class Pack(
             "defaultPosition=$defaultPosition, required=$required, fixedPosition=$fixedPosition)"
 
     @JvmRecord
-    data class Info(val description: Component, val format: Int, val requestedFeatures: FeatureFlagSet) {
+    data class Info(val description: Component, val format: Int) {
 
         fun compatibility(type: PackType): PackCompatibility = PackCompatibility.forFormat(format, type)
     }
@@ -139,9 +134,7 @@ class Pack(
                         LOGGER.warn("Missing metadata in pack $id. Ignoring...")
                         return null
                     }
-                    val featureFlagSection = resources.getMetadataSection(FeatureFlagsMetadataSection.SERIALIZER)
-                    val featureFlags = featureFlagSection?.flags ?: FeatureFlagSet.of()
-                    return Info(metadata.description, metadata.format, featureFlags)
+                    return Info(metadata.description, metadata.format)
                 }
             } catch (exception: Exception) {
                 LOGGER.warn("Failed to read pack metadata!", exception)

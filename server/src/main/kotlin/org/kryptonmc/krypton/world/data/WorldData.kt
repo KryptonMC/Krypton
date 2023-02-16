@@ -21,8 +21,6 @@ package org.kryptonmc.krypton.world.data
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
-import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.nio.file.Path
@@ -61,6 +59,4 @@ interface WorldData {
     var wanderingTraderId: UUID?
 
     fun spawnPos(): Vec3i = Vec3i(spawnX, spawnY, spawnZ)
-
-    fun enabledFeatures(): FeatureFlagSet = FeatureFlags.VANILLA_SET // TODO: Implement this with a new world data configuration system
 }

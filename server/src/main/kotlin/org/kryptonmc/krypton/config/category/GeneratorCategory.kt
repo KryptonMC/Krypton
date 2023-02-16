@@ -18,11 +18,6 @@
  */
 package org.kryptonmc.krypton.config.category
 
-import org.kryptonmc.krypton.config.WorldDimensionData
-import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
-import org.kryptonmc.krypton.util.gson.GsonHelper
-import org.kryptonmc.krypton.world.generation.WorldDimensions
-import org.kryptonmc.krypton.world.generation.preset.WorldPresets
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 
@@ -34,12 +29,7 @@ data class GeneratorCategory(
     @Comment("The seed for the world. Leave blank for random")
     val seed: String = "",
     @Comment("The type of world to generate")
-    val type: String = WorldPresets.NORMAL.location.asString(),
+    val type: String = "minecraft:normal",
     @Comment("If structures should be generated")
     val structures: Boolean = true
-) {
-
-    fun createDimensions(registryAccess: RegistryAccess): WorldDimensions = createDimensionData().create(registryAccess)
-
-    private fun createDimensionData(): WorldDimensionData = WorldDimensionData(GsonHelper.parse(settings.ifEmpty { "{}" }), type.lowercase())
-}
+)

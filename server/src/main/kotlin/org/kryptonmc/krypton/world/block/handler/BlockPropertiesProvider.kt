@@ -28,8 +28,6 @@ import org.kryptonmc.krypton.world.block.data.BlockOffsetType
 import org.kryptonmc.krypton.world.block.data.RenderShape
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
-import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
@@ -133,9 +131,5 @@ interface BlockPropertiesProvider {
 
     fun getPlacementState(context: BlockPlaceContext): KryptonBlockState? {
         return null
-    }
-
-    fun requiredFeatures(): FeatureFlagSet {
-        return FeatureFlags.DEFAULT_FLAGS
     }
 }

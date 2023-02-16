@@ -32,10 +32,6 @@ import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.isBurning
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.state.downcast
-import org.kryptonmc.krypton.world.flag.FeatureElement
-import org.kryptonmc.krypton.world.flag.FeatureFlag
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
-import org.kryptonmc.krypton.world.flag.FeatureFlags
 import javax.annotation.concurrent.Immutable
 
 @Immutable
@@ -49,9 +45,8 @@ class KryptonEntityType<out T : KryptonEntity>(
     override val width: Float,
     override val height: Float,
     override val clientTrackingRange: Int,
-    override val updateInterval: Int,
-    private val requiredFeatures: FeatureFlagSet
-) : EntityType<T>, FeatureElement {
+    override val updateInterval: Int
+) : EntityType<T> {
 
     private var descriptionId: String? = null
     private var description: Component? = null
@@ -91,8 +86,6 @@ class KryptonEntityType<out T : KryptonEntity>(
     @Suppress("UNCHECKED_CAST")
     fun eq(tag: TagKey<EntityType<*>>): Boolean = builtInRegistryHolder.eq(tag as TagKey<KryptonEntityType<*>>)
 
-    override fun requiredFeatures(): FeatureFlagSet = requiredFeatures
-
     class Builder<out T : KryptonEntity>(private val category: EntityCategory) {
 
         private var immuneTo = ImmutableSet.of<KryptonBlock>()
@@ -104,7 +97,6 @@ class KryptonEntityType<out T : KryptonEntity>(
         private var updateInterval = 3
         private var width = 0.6F
         private var height = 1.8F
-        private var requiredFeatures = FeatureFlags.VANILLA_SET
 
         fun size(width: Float, height: Float): Builder<T> = apply {
             this.width = width
@@ -125,11 +117,9 @@ class KryptonEntityType<out T : KryptonEntity>(
 
         fun updateInterval(interval: Int): Builder<T> = apply { updateInterval = interval }
 
-        fun requiredFeatures(vararg flags: FeatureFlag): Builder<T> = apply { requiredFeatures = FeatureFlags.REGISTRY.subset(flags) }
-
         fun build(): KryptonEntityType<T> {
             return KryptonEntityType(category, serializable, summonable, fireImmune, canSpawnFarFromPlayer, immuneTo, width, height,
-                clientTrackingRange, updateInterval, requiredFeatures)
+                clientTrackingRange, updateInterval)
         }
     }
 }

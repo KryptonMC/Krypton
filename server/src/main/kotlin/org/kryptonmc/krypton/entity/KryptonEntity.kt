@@ -149,7 +149,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override fun shouldInformAdmins(): Boolean = true
 
     final override fun createCommandSourceStack(): CommandSourceStack {
-        return CommandSourceStack(this, position, world, name, displayName ?: nameOrDescription(), server, this)
+        return CommandSourceStack(this, position, world, name, displayName, server, this)
     }
 
     companion object {

@@ -32,10 +32,8 @@ import org.kryptonmc.krypton.registry.WritableRegistry
 import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.dimension.WorldDimension
 import org.kryptonmc.krypton.world.gameevent.GameEvent
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
-import org.kryptonmc.krypton.world.generation.preset.WorldPreset
 
 object KryptonResourceKeys {
 
@@ -63,10 +61,6 @@ object KryptonResourceKeys {
     val WORLD: ResourceKey<out Registry<World>> = minecraft("dimension")
     @JvmField
     val DIMENSION_TYPE: ResourceKey<out Registry<KryptonDimensionType>> = minecraft("dimension_type")
-    @JvmField
-    val DIMENSION: ResourceKey<out Registry<WorldDimension>> = minecraft("dimension")
-    @JvmField
-    val WORLD_PRESET: ResourceKey<out Registry<WorldPreset>> = minecraft("worldgen/world_preset")
 
     @JvmStatic
     private fun <T> minecraft(key: String): ResourceKey<out Registry<T>> = KryptonResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))

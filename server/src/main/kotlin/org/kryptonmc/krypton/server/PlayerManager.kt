@@ -67,7 +67,6 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.serialization.Dynamic
@@ -154,7 +153,7 @@ class PlayerManager(
             false,
             null
         ))
-        player.connection.send(PacketOutUpdateEnabledFeatures(FeatureFlags.REGISTRY.toNames(world.enabledFeatures())))
+        player.connection.send(PacketOutUpdateEnabledFeatures(setOf(Key.key("vanilla"))))
         player.connection.send(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
         player.connection.send(PacketOutChangeDifficulty.from(world.difficulty))
 

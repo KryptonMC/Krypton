@@ -19,16 +19,12 @@
 package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.api.block.BlockContainer
-import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3i
-import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
-import java.util.stream.Stream
 
 interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntityGetter {
 
@@ -37,27 +33,6 @@ interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntity
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState
 
     override fun getBlock(position: Vec3i): KryptonBlockState = getBlock(position.x, position.y, position.z)
-
-    fun getBlockStates(area: BoundingBox): Stream<KryptonBlockState> = BlockPos.betweenClosedStream(area).map(::getBlock)
-
-    fun isEmptyBlock(pos: Vec3i): Boolean = getBlock(pos).isAir()
-
-    fun containsAnyLiquid(area: BoundingBox): Boolean {
-        val minX = Maths.floor(area.minX)
-        val maxX = Maths.ceil(area.maxX)
-        val minY = Maths.floor(area.minY)
-        val maxY = Maths.ceil(area.maxY)
-        val minZ = Maths.floor(area.minZ)
-        val maxZ = Maths.ceil(area.maxZ)
-        for (x in minX..maxX) {
-            for (y in minY..maxY) {
-                for (z in minZ..maxZ) {
-                    if (!getBlock(x, y, z).asFluid().isEmpty()) return true
-                }
-            }
-        }
-        return false
-    }
 
     object Empty : BlockGetter {
 

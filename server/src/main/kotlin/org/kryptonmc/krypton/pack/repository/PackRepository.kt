@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Lists
 import org.kryptonmc.krypton.pack.PackResources
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import java.util.TreeMap
 import java.util.function.Function
 import java.util.stream.Collectors
@@ -67,9 +66,6 @@ class PackRepository(vararg sources: RepositorySource) {
     fun availablePacks(): Collection<Pack> = available.values
 
     fun selectedIds(): Collection<String> = Lists.transform(selected) { it.id() }
-
-    fun requestedFeatureFlags(): FeatureFlagSet =
-        selectedPacks().stream().map { it.requestedFeatures() }.reduce(FeatureFlagSet::join).orElse(FeatureFlagSet.of())
 
     fun selectedPacks(): Collection<Pack> = selected
 

@@ -313,8 +313,9 @@ object BlockSoundGroups {
         SoundEvents.CHISELED_BOOKSHELF_PLACE, SoundEvents.CHISELED_BOOKSHELF_HIT, SoundEvents.CHISELED_BOOKSHELF_FALL)
 
     @JvmStatic
-    private fun create(volume: Float, pitch: Float, breakSound: Event, step: Event, place: Event, hit: Event, fall: Event): KryptonBlockSoundGroup =
-        KryptonBlockSoundGroup(volume, pitch, breakSound.get(), step.get(), place.get(), hit.get(), fall.get())
+    private fun create(volume: Float, pitch: Float, breakSound: Event, step: Event, place: Event, hit: Event, fall: Event): KryptonBlockSoundGroup {
+        return KryptonBlockSoundGroup(volume, pitch, breakSound.get(), step.get(), place.get(), hit.get(), fall.get())
+    }
 }
 
 private typealias Event = RegistryReference<SoundEvent>

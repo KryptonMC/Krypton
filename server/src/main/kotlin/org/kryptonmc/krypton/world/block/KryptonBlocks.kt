@@ -1909,10 +1909,5 @@ object KryptonBlocks {
     }
 
     @JvmStatic
-    fun rebuildCaches() {
-        KryptonBlock.STATES.forEach { it.initCache() }
-    }
-
-    @JvmStatic
     private fun get(name: String): KryptonBlock = KryptonRegistries.BLOCK.get(Key.key(name))
 }

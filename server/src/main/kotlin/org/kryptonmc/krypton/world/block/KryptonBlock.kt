@@ -44,8 +44,6 @@ import org.kryptonmc.krypton.world.block.handler.RedstoneDataProvider
 import org.kryptonmc.krypton.world.block.handler.BlockShapesProvider
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
-import org.kryptonmc.krypton.world.flag.FeatureElement
-import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 
 @Suppress("LeakingThis")
 @CataloguedBy(KryptonBlocks::class)
@@ -56,7 +54,7 @@ class KryptonBlock(
     val redstoneDataProvider: RedstoneDataProvider,
     val shapesProvider: BlockShapesProvider,
     stateProperties: Collection<KryptonProperty<*>>
-) : Block, FeatureElement, StateHolderDelegate<BlockState, KryptonBlockState> {
+) : Block, StateHolderDelegate<BlockState, KryptonBlockState> {
 
     override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
 
@@ -90,12 +88,6 @@ class KryptonBlock(
 
     override fun canRespawnIn(): Boolean = !properties.material.solid && !properties.material.liquid
 
-    fun withPropertiesOf(state: KryptonBlockState): KryptonBlockState {
-        var result = defaultBlockState
-        state.block.stateDefinition.properties().forEach { if (result.hasProperty(it)) result = copyProperty(state, result, it) }
-        return result
-    }
-
     override fun asItem(): KryptonItemType {
         if (item == null) item = KryptonItemType.fromBlock(this)
         return item!!
@@ -117,8 +109,6 @@ class KryptonBlock(
         }
         return drops!!
     }
-
-    override fun requiredFeatures(): FeatureFlagSet = propertiesProvider.requiredFeatures()
 
     override fun toString(): String = "KryptonBlock(${key()})"
 
@@ -161,12 +151,6 @@ class KryptonBlock(
             } else {
                 world.setBlock(pos, newState, flags and SetBlockFlag.NO_NEIGHBOUR_DROPS, recursionLeft)
             }
-        }
-
-        @JvmStatic
-        private fun <T : Comparable<T>> copyProperty(result: KryptonBlockState, state: KryptonBlockState,
-                                                     property: KryptonProperty<T>): KryptonBlockState {
-            return state.setProperty(property, result.requireProperty(property))
         }
     }
 }
