@@ -192,6 +192,7 @@ org.kryptonmc.krypton.state
 org.kryptonmc.krypton.state.property
 org.kryptonmc.krypton.statistic
 org.kryptonmc.krypton.tags
+org.kryptonmc.krypton.ticking
 org.kryptonmc.krypton.user
 org.kryptonmc.krypton.util
 org.kryptonmc.krypton.util.bits
