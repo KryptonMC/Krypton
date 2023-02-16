@@ -219,8 +219,6 @@ org.kryptonmc.krypton.world.block.entity.banner
 org.kryptonmc.krypton.world.block.handler
 org.kryptonmc.krypton.world.block.handlers
 org.kryptonmc.krypton.world.block.palette
-org.kryptonmc.krypton.world.block.pattern
-org.kryptonmc.krypton.world.block.predicate
 org.kryptonmc.krypton.world.block.state
 org.kryptonmc.krypton.world.chunk
 org.kryptonmc.krypton.world.chunk.data
@@ -231,12 +229,9 @@ org.kryptonmc.krypton.world.damage
 org.kryptonmc.krypton.world.damage.type
 org.kryptonmc.krypton.world.data
 org.kryptonmc.krypton.world.dimension
-org.kryptonmc.krypton.world.entity
-org.kryptonmc.krypton.world.flag
 org.kryptonmc.krypton.world.fluid
 org.kryptonmc.krypton.world.gameevent
 org.kryptonmc.krypton.world.generation
-org.kryptonmc.krypton.world.generation.preset
 org.kryptonmc.krypton.world.material
 org.kryptonmc.krypton.world.redstone
 org.kryptonmc.krypton.world.region
