@@ -171,9 +171,8 @@ class PlayPacketHandler(
 
     override fun onDisconnect(message: Component) {
         chatMessageChain.close()
-        val playerNameText = PlainTextComponentSerializer.plainText().serialize(player.name)
         val translated = MinecraftTranslationManager.render(message)
-        LOGGER.info("$playerNameText was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
+        LOGGER.info("${player.name} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
         player.disconnect()
         server.playerManager.removePlayer(player)
     }

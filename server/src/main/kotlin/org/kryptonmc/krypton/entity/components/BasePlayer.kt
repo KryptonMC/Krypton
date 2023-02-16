@@ -32,7 +32,7 @@ interface BasePlayer : BaseEntity, KryptonEquipable, HungerDelegate, AbilitiesDe
     override val scoreboard: KryptonScoreboard
         get() = world.scoreboard
     override val teamRepresentation: Component
-        get() = name
+        get() = Component.text(name)
     override val facing: Direction
         get() = Directions.ofPitch(position.pitch.toDouble())
 

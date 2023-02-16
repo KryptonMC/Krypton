@@ -45,8 +45,8 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     private var permissionFunction = DEFAULT_PERMISSION_FUNCTION
     private var cachedPointers: Pointers? = null
 
-    override val name: Component
-        get() = DISPLAY_NAME
+    override val name: String
+        get() = NAME
 
     fun setupPermissions() {
         val event = server.eventNode.fire(KryptonSetupPermissionsEvent(this, DEFAULT_PERMISSION_FUNCTION))

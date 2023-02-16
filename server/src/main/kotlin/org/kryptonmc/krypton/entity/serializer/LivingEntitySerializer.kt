@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.serializer
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.Pose
@@ -65,8 +64,7 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
             val team = entity.world.scoreboard.getTeam(teamName)
             val wasAdded = team != null && entity.world.scoreboard.addMemberToTeam(entity.teamRepresentation, team)
             if (!wasAdded) {
-                LOGGER.warn("Unable to add living entity ${PlainTextComponentSerializer.plainText().serialize(entity.name)} to team $teamName. " +
-                        "This team may not exist.")
+                LOGGER.warn("Unable to add living entity ${entity.name} to team $teamName. This team may not exist.")
             }
         }
 

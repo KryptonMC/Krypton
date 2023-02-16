@@ -29,7 +29,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class TestCommandSender(
-    override val name: Component,
+    override val name: String,
     override val server: Server,
     private val permissionFunction: PermissionFunction,
     private val acceptSuccess: Boolean,

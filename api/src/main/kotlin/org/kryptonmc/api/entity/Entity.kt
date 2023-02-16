@@ -64,12 +64,16 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var customName: Component?
 
     /**
-     * If the current [customName] is visible or not.
+     * If the current custom name is visible or not.
      */
     public var isCustomNameVisible: Boolean
 
     /**
-     * The display name of this entity.
+     * The display name of this entity in their current team, if they are in
+     * a team.
+     *
+     * If this entity is not in a team, this will return the name of the
+     * entity.
      */
     public val displayName: Component
 

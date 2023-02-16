@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.command
 import com.mojang.brigadier.ResultConsumer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
@@ -47,7 +48,9 @@ abstract class CommandBlockHandler : KryptonSender {
     var lastOutput: Component? = null
     private val commandCallback = ResultConsumer<CommandSourceStack> { _, success, _ -> if (success) successCount++ }
 
-    override var name: Component = DEFAULT_NAME
+    private var customName: Component = DEFAULT_NAME
+    override val name: String
+        get() = PlainTextComponentSerializer.plainText().serialize(customName)
     override val server: KryptonServer
         get() = world().server
 
@@ -60,7 +63,7 @@ abstract class CommandBlockHandler : KryptonSender {
     fun load(data: CompoundTag) {
         command = data.getString(COMMAND_TAG)
         successCount = data.getInt(SUCCESS_COUNT_TAG)
-        if (data.contains(CUSTOM_NAME_TAG, StringTag.ID)) name = GsonComponentSerializer.gson().deserialize(data.getString(CUSTOM_NAME_TAG))
+        if (data.contains(CUSTOM_NAME_TAG, StringTag.ID)) customName = GsonComponentSerializer.gson().deserialize(data.getString(CUSTOM_NAME_TAG))
         if (data.contains(TRACK_OUTPUT_TAG, ByteTag.ID)) trackOutput = data.getBoolean(TRACK_OUTPUT_TAG)
         lastOutput = if (data.contains(LAST_OUTPUT_TAG, StringTag.ID)) {
             try {
@@ -78,7 +81,7 @@ abstract class CommandBlockHandler : KryptonSender {
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.apply {
         putString(COMMAND_TAG, command)
         putInt(SUCCESS_COUNT_TAG, successCount)
-        putString(CUSTOM_NAME_TAG, GsonComponentSerializer.gson().serialize(name))
+        putString(CUSTOM_NAME_TAG, GsonComponentSerializer.gson().serialize(customName))
         putBoolean(TRACK_OUTPUT_TAG, trackOutput)
         if (lastOutput != null && trackOutput) putString(LAST_OUTPUT_TAG, GsonComponentSerializer.gson().serialize(lastOutput!!))
         putBoolean(UPDATE_LAST_EXECUTION_TAG, updateLastExecution)

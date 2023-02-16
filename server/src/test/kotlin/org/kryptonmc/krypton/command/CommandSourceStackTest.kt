@@ -176,8 +176,9 @@ class CommandSourceStackTest {
         private val SERVER = mockk<KryptonServer>()
 
         @JvmStatic
-        private fun createSender(success: Boolean, failure: Boolean, inform: Boolean, permissions: PermissionFunction): TestCommandSender =
-            TestCommandSender(Component.empty(), SERVER, permissions, success, failure, inform)
+        private fun createSender(success: Boolean, failure: Boolean, inform: Boolean, permissions: PermissionFunction): TestCommandSender {
+            return TestCommandSender("", SERVER, permissions, success, failure, inform)
+        }
 
         @JvmStatic
         private fun createDefaultSender(): TestCommandSender = createSender(true, true, true, PermissionFunction.ALWAYS_TRUE)

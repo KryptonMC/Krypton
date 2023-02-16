@@ -104,7 +104,8 @@ class KryptonPlayer(
         get() = PlayerSerializer
     override var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
-    override val name: Component = Component.text(profile.name)
+    override val name: String
+        get() = profile.name
     override var uuid: UUID
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.

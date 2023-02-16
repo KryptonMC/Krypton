@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.vehicle
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
 import org.kryptonmc.api.entity.vehicle.MinecartVariant
 import org.kryptonmc.krypton.command.CommandSourceStack
@@ -71,8 +70,9 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
 
         override fun world(): KryptonWorld = this@KryptonCommandBlockMinecart.world
 
-        override fun createCommandSourceStack(): CommandSourceStack = CommandSourceStack(this, position, world(),
-            PlainTextComponentSerializer.plainText().serialize(name), displayName, world().server, this@KryptonCommandBlockMinecart)
+        override fun createCommandSourceStack(): CommandSourceStack {
+            return CommandSourceStack(this, position, world(), name, displayName, world().server, this@KryptonCommandBlockMinecart)
+        }
 
         override fun onUpdated() {
             this@KryptonCommandBlockMinecart.command = command

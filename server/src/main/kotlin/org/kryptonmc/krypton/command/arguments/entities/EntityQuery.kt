@@ -22,9 +22,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
@@ -163,7 +161,7 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     }
 
     private fun applyNameArgument(entities: Sequence<KryptonEntity>, value: Any, exclude: Boolean): Sequence<KryptonEntity> = entities.filter {
-        val name = if (it is Player) it.profile.name else PlainTextComponentSerializer.plainText().serialize(it.name)
+        val name = it.name
         if (exclude) name != value else name == value
     }
 

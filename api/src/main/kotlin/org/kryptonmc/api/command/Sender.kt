@@ -9,7 +9,6 @@
 package org.kryptonmc.api.command
 
 import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.permission.Subject
 
@@ -23,7 +22,7 @@ public interface Sender : Audience, Subject {
      *
      * How this is defined is entirely dependent on the subtype.
      */
-    public val name: Component
+    public val name: String
 
     /**
      * The server that the sender is on.

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity.components
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -28,12 +29,12 @@ interface NameableTeamMember : Entity {
 
     override val type: KryptonEntityType<KryptonEntity>
 
-    override val name: Component
-        get() = customName ?: type.description()
+    override val name: String
+        get() = PlainTextComponentSerializer.plainText().serialize(nameOrDescription())
     override val displayName: Component
         get() {
-            val team = team ?: return name
-            return team.formatName(name).style {
+            val team = team ?: return nameOrDescription()
+            return team.formatName(nameOrDescription()).style {
                 it.hoverEvent(asHoverEvent())
                 it.insertion(uuid.toString())
             }
@@ -42,4 +43,6 @@ interface NameableTeamMember : Entity {
         get() = Component.text(uuid.toString())
     override val team: Team?
         get() = world.scoreboard.getMemberTeam(teamRepresentation)
+
+    fun nameOrDescription(): Component = customName ?: type.description()
 }
