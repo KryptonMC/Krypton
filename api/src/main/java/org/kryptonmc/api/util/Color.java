@@ -103,7 +103,7 @@ public record Color(int red, int green, int blue) implements RGBLike {
      * @return the encoded RGB value
      */
     public int encode() {
-        return (red >> 16) | (green >> 8) | blue;
+        return (red << 16) | (green << 8) | blue;
     }
 
     /**
