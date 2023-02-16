@@ -11,7 +11,7 @@ It is currently a work in progress, so if you find any bugs, feel free to either
 or join our Discord and ask in one of the help channels.
 
 Please join our Discord to keep up with the latest changes and chat with the community!
-![Krypton Discord](https://discordapp.com/api/guilds/815157416563834881/widget.png?style=banner3)
+[![Krypton Discord](https://discordapp.com/api/guilds/815157416563834881/widget.png?style=banner3)](https://discord.gg/4QuwYACDRX)
 
 ### Usage
 
