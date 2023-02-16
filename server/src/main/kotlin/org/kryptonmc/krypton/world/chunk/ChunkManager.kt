@@ -142,7 +142,6 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     }
 
     override fun close() {
-        saveAllChunks(true)
         regionFileManager.close()
     }
 

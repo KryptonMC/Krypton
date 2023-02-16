@@ -396,7 +396,9 @@ class KryptonWorld(
         if (skipSave) return
         // TODO: Save extra data for maps, raids, etc.
         chunkManager.saveAllChunks(flush)
+        println("Saved chunks, now flushing entities")
         if (flush) entityManager.flush()
+        println("Flushed entities")
     }
 
     override fun close() {
