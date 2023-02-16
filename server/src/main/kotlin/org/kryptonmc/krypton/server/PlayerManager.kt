@@ -329,7 +329,7 @@ class PlayerManager(
         @JvmStatic
         private fun getDefaultJoinMessage(player: KryptonPlayer, joinedBefore: Boolean): Component {
             val key = if (joinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined"
-            return Component.translatable(key, NamedTextColor.YELLOW, player.displayName)
+            return Component.translatable(key, NamedTextColor.YELLOW, Component.text(player.name))
         }
     }
 }
