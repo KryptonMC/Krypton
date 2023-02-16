@@ -34,7 +34,6 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
-import org.kryptonmc.krypton.util.TaskChainer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
@@ -49,24 +48,21 @@ class CommandSourceStack private constructor(
     val entity: KryptonEntity?,
     private val silent: Boolean,
     private val consumer: ResultConsumer<CommandSourceStack>?,
-    val signingContext: CommandSigningContext,
-    val chatMessageChainer: TaskChainer
+    val signingContext: CommandSigningContext
 ) : CommandExecutionContext, CommandSuggestionProvider, Audience by sender {
 
     constructor(sender: KryptonSender, position: Position, world: KryptonWorld, textName: String, displayName: Component, server: KryptonServer,
                 entity: KryptonEntity?) : this(sender, position, world, textName, displayName, server, entity, false, { _, _, _ -> },
-        CommandSigningContext.ANONYMOUS, TaskChainer.immediate(server))
+        CommandSigningContext.ANONYMOUS)
 
     fun withCallback(consumer: ResultConsumer<CommandSourceStack>?): CommandSourceStack {
         if (this.consumer == consumer) return this
-        return CommandSourceStack(sender, position, world, textName, displayName, server, entity, silent, consumer, signingContext,
-            chatMessageChainer)
+        return CommandSourceStack(sender, position, world, textName, displayName, server, entity, silent, consumer, signingContext)
     }
 
     fun withSigningContext(context: CommandSigningContext): CommandSourceStack {
         if (context === signingContext) return this
-        return CommandSourceStack(sender, position, world, textName, displayName, server, entity, silent, consumer, context,
-            chatMessageChainer)
+        return CommandSourceStack(sender, position, world, textName, displayName, server, entity, silent, consumer, context)
     }
 
     fun getEntityOrError(): KryptonEntity = entity ?: throw ERROR_NOT_ENTITY.create()

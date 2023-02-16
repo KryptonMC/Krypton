@@ -17,12 +17,12 @@ import org.kryptonmc.api.event.annotation.PerformanceSensitive
 public interface TickEndEvent : TickEvent {
 
     /**
-     * The estimated duration, in milliseconds, of the tick that ended.
+     * The approximate duration of the tick, in nanoseconds.
      */
     public val tickDuration: Long
 
     /**
-     * The estimated time, in milliseconds, when the tick ended.
+     * The approximate time when the tick finished processing, in nanoseconds.
      */
     public val endTime: Long
 }

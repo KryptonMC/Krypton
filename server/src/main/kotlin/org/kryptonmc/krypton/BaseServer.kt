@@ -56,9 +56,7 @@ interface BaseServer : ServerAudience {
 
     fun isRunning(): Boolean
 
-    fun run()
-
-    fun stop(waitForServer: Boolean)
+    fun stop()
 
     override fun getPlayer(name: String): KryptonPlayer? = playerManager.getPlayer(name)
 

@@ -70,7 +70,6 @@ import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.BooleanSupplier
 
 class KryptonWorld(
     override val server: KryptonServer,
@@ -297,11 +296,11 @@ class KryptonWorld(
 
     override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = Biomes.PLAINS.get() // TODO: Use biome source from chunk generator
 
-    fun tick(hasTimeLeft: BooleanSupplier) {
+    fun tick() {
         tickWeather()
         updateSkyBrightness()
         tickTime()
-        chunkManager.tick(hasTimeLeft)
+        chunkManager.tick()
         scheduler.process()
 
         if (players.isNotEmpty()) {
@@ -396,9 +395,7 @@ class KryptonWorld(
         if (skipSave) return
         // TODO: Save extra data for maps, raids, etc.
         chunkManager.saveAllChunks(flush)
-        println("Saved chunks, now flushing entities")
         if (flush) entityManager.flush()
-        println("Flushed entities")
     }
 
     override fun close() {

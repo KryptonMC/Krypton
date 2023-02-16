@@ -82,7 +82,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     override fun shutdown() {
-        server.stop(false)
+        server.stop()
     }
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(

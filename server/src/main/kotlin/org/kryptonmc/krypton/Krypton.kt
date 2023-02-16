@@ -28,6 +28,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.GameProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.server.Bootstrap
+import org.kryptonmc.krypton.ticking.TickSchedulerThread
 import org.kryptonmc.krypton.util.executor.DefaultUncaughtExceptionHandler
 import java.nio.file.Path
 
@@ -87,8 +88,15 @@ private class KryptonCLI : CliktCommand(
         val cache = GameProfileCache(userCacheFile)
         cache.loadAll()
 
-        val server = KryptonServer.createAndRun { KryptonServer(it, config, cache, worldFolder) }
-        val shutdownThread = Thread({ server.stop(true) }, "Server Shutdown Thread")
+        val server = KryptonServer(config, cache, worldFolder)
+        if (!server.initialize()) {
+            // We just return here if initialisation fails. The error will already have been logged.
+            return
+        }
+
+        TickSchedulerThread(server).start()
+
+        val shutdownThread = Thread({ server.stop() }, "Server Shutdown Thread")
         shutdownThread.uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(logger)
         Runtime.getRuntime().addShutdownHook(shutdownThread)
     }

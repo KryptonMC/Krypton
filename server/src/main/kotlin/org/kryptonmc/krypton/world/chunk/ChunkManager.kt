@@ -27,7 +27,6 @@ import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
-import java.util.function.BooleanSupplier
 import java.util.function.Consumer
 import java.util.function.LongFunction
 
@@ -137,7 +136,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     }
 
     @Suppress("UnusedPrivateMember")
-    fun tick(hasTimeLeft: BooleanSupplier) {
+    fun tick() {
         chunkMap.values.forEach { it.tick(getPlayersByChunk(it.position.pack()).size) }
     }
 

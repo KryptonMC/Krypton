@@ -28,6 +28,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
@@ -149,7 +150,7 @@ class PlayPacketHandler(
     }
     private val lastSeenMessages = LastSeenMessagesValidator(20)
     private val messageSignatureCache = MessageSignatureCache.createDefault()
-    private val chatMessageChain = FutureChain(server)
+    private val chatMessageChain = FutureChain { server.scheduler.scheduleTask(it, TaskTime.zero(), TaskTime.zero()) }
 
     override fun tick() {
         val time = System.currentTimeMillis()
