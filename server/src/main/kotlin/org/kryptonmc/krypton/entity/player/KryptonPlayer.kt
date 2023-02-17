@@ -109,6 +109,8 @@ class KryptonPlayer(
     override var uuid: UUID
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.
+    override val ping: Int
+        get() = connection.latency()
 
     override val hungerSystem: PlayerHungerSystem = PlayerHungerSystem(this)
     override val gameModeSystem: PlayerGameModeSystem = PlayerGameModeSystem(this)

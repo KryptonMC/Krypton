@@ -130,6 +130,11 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     public val itemCooldownTracker: CooldownTracker
 
     /**
+     * The current ping of this player.
+     */
+    public val ping: Int
+
+    /**
      * Spawns particles for this player relative to a location.
      *
      * @param effect the particle effect used to describe the particles'
