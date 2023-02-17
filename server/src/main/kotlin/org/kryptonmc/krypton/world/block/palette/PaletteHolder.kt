@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.util.bits.BitStorage
@@ -176,6 +177,15 @@ class PaletteHolder<T> : PaletteResizer<T> {
             return config.bits
         }
 
+        private class Biomes(registry: IntBiMap<Biome>) : Strategy<Biome>(registry, 2) {
+
+            override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
+                0 -> Configuration(SingleValuePalette.Factory, bits)
+                in 1..3 -> Configuration(ArrayPalette.Factory, bits)
+                else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size()))
+            }
+        }
+
         companion object {
 
             @JvmField
@@ -188,6 +198,9 @@ class PaletteHolder<T> : PaletteResizer<T> {
                     else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size()))
                 }
             }
+
+            @JvmStatic
+            fun biomes(registry: IntBiMap<Biome>): Strategy<Biome> = Biomes(registry)
             @JvmField
             val BIOMES: Strategy<Biome> = object : Strategy<Biome>(KryptonDynamicRegistries.BIOME, 2) {
 
@@ -219,10 +232,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
         }
 
         @JvmStatic
-        fun readBiomes(data: CompoundTag): PaletteHolder<Biome> {
+        fun readBiomes(data: CompoundTag, registry: Registry<Biome>): PaletteHolder<Biome> {
             val entries = ArrayList<Biome>()
             data.getList(PALETTE_TAG, StringTag.ID).forEachString {
-                val biome = KryptonDynamicRegistries.BIOME.get(Key.key(it))
+                val biome = registry.get(Key.key(it))
                 entries.add(checkNotNull(biome) { "Invalid palette data! Failed to find biome with key $it!" })
             }
             return read(Strategy.BIOMES, entries, data.getLongArray(DATA_TAG))

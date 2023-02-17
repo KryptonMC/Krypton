@@ -42,8 +42,8 @@ class KryptonChunk(
     sections: Array<ChunkSection?>,
     override var lastUpdate: Long,
     inhabitedTime: Long,
-    val carvingMasks: Pair<ByteArray, ByteArray>,
-    val structures: CompoundTag
+    val carvingMasks: Pair<ByteArray, ByteArray>?,
+    val structures: CompoundTag?
 ) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
 
     override val status: ChunkStatus = ChunkStatus.FULL

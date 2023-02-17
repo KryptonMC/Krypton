@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.world.chunk.data
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.coordinate.SectionPos
-import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -34,11 +34,10 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
  */
 class ChunkSection(
     y: Int,
-    val blocks: PaletteHolder<KryptonBlockState> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState),
-    // TODO: Do we pass the world to sections to get this?
-    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get(KryptonDynamicRegistries.DynamicHolder)),
-    val blockLight: ByteArray = ByteArray(LIGHTS_SIZE),
-    val skyLight: ByteArray = ByteArray(LIGHTS_SIZE)
+    val blocks: PaletteHolder<KryptonBlockState>,
+    val biomes: PaletteHolder<Biome>,
+    val blockLight: ByteArray,
+    val skyLight: ByteArray
 ) : NoiseBiomeSource {
 
     val bottomBlockY: Int = SectionPos.sectionToBlock(y)
@@ -47,6 +46,14 @@ class ChunkSection(
     init {
         recount()
     }
+
+    constructor(y: Int, biomeRegistry: KryptonRegistry<Biome>) : this(
+        y,
+        PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState),
+        PaletteHolder(PaletteHolder.Strategy.biomes(biomeRegistry), biomeRegistry.get(BiomeKeys.PLAINS)!!),
+        ByteArray(LIGHTS_SIZE),
+        ByteArray(LIGHTS_SIZE)
+    )
 
     fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
 

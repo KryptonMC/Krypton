@@ -19,12 +19,15 @@
 package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import org.kryptonmc.api.world.biome.Biomes
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.nbt.getDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -51,12 +54,15 @@ object ChunkSerialization {
         // Don't upgrade if the version is not older than our version.
         val newData = if (dataVersion < KryptonPlatform.worldVersion) DataConversion.upgrade(data, MCTypeRegistry.CHUNK, dataVersion, true) else data
         val heightmaps = newData.getCompound("Heightmaps")
+        val biomeRegistry = world.registryHolder.getRegistry(ResourceKeys.BIOME) as? KryptonRegistry<Biome>
+            ?: error("Cannot find biome registry in $world!")
 
         val sectionList = newData.getList("sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount())
         for (i in 0 until sectionList.size()) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
+
             val index = world.getSectionIndexFromSectionY(y)
             if (index >= 0 && index < sections.size) {
                 val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
@@ -64,17 +70,26 @@ object ChunkSerialization {
                 } else {
                     PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState)
                 }
+
                 val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
-                    PaletteHolder.readBiomes(sectionData.getCompound("biomes"))
+                    PaletteHolder.readBiomes(sectionData.getCompound("biomes"), biomeRegistry)
                 } else {
-                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get(world.registryHolder))
+                    PaletteHolder(PaletteHolder.Strategy.biomes(biomeRegistry), biomeRegistry.get(BiomeKeys.PLAINS)!!)
                 }
+
                 val section = ChunkSection(y, blocks, biomes, sectionData.getByteArray("BlockLight"), sectionData.getByteArray("SkyLight"))
                 sections[index] = section
             }
         }
 
-        val carvingMasks = newData.getCompound("CarvingMasks").let { it.getByteArray("AIR") to it.getByteArray("LIQUID") }
+        val carvingMasks = if (newData.contains("CarvingMasks", CompoundTag.ID)) {
+            val masks = newData.getCompound("CarvingMasks")
+            Pair(masks.getByteArray("AIR"), masks.getByteArray("LIQUID"))
+        } else {
+            null
+        }
+        val structureData = if (newData.contains("Structures", CompoundTag.ID)) newData.getCompound("Structures") else null
+
         val chunk =  KryptonChunk(
             world,
             pos,
@@ -82,7 +97,7 @@ object ChunkSerialization {
             newData.getLong("LastUpdate"),
             newData.getLong("inhabitedTime"),
             carvingMasks,
-            newData.getCompound("Structures")
+            structureData
         )
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
@@ -98,9 +113,11 @@ object ChunkSerialization {
     fun write(chunk: KryptonChunk): CompoundTag {
         val data = buildCompound {
             putInt("DataVersion", KryptonPlatform.worldVersion)
-            compound("CarvingMasks") {
-                putByteArray("AIR", chunk.carvingMasks.first)
-                putByteArray("LIQUID", chunk.carvingMasks.second)
+            if (chunk.carvingMasks != null) {
+                compound("CarvingMasks") {
+                    putByteArray("AIR", chunk.carvingMasks.first)
+                    putByteArray("LIQUID", chunk.carvingMasks.second)
+                }
             }
             putLong("LastUpdate", chunk.lastUpdate)
             putList("Lights", ListTag.ID)
@@ -112,7 +129,7 @@ object ChunkSerialization {
             putList("TileEntities", CompoundTag.ID)
             putList("TileTicks", CompoundTag.ID)
             putList("ToBeTicked", ListTag.ID)
-            put("Structures", chunk.structures)
+            if (chunk.structures != null) put("Structures", chunk.structures)
             putInt("xPos", chunk.position.x)
             putInt("zPos", chunk.position.z)
         }

@@ -19,12 +19,14 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.coordinate.QuartPos
-import org.kryptonmc.krypton.world.components.HeightAccessor
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -36,14 +38,14 @@ import java.util.EnumSet
 
 abstract class ChunkAccessor(
     val position: ChunkPos,
-    private val heightAccessor: HeightAccessor,
+    private val world: KryptonWorld,
     var inhabitedTime: Long,
     sections: Array<ChunkSection?>?
 ) : BlockGetter, NoiseBiomeSource {
 
     abstract val status: ChunkStatus
 
-    private val sections = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount())
+    private val sections = arrayOfNulls<ChunkSection>(world.sectionCount())
     val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
 
     init {
@@ -54,12 +56,12 @@ abstract class ChunkAccessor(
                 LOGGER.warn("Failed to set chunk sections! Expected array size ${this.sections.size} but got ${sections.size}!")
             }
         }
-        replaceMissingSections(heightAccessor, this.sections)
+        replaceMissingSections(world, this.sections)
     }
 
-    override fun height(): Int = heightAccessor.height()
+    override fun height(): Int = world.height()
 
-    override fun minimumBuildHeight(): Int = heightAccessor.minimumBuildHeight()
+    override fun minimumBuildHeight(): Int = world.minimumBuildHeight()
 
     @Suppress("UNCHECKED_CAST")
     fun sections(): Array<ChunkSection> = sections as Array<ChunkSection>
@@ -106,9 +108,10 @@ abstract class ChunkAccessor(
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        private fun replaceMissingSections(heightAccessor: HeightAccessor, sections: Array<ChunkSection?>) {
+        private fun replaceMissingSections(world: KryptonWorld, sections: Array<ChunkSection?>) {
+            val biomeRegistry = world.registryHolder.getRegistry(ResourceKeys.BIOME) as KryptonRegistry<Biome>
             for (i in sections.indices) {
-                if (sections[i] == null) sections[i] = ChunkSection(heightAccessor.getSectionYFromSectionIndex(i))
+                if (sections[i] == null) sections[i] = ChunkSection(world.getSectionYFromSectionIndex(i), biomeRegistry)
             }
         }
     }
