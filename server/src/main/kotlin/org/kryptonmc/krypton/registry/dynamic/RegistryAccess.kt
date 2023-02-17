@@ -29,11 +29,11 @@ import java.util.stream.Stream
 
 interface RegistryAccess : HolderLookup.Provider {
 
-    fun <E> registry(key: ResourceKey<out Registry<out E>>): KryptonRegistry<E>?
+    fun <E> getRegistry(key: ResourceKey<out Registry<out E>>): KryptonRegistry<E>?
 
-    override fun <T> lookup(key: ResourceKey<out Registry<out T>>): HolderLookup.ForRegistry<T>? = registry(key)?.asLookup()
+    override fun <T> lookup(key: ResourceKey<out Registry<out T>>): HolderLookup.ForRegistry<T>? = getRegistry(key)?.asLookup()
 
-    fun <E> registryOrThrow(key: ResourceKey<out Registry<out E>>): KryptonRegistry<E> = registry(key) ?: error("Missing required registry $key!")
+    fun <E> registryOrThrow(key: ResourceKey<out Registry<out E>>): KryptonRegistry<E> = getRegistry(key) ?: error("Missing required registry $key!")
 
     fun registries(): Stream<RegistryEntry<*>>
 
@@ -61,7 +61,7 @@ interface RegistryAccess : HolderLookup.Provider {
         }
 
         @Suppress("UNCHECKED_CAST")
-        override fun <E> registry(key: RegistryKey<out E>): KryptonRegistry<E>? = registries.get(key) as? KryptonRegistry<E>
+        override fun <E> getRegistry(key: RegistryKey<out E>): KryptonRegistry<E>? = registries.get(key) as? KryptonRegistry<E>
 
         override fun registries(): Stream<RegistryEntry<*>> = registries.entries.stream().map { RegistryEntry.fromMapEntry(it) }
     }
@@ -88,7 +88,7 @@ interface RegistryAccess : HolderLookup.Provider {
         @JvmStatic
         fun fromRegistryOfRegistries(registry: KryptonRegistry<out KryptonRegistry<*>>): Frozen = object : Frozen {
             @Suppress("UNCHECKED_CAST")
-            override fun <E> registry(key: ResourceKey<out Registry<out E>>): KryptonRegistry<E>? {
+            override fun <E> getRegistry(key: ResourceKey<out Registry<out E>>): KryptonRegistry<E>? {
                 val temp = registry as KryptonRegistry<KryptonRegistry<E>>
                 return temp.get(key as ResourceKey<KryptonRegistry<E>>)
             }

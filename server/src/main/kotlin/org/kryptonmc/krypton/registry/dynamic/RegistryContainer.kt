@@ -16,23 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.registry.dynamic
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryReference
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.resource.KryptonResourceKey
 
-class KryptonRegistryReference<T, V : T>(private val registry: Registry<T>, override val key: ResourceKey<V>) : RegistryReference<V> {
+interface RegistryContainer {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun get(): V = registry.get(key as ResourceKey<T>) as V
-
-    object Factory : RegistryReference.Factory {
-
-        override fun <T, V : T> of(registry: Registry<T>, key: Key): RegistryReference<V> {
-            return KryptonRegistryReference(registry, KryptonResourceKey.of(registry.key.location, key))
-        }
-    }
+    fun registries(): Collection<Registry<*>>
 }

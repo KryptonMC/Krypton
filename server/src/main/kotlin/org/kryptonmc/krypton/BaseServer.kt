@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton
 
 import org.kryptonmc.api.event.GlobalEventNode
-import org.kryptonmc.api.registry.RegistryManager
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.console.KryptonConsole
@@ -49,8 +49,8 @@ interface BaseServer : ServerAudience {
 
     override val platform: KryptonPlatform
         get() = KryptonPlatform
-    override val registryManager: RegistryManager
-        get() = KryptonRegistries.ManagerImpl
+    override val registryHolder: RegistryHolder
+        get() = KryptonRegistries.StaticHolder
     override val factoryProvider: FactoryProvider
         get() = KryptonFactoryProvider
 

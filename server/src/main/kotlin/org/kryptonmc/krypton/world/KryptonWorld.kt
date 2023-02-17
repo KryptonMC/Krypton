@@ -25,6 +25,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3i
@@ -47,6 +48,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
@@ -81,6 +83,9 @@ class KryptonWorld(
 ) : BaseWorld, AutoCloseable {
 
     override val scheduler: KryptonScheduler = KryptonScheduler()
+    // TODO: Actually dynamically create this holder
+    override val registryHolder: RegistryHolder
+        get() = KryptonDynamicRegistries.DynamicHolder
 
     override val chunkManager: ChunkManager = ChunkManager(this)
     override val entityManager: EntityManager = EntityManager(this)
@@ -294,7 +299,8 @@ class KryptonWorld(
         return setBlock(pos, fluid.asBlock(), SetBlockFlag.UPDATE_NOTIFY, recursionLeft)
     }
 
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = Biomes.PLAINS.get() // TODO: Use biome source from chunk generator
+    // TODO: Use biome source from chunk generator
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = Biomes.PLAINS.get(registryHolder)
 
     fun tick() {
         tickWeather()

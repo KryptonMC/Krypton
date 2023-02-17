@@ -18,27 +18,20 @@
  */
 package org.kryptonmc.krypton.registry.dynamic
 
-import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.ImmutableLists
+import org.kryptonmc.api.registry.DefaultedRegistry
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryHolder
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import java.util.Collections
 
-enum class RegistryLayer {
+class ImmutableRegistryHolder(private val entries: Map<out ResourceKey<out Registry<*>>, KryptonRegistry<*>>) : RegistryHolder {
 
-    STATIC,
-    NETWORK,
-    DYNAMIC;
+    override val registries: Collection<Registry<*>>
+        get() = Collections.unmodifiableCollection(entries.values)
 
-    companion object {
+    @Suppress("UNCHECKED_CAST")
+    override fun <E> getRegistry(key: ResourceKey<out Registry<E>>): Registry<E>? = entries.get(key) as? Registry<E>
 
-        private val VALUES = ImmutableLists.ofArray(values())
-        private val STATIC_ACCESS = RegistryAccess.fromRegistryOfRegistries(KryptonRegistries.PARENT)
-
-        @JvmStatic
-        fun createRegistryAccess(): LayeredRegistryAccess<RegistryLayer> {
-            val baseAccess = LayeredRegistryAccess(VALUES)
-            val withStatic = baseAccess.replaceFrom(STATIC, STATIC_ACCESS)
-            val networkRegistries = RegistryAccess.fromRegistryOfRegistries(KryptonDynamicRegistries.PARENT)
-            return withStatic.replaceFrom(NETWORK, networkRegistries)
-        }
-    }
+    override fun <E> getDefaultedRegistry(key: ResourceKey<out Registry<E>>): DefaultedRegistry<E>? = getRegistry(key) as? DefaultedRegistry<E>
 }

@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api
 
-import org.kryptonmc.api.registry.RegistryManager
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.util.FactoryProvider
 
 internal object Krypton {
@@ -17,11 +17,11 @@ internal object Krypton {
     @JvmStatic
     private var factoryProvider: FactoryProvider? = null
     @JvmStatic
-    private var registryManager: RegistryManager? = null
+    private var staticRegistryHolder: RegistryHolder? = null
 
     @JvmStatic
     @JvmSynthetic
-    internal fun registryManager(): RegistryManager = registryManager!!
+    internal fun staticRegistryHolder(): RegistryHolder = staticRegistryHolder!!
 
     @JvmStatic
     @JvmSynthetic

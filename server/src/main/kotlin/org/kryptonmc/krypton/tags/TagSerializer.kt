@@ -23,11 +23,10 @@ import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
-import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.util.readIntIdList
@@ -36,16 +35,16 @@ import org.kryptonmc.krypton.util.readMap
 import org.kryptonmc.krypton.util.writeIntIdList
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeMap
-import java.util.stream.Collectors
 
 object TagSerializer {
 
     @JvmStatic
-    fun serializeTagsToNetwork(access: LayeredRegistryAccess<RegistryLayer>): Map<ResourceKey<out Registry<*>>, NetworkPayload> =
-        RegistrySerialization.networkSafeRegistries(access)
-            .map { Pair(it.key, serializeToNetwork(it.value)) }
+    fun serializeTagsToNetwork(dynamicHolder: RegistryHolder): Map<ResourceKey<out Registry<*>>, NetworkPayload> {
+        return RegistrySerialization.networkSafeRegistries(dynamicHolder).registries.asSequence()
+            .map { Pair(it.key, serializeToNetwork(it as KryptonRegistry<*>)) }
             .filter { !it.second.isEmpty() }
-            .collect(Collectors.toMap({ it.first }, { it.second }))
+            .associate { it.first to it.second }
+    }
 
     @JvmStatic
     private fun <T> serializeToNetwork(registry: KryptonRegistry<T>): NetworkPayload {

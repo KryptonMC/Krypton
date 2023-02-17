@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.registry
 
+import com.google.common.collect.Collections2
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.block.entity.BlockEntityType
@@ -30,7 +31,7 @@ import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryManager
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
@@ -230,17 +231,19 @@ object KryptonRegistries {
      * The backend registry manager implementation. Moved inside KryptonRegistries as it needs access to internals that would rather
      * not be otherwise published and available to other components.
      */
-    object ManagerImpl : RegistryManager {
+    object StaticHolder : RegistryHolder {
+
+        override val registries: Collection<Registry<*>>
+            get() = Collections2.transform(PARENT.holders()) { it.value() }
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? {
-            var registry = WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<T>
-            if (registry == null) registry = KryptonDynamicRegistries.getRegistry(key as ResourceKey<out Registry<T>>)
-            return registry
+        override fun <E> getRegistry(key: ResourceKey<out Registry<E>>): Registry<E>? {
+            return WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<E>
         }
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
-            WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? DefaultedRegistry<T>
+        override fun <E> getDefaultedRegistry(key: ResourceKey<out Registry<E>>): DefaultedRegistry<E>? {
+            return WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? DefaultedRegistry<E>
+        }
     }
 }

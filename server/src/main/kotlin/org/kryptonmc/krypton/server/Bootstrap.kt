@@ -86,7 +86,7 @@ object Bootstrap {
     @JvmStatic
     @VisibleForTesting
     fun preloadRegistries() {
-        Reflection.modifyStaticField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
+        Reflection.modifyStaticField(kryptonClass, "staticRegistryHolder", KryptonRegistries.StaticHolder)
         KryptonRegistries.bootstrap()
         KryptonDynamicRegistries.bootstrap()
         KryptonBlocks.initializeStates()

@@ -19,18 +19,11 @@
 package org.kryptonmc.krypton.registry.network
 
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.holder.HolderGetter
-import org.kryptonmc.krypton.registry.holder.HolderLookup
 import org.kryptonmc.krypton.registry.holder.HolderOwner
-import org.kryptonmc.krypton.resource.KryptonResourceKey
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.DelegatingOps
 import org.kryptonmc.serialization.DataOps
-import org.kryptonmc.serialization.DataResult
-import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 class RegistryOps<T> private constructor(delegate: DataOps<T>, private val lookupProvider: RegistryInfoLookup) : DelegatingOps<T>(delegate) {
 
@@ -44,45 +37,5 @@ class RegistryOps<T> private constructor(delegate: DataOps<T>, private val looku
     interface RegistryInfoLookup {
 
         fun <T> lookup(key: ResourceKey<out Registry<out T>>): RegistryInfo<T>?
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun <T> create(delegate: DataOps<T>, provider: HolderLookup.Provider): RegistryOps<T> {
-            return create(delegate, memoizeLookup(object : RegistryInfoLookup {
-                override fun <T> lookup(key: ResourceKey<out Registry<out T>>): RegistryInfo<T>? = provider.lookup(key)?.let { RegistryInfo(it, it) }
-            }))
-        }
-
-        @JvmStatic
-        fun <T> create(delegate: DataOps<T>, lookup: RegistryInfoLookup): RegistryOps<T> = RegistryOps(delegate, lookup)
-
-        @JvmStatic
-        private fun memoizeLookup(lookup: RegistryInfoLookup): RegistryInfoLookup = object : RegistryInfoLookup {
-            private val lookups = HashMap<ResourceKey<out Registry<*>>, RegistryInfo<*>?>()
-
-            @Suppress("UNCHECKED_CAST")
-            override fun <T> lookup(key: ResourceKey<out Registry<out T>>): RegistryInfo<T>? =
-                lookups.computeIfAbsent(key) { lookup.lookup(it) } as? RegistryInfo<T>
-        }
-
-        @JvmStatic
-        fun <E, O> retrieveGetter(key: ResourceKey<out Registry<out E>>): RecordCodecBuilder<O, HolderGetter<E>> {
-            return Codecs.retrieveContext { ops ->
-                if (ops !is RegistryOps<*>) return@retrieveContext DataResult.error("Not a registry ops!")
-                ops.lookupProvider.lookup(key)?.let { DataResult.success(it.getter) } ?: DataResult.error("Unknown registry $key!")
-            }.getting { null }
-        }
-
-        @JvmStatic
-        fun <E, O> retrieveElement(key: ResourceKey<E>): RecordCodecBuilder<O, Holder.Reference<E>> {
-            val registryKey: ResourceKey<out Registry<E>> = KryptonResourceKey.of(RegistryRoots.MINECRAFT, key.registry)
-            return Codecs.retrieveContext { ops ->
-                if (ops !is RegistryOps<*>) return@retrieveContext DataResult.error("Not a registry ops!")
-                ops.lookupProvider.lookup(registryKey)?.getter?.get(key)?.let { DataResult.success(it) }
-                    ?: DataResult.error("Cannot find value for key $key!")
-            }.getting { null }
-        }
     }
 }

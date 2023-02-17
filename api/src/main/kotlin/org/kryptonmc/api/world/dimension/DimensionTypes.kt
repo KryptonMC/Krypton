@@ -9,8 +9,8 @@
 package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.DynamicRegistries
-import org.kryptonmc.api.registry.RegistryReference
+import org.kryptonmc.api.registry.DynamicRegistryReference
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -21,15 +21,15 @@ public object DimensionTypes {
 
     // @formatter:off
     @JvmField
-    public val OVERWORLD: RegistryReference<DimensionType> = of("overworld")
+    public val OVERWORLD: DynamicRegistryReference<DimensionType> = of("overworld")
     @JvmField
-    public val OVERWORLD_CAVES: RegistryReference<DimensionType> = of("overworld_caves")
+    public val OVERWORLD_CAVES: DynamicRegistryReference<DimensionType> = of("overworld_caves")
     @JvmField
-    public val THE_NETHER: RegistryReference<DimensionType> = of("the_nether")
+    public val THE_NETHER: DynamicRegistryReference<DimensionType> = of("the_nether")
     @JvmField
-    public val THE_END: RegistryReference<DimensionType> = of("the_end")
+    public val THE_END: DynamicRegistryReference<DimensionType> = of("the_end")
 
     // @formatter:on
     @JvmStatic
-    private fun of(name: String): RegistryReference<DimensionType> = RegistryReference.of(DynamicRegistries.DIMENSION_TYPE, Key.key(name))
+    private fun of(name: String): DynamicRegistryReference<DimensionType> = DynamicRegistryReference.of(ResourceKeys.DIMENSION_TYPE, Key.key(name))
 }

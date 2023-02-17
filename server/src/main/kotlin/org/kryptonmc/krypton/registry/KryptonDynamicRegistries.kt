@@ -18,8 +18,11 @@
  */
 package org.kryptonmc.krypton.registry
 
+import com.google.common.collect.Collections2
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
@@ -75,8 +78,9 @@ object KryptonDynamicRegistries {
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? =
-        WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<T>
+    fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? {
+        return WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<T>
+    }
 
     private fun interface Bootstrap<T> {
 
@@ -84,4 +88,17 @@ object KryptonDynamicRegistries {
     }
 
     private class RegistryInitializationException(message: String, cause: Throwable) : RuntimeException(message, cause)
+
+    object DynamicHolder : RegistryHolder {
+
+        override val registries: Collection<Registry<*>>
+            get() = Collections2.transform(PARENT.holders()) { it.value() }
+
+        override fun <E> getRegistry(key: ResourceKey<out Registry<E>>): Registry<E>? = KryptonDynamicRegistries.getRegistry(key)
+
+        @Suppress("UNCHECKED_CAST")
+        override fun <E> getDefaultedRegistry(key: ResourceKey<out Registry<E>>): DefaultedRegistry<E>? {
+            return WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? DefaultedRegistry<E>
+        }
+    }
 }

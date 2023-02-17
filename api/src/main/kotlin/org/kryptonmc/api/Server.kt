@@ -15,7 +15,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.plugin.PluginManager
-import org.kryptonmc.api.registry.RegistryManager
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.util.FactoryProvider
@@ -82,11 +82,9 @@ public interface Server : ForwardingAudience {
     public val eventNode: GlobalEventNode
 
     /**
-     * The registry manager for this server.
-     *
-     * This is used to create new registries and register values to them.
+     * The global registry holder for the server.
      */
-    public val registryManager: RegistryManager
+    public val registryHolder: RegistryHolder
 
     /**
      * The factory provider for this server.

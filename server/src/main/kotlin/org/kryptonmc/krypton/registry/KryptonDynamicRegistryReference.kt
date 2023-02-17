@@ -19,20 +19,25 @@
 package org.kryptonmc.krypton.registry
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.DynamicRegistryReference
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryReference
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 
-class KryptonRegistryReference<T, V : T>(private val registry: Registry<T>, override val key: ResourceKey<V>) : RegistryReference<V> {
+class KryptonDynamicRegistryReference<T>(
+    private val registry: ResourceKey<out Registry<T>>,
+    override val key: ResourceKey<T>
+) : DynamicRegistryReference<T> {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun get(): V = registry.get(key as ResourceKey<T>) as V
+    override fun get(holder: RegistryHolder): T {
+        return requireNotNull(holder.getRegistry(registry)?.get(key)) { "Could not find value for key $key in holder $holder!" }
+    }
 
-    object Factory : RegistryReference.Factory {
+    object Factory : DynamicRegistryReference.Factory {
 
-        override fun <T, V : T> of(registry: Registry<T>, key: Key): RegistryReference<V> {
-            return KryptonRegistryReference(registry, KryptonResourceKey.of(registry.key.location, key))
+        override fun <T> of(registry: ResourceKey<out Registry<T>>, key: Key): DynamicRegistryReference<T> {
+            return KryptonDynamicRegistryReference(registry, KryptonResourceKey.of(registry, key))
         }
     }
 }

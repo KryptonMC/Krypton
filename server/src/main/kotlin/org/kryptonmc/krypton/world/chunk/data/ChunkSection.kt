@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.coordinate.SectionPos
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -34,7 +35,8 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 class ChunkSection(
     y: Int,
     val blocks: PaletteHolder<KryptonBlockState> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState),
-    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get()),
+    // TODO: Do we pass the world to sections to get this?
+    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get(KryptonDynamicRegistries.DynamicHolder)),
     val blockLight: ByteArray = ByteArray(LIGHTS_SIZE),
     val skyLight: ByteArray = ByteArray(LIGHTS_SIZE)
 ) : NoiseBiomeSource {

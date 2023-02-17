@@ -59,7 +59,7 @@ interface KryptonRegistry<T> : Registry<T>, IntBiMap<T> {
 
     fun getOrThrow(key: ResourceKey<T>): T = checkNotNull(get(key)) { "Could not find key $key in registry ${this.key}!" }
 
-    fun holders(): Stream<Holder.Reference<T>>
+    fun holders(): Collection<Holder.Reference<T>>
 
     fun getHolder(id: Int): Holder.Reference<T>?
 

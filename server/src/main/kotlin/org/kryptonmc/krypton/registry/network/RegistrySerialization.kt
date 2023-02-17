@@ -20,14 +20,16 @@ package org.kryptonmc.krypton.registry.network
 
 import com.google.common.collect.ImmutableMap
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.network.chat.RichChatType
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
-import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
-import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
+import org.kryptonmc.krypton.registry.dynamic.CombinedRegistryHolder
+import org.kryptonmc.krypton.registry.dynamic.FilteredRegistryHolder
+import org.kryptonmc.krypton.registry.dynamic.SimpleRegistryHolder
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.util.Keys
@@ -37,7 +39,6 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.serialization.codecs.UnboundedMapCodec
-import java.util.stream.Stream
 
 object RegistrySerialization {
 
@@ -47,7 +48,7 @@ object RegistrySerialization {
         put(this, KryptonResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC)
     }.build()
     @JvmField
-    val NETWORK_CODEC: Codec<RegistryAccess> = createNetworkCodec<Any>()
+    val NETWORK_CODEC: Codec<RegistryHolder> = createNetworkCodec<Any>()
 
     @JvmStatic
     private fun <E> put(map: ImmutableMap.Builder<ResourceKey<out Registry<*>>, NetworkedRegistryData<*>>, key: ResourceKey<out Registry<E>>,
@@ -56,16 +57,19 @@ object RegistrySerialization {
     }
 
     @JvmStatic
-    private fun ownedNetworkableRegistries(access: RegistryAccess): Stream<RegistryAccess.RegistryEntry<*>> =
-        access.registries().filter { NETWORKABLE_REGISTRIES.containsKey(it.key) }
+    private fun ownedNetworkableRegistries(holder: RegistryHolder): RegistryHolder {
+        return FilteredRegistryHolder(holder) { NETWORKABLE_REGISTRIES.containsKey(it) }
+    }
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    private fun <E> getNetworkCodec(key: ResourceKey<out Registry<E>>): DataResult<out Codec<E>> =
-        NETWORKABLE_REGISTRIES.get(key)?.networkCodec.resultOrError { "Unknown or not serializable registry $key!" } as DataResult<out Codec<E>>
+    private fun <E> getNetworkCodec(key: ResourceKey<out Registry<E>>): DataResult<out Codec<E>> {
+        return NETWORKABLE_REGISTRIES.get(key)?.networkCodec
+            .resultOrError { "Unknown or not serializable registry $key!" } as DataResult<out Codec<E>>
+    }
 
     @JvmStatic
-    private fun <E> createNetworkCodec(): Codec<RegistryAccess> {
+    private fun <E> createNetworkCodec(): Codec<RegistryHolder> {
         val keyCodec: Codec<ResourceKey<out Registry<E>>> = Keys.CODEC.xmap({ KryptonResourceKey.of(RegistryRoots.MINECRAFT, it) }, { it.location })
         val registryCodec: Codec<KryptonRegistry<E>> = keyCodec.partialDispatch(
             "type",
@@ -77,25 +81,24 @@ object RegistrySerialization {
     }
 
     @JvmStatic
-    private fun <K : ResourceKey<out Registry<*>>, V : KryptonRegistry<*>> captureMap(codec: UnboundedMapCodec<K, V>): Codec<RegistryAccess> {
+    private fun <K : ResourceKey<out Registry<*>>, V : KryptonRegistry<*>> captureMap(codec: UnboundedMapCodec<K, V>): Codec<RegistryHolder> {
         return codec.xmap(
-            { RegistryAccess.ImmutableImpl(it) },
-            { access ->
+            { registries -> SimpleRegistryHolder(registries) },
+            { holder ->
                 @Suppress("UNCHECKED_CAST")
-                ownedNetworkableRegistries(access).collect(ImmutableMap.toImmutableMap({ it.key as K }, { it.value as V }))
+                holder.registries.associate { it.key as K to it as V }
             }
         )
     }
 
     @JvmStatic
-    fun networkedRegistries(access: LayeredRegistryAccess<RegistryLayer>): Stream<RegistryAccess.RegistryEntry<*>> =
-        ownedNetworkableRegistries(access.getAccessFrom(RegistryLayer.NETWORK))
+    fun networkedRegistries(holder: RegistryHolder): RegistryHolder = ownedNetworkableRegistries(holder)
 
     @JvmStatic
-    fun networkSafeRegistries(access: LayeredRegistryAccess<RegistryLayer>): Stream<RegistryAccess.RegistryEntry<*>> {
-        val statics = access.getLayer(RegistryLayer.STATIC).registries()
-        val others = networkedRegistries(access)
-        return Stream.concat(others, statics)
+    fun networkSafeRegistries(dynamic: RegistryHolder): RegistryHolder {
+        val statics = KryptonRegistries.StaticHolder
+        val networked = networkedRegistries(dynamic)
+        return CombinedRegistryHolder(statics, networked)
     }
 
     @JvmRecord

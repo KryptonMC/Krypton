@@ -23,7 +23,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STAR
 import net.minecraft.SharedConstants
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.server.Bootstrap
 import net.minecraft.tags.BannerPatternTags
 import net.minecraft.tags.BiomeTags
@@ -35,7 +34,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
-import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.material.Fluid
@@ -51,7 +49,6 @@ fun main() {
     SoundEventGenerator(output).run()
     generator.run<Fluids, Fluid>(BuiltInRegistries.FLUID, "fluid.Fluids", "fluid.Fluid", "FLUID")
     generator.run<Items, Item>(BuiltInRegistries.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
-    generator.run<Biomes, ResourceKey<*>>("world.biome.Biomes", "world.biome.Biome", "BIOME") { it.value.location() }
     generator.run<Attributes, Attribute>(BuiltInRegistries.ATTRIBUTE, "entity.attribute.AttributeTypes",
         "entity.attribute.AttributeType", "ATTRIBUTE")
     val patternType = ClassName("$PACKAGE.block.entity.banner", "BannerPatternType")

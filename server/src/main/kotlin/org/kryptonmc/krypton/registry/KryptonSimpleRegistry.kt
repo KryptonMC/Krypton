@@ -79,7 +79,7 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
 
         override fun get(key: ResourceKey<T>): Holder.Reference<T>? = getHolder(key)
 
-        override fun listElements(): Stream<Holder.Reference<T>> = holders()
+        override fun listElements(): Stream<Holder.Reference<T>> = holders().stream()
 
         override fun get(key: TagKey<T>): HolderSet.Named<T>? = getTag(key)
 
@@ -97,7 +97,7 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
      * may need to be reinitialized if values are registered to the registry after it is initially constructed.
      */
     private fun holdersInOrder(): List<Holder.Reference<T>> {
-        if (holdersInOrder == null) holdersInOrder = byId.stream().filter { it != null }.toList()
+        if (holdersInOrder == null) holdersInOrder = ImmutableLists.copyOf(byId)
         return holdersInOrder!!
     }
 
@@ -175,7 +175,7 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
      * Holder API.
      */
 
-    override fun holders(): Stream<Holder.Reference<T>> = holdersInOrder().stream()
+    override fun holders(): Collection<Holder.Reference<T>> = holdersInOrder()
 
     override fun getHolder(id: Int): Holder.Reference<T>? {
         if (id < 0 || id >= byId.size) return null

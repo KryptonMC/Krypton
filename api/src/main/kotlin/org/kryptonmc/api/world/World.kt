@@ -21,6 +21,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.FluidContainer
 import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.fluid.Fluids
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scheduling.Scheduler
@@ -133,6 +134,14 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * stop running after the world is removed.
      */
     public val scheduler: Scheduler
+
+    /**
+     * The registry holder for this world.
+     *
+     * This contains registries that are specific to this world, and not
+     * shared across the whole server.
+     */
+    public val registryHolder: RegistryHolder
 
     /**
      * If the world is a hardcore world.

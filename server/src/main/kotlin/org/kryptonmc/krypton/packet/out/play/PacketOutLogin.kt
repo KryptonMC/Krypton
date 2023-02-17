@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import com.google.common.collect.Sets
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.GameMode
@@ -28,7 +29,6 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.coordinate.GlobalPos
-import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.util.decode
 import org.kryptonmc.krypton.util.encode
@@ -48,7 +48,7 @@ data class PacketOutLogin(
     val gameMode: GameMode,
     val oldGameMode: GameMode?,
     val dimensions: Set<ResourceKey<World>>,
-    val registryHolder: RegistryAccess.Frozen,
+    val registryHolder: RegistryHolder,
     val dimensionType: ResourceKey<DimensionType>,
     val dimension: ResourceKey<World>,
     val seed: Long,
@@ -68,7 +68,7 @@ data class PacketOutLogin(
         GameModes.fromId(buf.readByte().toInt())!!,
         GameModes.fromId(buf.readByte().toInt())!!,
         buf.readCollection({ Sets.newHashSetWithExpectedSize(it) }) { ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()) },
-        buf.decode(RegistrySerialization.NETWORK_CODEC).freeze(),
+        buf.decode(RegistrySerialization.NETWORK_CODEC),
         ResourceKey.of(ResourceKeys.DIMENSION_TYPE, buf.readKey()),
         ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()),
         buf.readLong(),

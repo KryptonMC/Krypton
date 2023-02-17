@@ -58,9 +58,6 @@ import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
-import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
-import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
-import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.tags.TagSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -80,16 +77,12 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Function
 import java.util.function.Predicate
 
-class PlayerManager(
-    private val server: KryptonServer,
-    private val registries: LayeredRegistryAccess<RegistryLayer>
-) {
+class PlayerManager(private val server: KryptonServer) {
 
     private val dataManager = createDataManager(server)
     private val players = CopyOnWriteArrayList<KryptonPlayer>()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
-    private val synchronizedRegistries = RegistryAccess.ImmutableImpl(RegistrySerialization.networkedRegistries(registries)).freeze()
 
     fun players(): List<KryptonPlayer> = players
 
@@ -140,7 +133,7 @@ class PlayerManager(
             player.gameModeSystem.gameMode(),
             player.gameModeSystem.previousGameMode(),
             server.worldManager.worlds.keys,
-            synchronizedRegistries,
+            RegistrySerialization.networkedRegistries(world.registryHolder),
             KryptonDynamicRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
@@ -161,7 +154,7 @@ class PlayerManager(
         player.connection.send(PacketOutAbilities.create(player.abilities))
         player.connection.send(PacketOutSetHeldItem(player.inventory.heldSlot))
         player.connection.send(PacketOutUpdateRecipes)
-        player.connection.send(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork(registries)))
+        player.connection.send(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork(world.registryHolder)))
         player.connection.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statisticsTracker.invalidate()

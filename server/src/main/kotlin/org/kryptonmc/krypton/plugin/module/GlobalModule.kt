@@ -27,7 +27,6 @@ import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
-import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.service.ServicesManager
@@ -46,7 +45,6 @@ class GlobalModule(private val server: KryptonServer, private val pluginContaine
         bind<PluginManager>().toInstance(server.pluginManager)
         bind<ServicesManager>().toInstance(server.servicesManager)
         bind<GlobalEventNode>().toInstance(server.eventNode)
-        bind<RegistryManager>().toInstance(server.registryManager)
         bind<FactoryProvider>().toInstance(server.factoryProvider)
         bind<UserManager>().toInstance(server.userManager)
         bind<Scheduler>().toInstance(server.scheduler)

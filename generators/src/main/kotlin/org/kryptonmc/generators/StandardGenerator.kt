@@ -49,10 +49,6 @@ open class StandardGenerator(private val output: Path) {
         outputFile.tryCreateFile().writeText(out.toString().performReplacements(returnType.simpleName, name.simpleName))
     }
 
-    inline fun <reified S, reified T> run(name: String, returnType: String, registryName: String, keyGetter: KeyGetter<T>) {
-        run(S::class.java, T::class.java, className(name), className(returnType), registryName, keyGetter)
-    }
-
     inline fun <reified S, reified T> run(registry: Registry<T>, name: String, returnType: String, registryName: String) {
         run(S::class.java, T::class.java, className(name), className(returnType), registryName) { registry.getKey(it.value)!! }
     }

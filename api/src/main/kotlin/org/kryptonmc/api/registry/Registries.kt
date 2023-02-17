@@ -76,12 +76,14 @@ public object Registries {
     public val DAMAGE_TYPES: Registry<DamageType> = builtin(ResourceKeys.DAMAGE_TYPES)
 
     @JvmStatic
-    private fun <T> builtin(key: ResourceKey<out Registry<T>>): Registry<T> =
-        requireNotNull(getRegistry(key)) { "Cannot find built-in registry $key!" }
+    private fun <T> builtin(key: ResourceKey<out Registry<T>>): Registry<T> {
+        return requireNotNull(getRegistry(key)) { "Cannot find built-in registry $key!" }
+    }
 
     @JvmStatic
-    private fun <T> builtinDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T> =
-        requireNotNull(getDefaultedRegistry(key)) { "Cannot find built-in defaulted registry $key!" }
+    private fun <T> builtinDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T> {
+        return requireNotNull(getDefaultedRegistry(key)) { "Cannot find built-in defaulted registry $key!" }
+    }
 
     /**
      * Gets the existing registry with the given resource [key], or returns null
@@ -92,7 +94,7 @@ public object Registries {
      * @return the existing registry, or null if not present
      */
     @JvmStatic
-    public fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager().getRegistry(key)
+    public fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.staticRegistryHolder().getRegistry(key)
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -104,6 +106,7 @@ public object Registries {
      * @return the existing defaulted registry, or null if not present
      */
     @JvmStatic
-    public fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
-        Krypton.registryManager().getDefaultedRegistry(key)
+    public fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? {
+        return Krypton.staticRegistryHolder().getDefaultedRegistry(key)
+    }
 }

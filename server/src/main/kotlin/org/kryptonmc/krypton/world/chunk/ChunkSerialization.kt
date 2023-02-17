@@ -67,7 +67,7 @@ object ChunkSerialization {
                 val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
                     PaletteHolder.readBiomes(sectionData.getCompound("biomes"))
                 } else {
-                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get())
+                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get(world.registryHolder))
                 }
                 val section = ChunkSection(y, blocks, biomes, sectionData.getByteArray("BlockLight"), sectionData.getByteArray("SkyLight"))
                 sections[index] = section

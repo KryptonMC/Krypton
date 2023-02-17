@@ -16,23 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.registry.dynamic
 
-import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryReference
+import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.resource.KryptonResourceKey
 
-class KryptonRegistryReference<T, V : T>(private val registry: Registry<T>, override val key: ResourceKey<V>) : RegistryReference<V> {
+class SimpleRegistryHolder(private val entries: Map<out ResourceKey<out Registry<*>>, Registry<*>>) : RegistryHolder {
+
+    override val registries: Collection<Registry<*>>
+        get() = entries.values
 
     @Suppress("UNCHECKED_CAST")
-    override fun get(): V = registry.get(key as ResourceKey<T>) as V
+    override fun <E> getRegistry(key: ResourceKey<out Registry<E>>): Registry<E>? = entries.get(key) as? Registry<E>
 
-    object Factory : RegistryReference.Factory {
-
-        override fun <T, V : T> of(registry: Registry<T>, key: Key): RegistryReference<V> {
-            return KryptonRegistryReference(registry, KryptonResourceKey.of(registry.key.location, key))
-        }
-    }
+    override fun <E> getDefaultedRegistry(key: ResourceKey<out Registry<E>>): DefaultedRegistry<E>? = getRegistry(key) as? DefaultedRegistry<E>
 }
