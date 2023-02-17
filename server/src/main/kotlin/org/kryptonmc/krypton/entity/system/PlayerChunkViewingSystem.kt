@@ -25,6 +25,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import java.util.concurrent.CompletableFuture
 import kotlin.math.abs
 
 class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
@@ -89,17 +90,19 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
 
         player.world.chunkManager.updatePlayerPosition(player, oldPosForPlayer, newCenter, radius)
 
-        player.connection.send(PacketOutSetCenterChunk(newCenter.x, newCenter.z))
-        newChunks.forEach {
-            val chunk = player.world.chunkManager.getChunk(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
-            player.connection.write(chunk.cachedPacket)
-        }
+        CompletableFuture.runAsync {
+            player.connection.send(PacketOutSetCenterChunk(newCenter.x, newCenter.z))
+            newChunks.forEach {
+                val chunk = player.world.chunkManager.getChunk(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
+                player.connection.write(chunk.cachedPacket)
+            }
 
-        if (previousChunks == null) return
-        previousChunks.forEach {
-            player.connection.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
-            visibleChunks.remove(it)
+            if (previousChunks == null) return@runAsync
+            previousChunks.forEach {
+                player.connection.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
+                visibleChunks.remove(it)
+            }
+            previousChunks.clear()
         }
-        previousChunks.clear()
     }
 }
