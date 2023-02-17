@@ -57,9 +57,9 @@ class TickSchedulerThread(private val server: KryptonServer) : Thread("Krypton T
 
         private const val MILLIS_PER_SECOND = 1000
         private const val NANOS_PER_MILLI = 1000L * 1000L
+        private const val NANOS_PER_SECOND = MILLIS_PER_SECOND * NANOS_PER_MILLI
 
-        private const val TICKS_PER_SECOND = 20
-        private const val MILLIS_PER_TICK = MILLIS_PER_SECOND / TICKS_PER_SECOND
-        private const val NANOS_PER_TICK = MILLIS_PER_TICK * NANOS_PER_MILLI
+        private val TICKS_PER_SECOND = Integer.getInteger("krypton.tps", 20)
+        private val NANOS_PER_TICK = NANOS_PER_SECOND / TICKS_PER_SECOND
     }
 }
