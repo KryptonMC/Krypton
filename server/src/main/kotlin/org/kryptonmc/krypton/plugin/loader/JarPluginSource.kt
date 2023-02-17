@@ -49,11 +49,6 @@ class JarPluginSource(private val pluginsDirectory: Path) : PluginSource {
             stream.forEach { path ->
                 try {
                     val description = loadDescription(path)
-                    if (description.id == "spark") {
-                        // If we don't stop the standalone one loading, we could end up with conflicts on the classpath.
-                        LOGGER.warn("Ignoring attempt to load standalone Spark plugin, as this plugin is already bundled.")
-                        return@forEach
-                    }
                     result.add(description)
                 } catch (exception: Exception) {
                     LOGGER.error("Failed to load plugin at $path!", exception)
