@@ -36,7 +36,7 @@ class TickSchedulerThread(private val server: KryptonServer) : Thread("Krypton T
             server.eventNode.fire(KryptonTickStartEvent(tickCount))
 
             try {
-                server.tick(startTimeMillis, tickCount)
+                server.tick(startTimeMillis)
             } catch (exception: Exception) {
                 LOGGER.error("Exception thrown during main server tick!", exception)
             }

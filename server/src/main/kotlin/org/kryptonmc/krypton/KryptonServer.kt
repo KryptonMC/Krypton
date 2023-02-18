@@ -23,6 +23,8 @@ import io.netty.channel.kqueue.KQueue
 import io.netty.channel.unix.DomainSocketAddress
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.GlobalEventNode
+import org.kryptonmc.api.scheduling.ExecutionType
+import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.auth.GameProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
@@ -37,7 +39,6 @@ import org.kryptonmc.krypton.event.server.KryptonServerStopEvent
 import org.kryptonmc.krypton.network.ConnectionManager
 import org.kryptonmc.krypton.network.ConnectionInitializer
 import org.kryptonmc.krypton.packet.PacketRegistry
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
@@ -45,10 +46,13 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.network.PacketFraming
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
+import org.kryptonmc.krypton.ticking.TickDispatcher
+import org.kryptonmc.krypton.ticking.TickThreadProvider
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.IOException
 import java.net.InetAddress
@@ -84,6 +88,7 @@ class KryptonServer(
     override val userManager: KryptonUserManager = KryptonUserManager(this)
     private val random = RandomSource.create()
 
+    private val tickDispatcher = TickDispatcher<KryptonChunk>(TickThreadProvider.counter(), 1)
     @Volatile
     private var running = true
     private var stopped = false
@@ -92,6 +97,8 @@ class KryptonServer(
         PacketFraming.setCompressionThreshold(config.server.compressionThreshold)
         YggdrasilSessionKey.get()
     }
+
+    fun tickDispatcher(): TickDispatcher<KryptonChunk> = tickDispatcher
 
     override fun isRunning(): Boolean = running
 
@@ -170,9 +177,31 @@ class KryptonServer(
             return false
         }
 
+        setupAutosaveTasks()
+
         val doneTime = String.format(Locale.ROOT, "%.3fs", (System.nanoTime() - startTime) / 1.0E9)
         LOGGER.info("Done ($doneTime)! Type \"help\" for help.")
         return true
+    }
+
+    private fun setupAutosaveTasks() {
+        if (config.world.autosaveInterval > 0) {
+            val task = Runnable {
+                LOGGER.info("Auto save started.")
+                saveEverything(true, false, false)
+                LOGGER.info("Auto save finished.")
+            }
+            scheduler.buildTask(task)
+                .delay(TaskTime.ticks(config.world.autosaveInterval))
+                .period(TaskTime.ticks(config.world.autosaveInterval))
+                .executionType(ExecutionType.SYNCHRONOUS)
+                .schedule()
+        }
+        scheduler.buildTask { profileCache.saveIfNeeded() }
+            .delay(TaskTime.ticks(SAVE_PROFILE_CACHE_INTERVAL))
+            .period(TaskTime.ticks(SAVE_PROFILE_CACHE_INTERVAL))
+            .executionType(ExecutionType.SYNCHRONOUS)
+            .schedule()
     }
 
     private fun loadPlugins() {
@@ -198,26 +227,15 @@ class KryptonServer(
         LOGGER.info("Finished plugin loading! Loaded ${pluginManager.plugins.size} plugins.")
     }
 
-    fun tick(startTime: Long, currentTick: Int) {
-        worldTick(currentTick)
-        connectionManager.tick(startTime)
+    fun tick(startTime: Long) {
         scheduler.process()
+        connectionManager.tick(startTime)
 
-        if (config.world.autosaveInterval > 0 && currentTick % config.world.autosaveInterval == 0) {
-            LOGGER.info("Auto save started.")
-            saveEverything(true, false, false)
-            LOGGER.info("Auto save finished.")
-        }
-        if (currentTick % SAVE_PROFILE_CACHE_INTERVAL == 0) profileCache.saveIfNeeded()
-    }
+        worldManager.worlds.values.forEach { it.tick() }
+        tickDispatcher.updateAndAwait(startTime)
 
-    private fun worldTick(currentTick: Int) {
-        worldManager.worlds.forEach { (_, world) ->
-            if (currentTick % TICKS_PER_SECOND == 0) {
-                connectionManager.sendGroupedPacket(PacketOutUpdateTime.create(world.data)) { it.world === world }
-            }
-            world.tick()
-        }
+        val tickTime = System.currentTimeMillis() - startTime
+        tickDispatcher.refreshThreads(tickTime)
     }
 
     private fun saveEverything(suppressLog: Boolean, flush: Boolean, forced: Boolean): Boolean {
@@ -240,6 +258,7 @@ class KryptonServer(
         LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
         running = false
         ConnectionInitializer.shutdown()
+        tickDispatcher.shutdown()
 
         // Save data
         LOGGER.info("Saving and disconnecting players...")

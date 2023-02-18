@@ -27,6 +27,8 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.scheduling.ExecutionType
+import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.Difficulty
@@ -47,6 +49,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -124,6 +127,11 @@ class KryptonWorld(
     init {
         updateSkyBrightness()
         prepareWeather()
+        scheduler.buildTask { sendGroupedPacket(PacketOutUpdateTime.create(data)) { it.world === this } }
+            .delay(TaskTime.seconds(1))
+            .period(TaskTime.seconds(1))
+            .executionType(ExecutionType.SYNCHRONOUS)
+            .schedule()
     }
 
     override fun isRaining(): Boolean = getRainLevel(1F) > 0.2F
@@ -306,12 +314,7 @@ class KryptonWorld(
         tickWeather()
         updateSkyBrightness()
         tickTime()
-        chunkManager.tick()
         scheduler.process()
-
-        if (players.isNotEmpty()) {
-            entities.forEach { if (!it.isRemoved) it.tick() }
-        }
     }
 
     private fun tickWeather() {

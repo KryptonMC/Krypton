@@ -42,6 +42,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
+import org.kryptonmc.krypton.ticking.Tickable
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
@@ -50,7 +51,7 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 @Suppress("LeakingThis")
-abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntity, SerializableEntity, KryptonSender {
+abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntity, SerializableEntity, KryptonSender, Tickable {
 
     override val serializer: EntitySerializer<out KryptonEntity>
         get() = BaseEntitySerializer
@@ -82,6 +83,8 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     override val scheduler: KryptonScheduler = KryptonScheduler()
 
+    private var lastNotification = 0L
+
     init {
         defineData()
     }
@@ -89,6 +92,11 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
         if (isSilent) return
         world.playSound(position.x, position.y, position.z, event, soundSource(), volume, pitch)
+    }
+
+    override fun tick(time: Long) {
+        // We don't need the time for any of the entity ticking logic for now.
+        tick()
     }
 
     open fun tick() {

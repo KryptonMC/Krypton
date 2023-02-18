@@ -24,6 +24,7 @@ import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.ticking.Tickable
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlocks
@@ -44,7 +45,7 @@ class KryptonChunk(
     inhabitedTime: Long,
     val carvingMasks: Pair<ByteArray, ByteArray>?,
     val structures: CompoundTag?
-) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
+) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk, Tickable {
 
     override val status: ChunkStatus = ChunkStatus.FULL
 
@@ -109,8 +110,8 @@ class KryptonChunk(
 
     override fun getBiome(position: Vec3i): Biome = getBiome(position.x, position.y, position.z)
 
-    fun tick(playerCount: Int) {
-        inhabitedTime += playerCount
+    override fun tick(time: Long) {
+        // Nothing we really want to do here yet
     }
 
     private fun lightSectionCount(): Int = sectionCount() + 2

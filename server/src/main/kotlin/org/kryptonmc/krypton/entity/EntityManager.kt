@@ -79,6 +79,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         byId.put(entity.id, entity)
         byUUID.put(entity.uuid, entity)
         getByChunk(chunk.position.pack()).add(entity)
+        world.server.tickDispatcher().queueElementUpdate(entity, chunk)
     }
 
     fun spawnPlayer(player: KryptonPlayer) {
@@ -95,6 +96,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         byId.put(player.id, player)
         byUUID.put(player.uuid, player)
         getByChunk(chunk.position.pack()).add(player)
+        world.server.tickDispatcher().queueElementUpdate(player, chunk)
     }
 
     private fun getByChunk(location: Long): MutableSet<KryptonEntity> =
@@ -117,6 +119,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val entitiesByChunk = byChunk.get(chunk.position.pack()).apply { remove(entity) }
         if (entitiesByChunk.isEmpty()) byChunk.remove(chunk.position.pack())
         world.scoreboard.onEntityRemoved(entity)
+        world.server.tickDispatcher().queueElementRemove(entity)
     }
 
     fun loadAllInChunk(chunk: KryptonChunk) {

@@ -69,7 +69,9 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             oldSet.remove(player)
             if (oldSet.isEmpty()) playersByChunk.remove(oldPos.pack())
         }
+
         playersByChunk.computeIfAbsent(newPos.pack(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
+        world.server.tickDispatcher().queueElementUpdate(player, getChunk(newPos)!!)
     }
 
     fun removePlayer(player: KryptonPlayer) {
@@ -89,6 +91,8 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             }
         }
 
+        world.server.tickDispatcher().queueElementRemove(player)
+
         val playerSet = playersByChunk.get(packedPos)
         if (playerSet == null) {
             LOGGER.warn("Chunk at $chunkPos, which disconnecting player ${player.name} is in, does not have any players registered in it!")
@@ -103,8 +107,6 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         }
     }
 
-    private fun getPlayersByChunk(position: Long): Set<KryptonPlayer> = playersByChunk.getOrDefault(position, emptySet())
-
     fun loadChunk(pos: ChunkPos): KryptonChunk? {
         val packed = pos.pack()
         if (chunkMap.containsKey(packed)) return chunkMap.get(packed)!!
@@ -112,6 +114,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         val nbt = regionFileManager.read(pos.x, pos.z) ?: return null
         val chunk = ChunkSerialization.read(world, pos, nbt)
 
+        world.server.tickDispatcher().queuePartitionLoad(chunk)
         chunkMap.put(packed, chunk)
         world.entityManager.loadAllInChunk(chunk)
         return chunk
@@ -121,6 +124,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         val loaded = getChunk(x, z) ?: return
         saveChunk(loaded)
         chunkMap.remove(loaded.position.pack())
+        world.server.tickDispatcher().queuePartitionUnload(loaded)
     }
 
     fun saveAllChunks(flush: Boolean) {
@@ -133,11 +137,6 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.x, chunk.z, ChunkSerialization.write(chunk))
         world.entityManager.saveAllInChunk(chunk)
-    }
-
-    @Suppress("UnusedPrivateMember")
-    fun tick() {
-        chunkMap.values.forEach { it.tick(getPlayersByChunk(it.position.pack()).size) }
     }
 
     override fun close() {
