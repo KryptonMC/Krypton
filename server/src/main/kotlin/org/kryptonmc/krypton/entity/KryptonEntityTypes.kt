@@ -141,6 +141,11 @@ object KryptonEntityTypes {
         clientTrackingRange(8)
     }
     @JvmField
+    val CAMEL: KryptonEntityType<KryptonEntity> = register("camel", EntityCategories.CREATURE) {
+        size(1.7F, 2.375F)
+        clientTrackingRange(10)
+    }
+    @JvmField
     val CAVE_SPIDER: KryptonEntityType<KryptonEntity> = register("cave_spider", EntityCategories.MONSTER) {
         size(0.7F, 0.5F)
         clientTrackingRange(8)

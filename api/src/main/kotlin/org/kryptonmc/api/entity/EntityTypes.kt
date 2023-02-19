@@ -94,6 +94,8 @@ public object EntityTypes {
     @JvmField
     public val CAT: RegistryReference<EntityType<Cat>> = get("cat")
     @JvmField
+    public val CAMEL: RegistryReference<EntityType<Entity>> = get("camel")
+    @JvmField
     public val CAVE_SPIDER: RegistryReference<EntityType<Entity>> = get("cave_spider")
     @JvmField
     public val CHICKEN: RegistryReference<EntityType<Chicken>> = get("chicken")
