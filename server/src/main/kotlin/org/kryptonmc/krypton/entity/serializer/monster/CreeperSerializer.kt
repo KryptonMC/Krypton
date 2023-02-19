@@ -33,7 +33,7 @@ object CreeperSerializer : EntitySerializer<KryptonCreeper> {
     override fun load(entity: KryptonCreeper, data: CompoundTag) {
         MobSerializer.load(entity, data)
         entity.isCharged = data.getBoolean(POWERED_TAG)
-        entity.isIgnited = data.getBoolean(IGNITED_TAG)
+        entity.setIgnited(data.getBoolean(IGNITED_TAG))
         entity.fuse = data.getShort(FUSE_TAG).toInt()
         entity.explosionRadius = data.getInt(EXPLOSION_RADIUS_TAG)
     }

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
+import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
@@ -35,21 +36,55 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world), Creeper {
     override val serializer: EntitySerializer<KryptonCreeper>
         get() = CreeperSerializer
 
-    override var fuse: Int = 0
+    override var fuse: Int = 30
     override var explosionRadius: Int = 0
 
     override var isCharged: Boolean
         get() = data.get(MetadataKeys.Creeper.CHARGED)
         set(value) = data.set(MetadataKeys.Creeper.CHARGED, value)
-    override var isIgnited: Boolean
+
+    override val isIgnited: Boolean
         get() = data.get(MetadataKeys.Creeper.IGNITED)
-        set(value) = data.set(MetadataKeys.Creeper.IGNITED, value)
+    override var currentFuse: Int
+        get() = data.get(MetadataKeys.Creeper.STATE)
+        set(value) = data.set(MetadataKeys.Creeper.STATE, value)
 
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Creeper.STATE, -1)
         data.define(MetadataKeys.Creeper.CHARGED, false)
         data.define(MetadataKeys.Creeper.IGNITED, false)
+    }
+
+    override fun tick() {
+        tickIgnite()
+        super.tick()
+    }
+
+    private fun tickIgnite() {
+        if (!isAlive() || !isIgnited) return
+        if (currentFuse > 0) currentFuse--
+        if (currentFuse <= 0) {
+            explode()
+            currentFuse = -1
+            setIgnited(false)
+        }
+    }
+
+    override fun explode() {
+        playSound(SoundEvents.GENERIC_EXPLODE.get(), 4F, (1F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F)
+        remove()
+        // TODO: Creeper explosions
+    }
+
+    override fun ignite() {
+        setIgnited(true)
+        currentFuse = fuse
+        playSound(SoundEvents.CREEPER_PRIMED.get(), 1F, 0.5F)
+    }
+
+    fun setIgnited(ignited: Boolean) {
+        data.set(MetadataKeys.Creeper.IGNITED, ignited)
     }
 
     companion object {

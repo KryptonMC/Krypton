@@ -14,13 +14,6 @@ package org.kryptonmc.api.entity.monster
 public interface Creeper : Monster {
 
     /**
-     * The fuse timer (time until the creeper will explode).
-     *
-     * Will be 0 if this creeper is not [ignited][isIgnited].
-     */
-    public var fuse: Int
-
-    /**
      * The radius of the explosion this creeper will produce when it explodes.
      *
      * In vanilla Minecraft, this will default to 3 for regular creepers, and
@@ -41,5 +34,35 @@ public interface Creeper : Monster {
      * If this creeper has been ignited, meaning it will explode when the
      * [fuse] reaches 0.
      */
-    public var isIgnited: Boolean
+    public val isIgnited: Boolean
+
+    /**
+     * The amount of time, in ticks, that it takes for the creeper to explode
+     * after it is ignited.
+     */
+    public var fuse: Int
+
+    /**
+     * The current amount of time, in ticks, until the creeper will explode.
+     *
+     * When a creeper is [ignited][ignite], this value will be set to
+     * the [fuse] time, and will decrease by 1 every tick until it reaches 0,
+     * at which point the creeper will explode.
+     *
+     * If this creeper is not [ignited][isIgnited], this value will always
+     * be -1.
+     */
+    public var currentFuse: Int
+
+    /**
+     * Ignites this creeper, which will cause it to explode after
+     * the [fuse] time, in ticks, passes.
+     */
+    public fun ignite()
+
+    /**
+     * Explodes this creeper immediately, without igniting or waiting for the
+     * countdown.
+     */
+    public fun explode()
 }
