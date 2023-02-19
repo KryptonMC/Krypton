@@ -21,8 +21,8 @@ import kotlin.math.sqrt
  * @property x The X component.
  * @property y The Y component.
  * @property z The Z component.
- * @property yaw The rotation on the X axis.
- * @property pitch The rotation on the Y axis.
+ * @property yaw The rotation on the Y axis.
+ * @property pitch The rotation on the X axis.
  */
 @JvmRecord
 @Suppress("TooManyFunctions")
@@ -147,10 +147,10 @@ public data class Position(
      * @return the direction vector
      */
     public fun direction(): Vec3d {
-        val rotX = yaw.toDouble()
-        val rotY = pitch.toDouble()
-        val xz = cos(Math.toRadians(rotY))
-        return Vec3d(-xz * sin(Math.toRadians(rotX)), -sin(Math.toRadians(rotY)), xz * cos(Math.toRadians(rotX)))
+        val rotY = yaw.toDouble()
+        val rotX = pitch.toDouble()
+        val xz = cos(Math.toRadians(rotX))
+        return Vec3d(-xz * sin(Math.toRadians(rotY)), -sin(Math.toRadians(rotX)), xz * cos(Math.toRadians(rotY)))
     }
 
     /**

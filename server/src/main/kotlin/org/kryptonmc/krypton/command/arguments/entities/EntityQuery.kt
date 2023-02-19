@@ -127,8 +127,8 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 "level" -> notImplemented("level")
                 "gamemode" -> entities = applyGameModeArgument(entities, value, exclude)
                 "name" -> entities = applyNameArgument(entities, value, exclude)
-                "x_rotation" -> entities = applyRotationArgument(entities, value) { it.position.yaw }
-                "y_rotation" -> entities = applyRotationArgument(entities, value) { it.position.pitch }
+                "x_rotation" -> entities = applyRotationArgument(entities, value) { it.position.pitch }
+                "y_rotation" -> entities = applyRotationArgument(entities, value) { it.position.yaw }
                 "type" -> notImplemented("type")
                 "nbt" -> notImplemented("nbt")
                 "advancements" -> notImplemented("advancements")

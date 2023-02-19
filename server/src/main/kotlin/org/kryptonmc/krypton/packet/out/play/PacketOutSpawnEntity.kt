@@ -43,8 +43,8 @@ data class PacketOutSpawnEntity(
     val x: Double,
     val y: Double,
     val z: Double,
-    val yaw: Float,
     val pitch: Float,
+    val yaw: Float,
     val headYaw: Float,
     val data: Int,
     val velocityX: Int,
@@ -63,8 +63,8 @@ data class PacketOutSpawnEntity(
         buf.writeDouble(x)
         buf.writeDouble(y)
         buf.writeDouble(z)
-        buf.writeAngle(yaw)
         buf.writeAngle(pitch)
+        buf.writeAngle(yaw)
         buf.writeAngle(headYaw)
         buf.writeVarInt(data)
         buf.writeShort(velocityX)
@@ -83,7 +83,7 @@ data class PacketOutSpawnEntity(
         @JvmStatic
         private fun create(entity: KryptonEntity, headYaw: Float): PacketOutSpawnEntity {
             return PacketOutSpawnEntity(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y, entity.position.z,
-                entity.position.yaw, entity.position.pitch, headYaw, 0, Positioning.encodeVelocity(entity.velocity.x),
+                entity.position.pitch, entity.position.yaw, headYaw, 0, Positioning.encodeVelocity(entity.velocity.x),
                 Positioning.encodeVelocity(entity.velocity.y), Positioning.encodeVelocity(entity.velocity.z))
         }
     }

@@ -43,9 +43,13 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
 
     open fun addViewer(viewer: KryptonPlayer): Boolean {
         if (!viewers.add(viewer)) return false
+
         viewer.connection.send(getSpawnPacket())
         viewer.connection.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
-        viewer.connection.send(PacketOutSetHeadRotation(entity.id, entity.position.yaw))
+
+        val headYaw = if (entity is KryptonLivingEntity) entity.headYaw else entity.position.yaw
+        viewer.connection.send(PacketOutSetHeadRotation(entity.id, headYaw))
+
         if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes.create(entity.id, entity.attributes.syncable()))
         entity.server.eventNode.fire(KryptonEntityEnterViewEvent(viewer, entity))
         return true

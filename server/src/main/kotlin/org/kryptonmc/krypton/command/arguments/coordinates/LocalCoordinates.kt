@@ -41,17 +41,17 @@ data class LocalCoordinates(private val left: Double, private val up: Double, pr
         // What this does is determine absolute coordinates from the local forwards, up, and left components, which are relative
         // to the direction that a player is facing.
         // TODO: Document all this in detail
-        val yaw = source.position.yaw
         val pitch = source.position.pitch
-        val pitch1 = Maths.cos(Maths.toRadians(pitch + 90F))
-        val pitch2 = Maths.sin(Maths.toRadians(pitch + 90F))
-        val yaw1 = Maths.cos(Maths.toRadians(-yaw))
-        val yaw2 = Maths.sin(Maths.toRadians(-yaw))
-        val yaw3 = Maths.cos(Maths.toRadians(-yaw + 90F))
-        val yaw4 = Maths.sin(Maths.toRadians(-yaw + 90F))
+        val yaw = source.position.yaw
+        val yaw1 = Maths.cos(Maths.toRadians(yaw + 90F))
+        val yaw2 = Maths.sin(Maths.toRadians(yaw + 90F))
+        val pitch1 = Maths.cos(Maths.toRadians(-pitch))
+        val pitch2 = Maths.sin(Maths.toRadians(-pitch))
+        val pitch3 = Maths.cos(Maths.toRadians(-pitch + 90F))
+        val pitch4 = Maths.sin(Maths.toRadians(-pitch + 90F))
 
-        val someVector = Vec3d((pitch1 * yaw1).toDouble(), yaw2.toDouble(), (pitch2 * yaw1).toDouble())
-        val someOtherVector = Vec3d((pitch1 * yaw3).toDouble(), yaw4.toDouble(), (pitch2 * yaw3).toDouble())
+        val someVector = Vec3d((yaw1 * pitch1).toDouble(), pitch2.toDouble(), (yaw2 * pitch1).toDouble())
+        val someOtherVector = Vec3d((yaw1 * pitch3).toDouble(), pitch4.toDouble(), (yaw2 * pitch3).toDouble())
         val crossed = someVector.cross(someOtherVector).negate()
 
         val offsetX = someVector.x * forwards + someOtherVector.x * up + crossed.x * left
