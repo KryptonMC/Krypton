@@ -302,7 +302,6 @@ class KryptonServer(
 
     companion object {
 
-        private const val TICKS_PER_SECOND = 20
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
 
         private val LOGGER = LogManager.getLogger()

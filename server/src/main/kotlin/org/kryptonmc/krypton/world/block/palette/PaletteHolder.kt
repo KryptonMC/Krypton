@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.bits.BitStorage
 import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.map.IntBiMap
@@ -201,15 +201,6 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
             @JvmStatic
             fun biomes(registry: IntBiMap<Biome>): Strategy<Biome> = Biomes(registry)
-            @JvmField
-            val BIOMES: Strategy<Biome> = object : Strategy<Biome>(KryptonDynamicRegistries.BIOME, 2) {
-
-                override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
-                    0 -> Configuration(SingleValuePalette.Factory, bits)
-                    in 1..3 -> Configuration(ArrayPalette.Factory, bits)
-                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size()))
-                }
-            }
         }
     }
 
@@ -238,7 +229,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 val biome = registry.get(Key.key(it))
                 entries.add(checkNotNull(biome) { "Invalid palette data! Failed to find biome with key $it!" })
             }
-            return read(Strategy.BIOMES, entries, data.getLongArray(DATA_TAG))
+            return read(Strategy.biomes(registry as KryptonRegistry<Biome>), entries, data.getLongArray(DATA_TAG))
         }
 
         @Suppress("UNCHECKED_CAST")

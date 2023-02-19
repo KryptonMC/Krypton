@@ -83,8 +83,6 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     override val scheduler: KryptonScheduler = KryptonScheduler()
 
-    private var lastNotification = 0L
-
     init {
         defineData()
     }

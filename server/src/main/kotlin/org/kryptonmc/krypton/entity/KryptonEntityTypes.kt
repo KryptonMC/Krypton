@@ -131,6 +131,11 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
     }
     @JvmField
+    val CHEST_BOAT: KryptonEntityType<KryptonEntity> = register("chest_boat", EntityCategories.MISC) {
+        size(1.375F, 0.5625F)
+        clientTrackingRange(10)
+    }
+    @JvmField
     val CAT: KryptonEntityType<KryptonCat> = register("cat", EntityCategories.CREATURE) {
         size(0.6F, 0.7F)
         clientTrackingRange(8)
@@ -245,6 +250,11 @@ object KryptonEntityTypes {
         size(0.6F, 0.7F)
         clientTrackingRange(8)
         immuneTo(KryptonBlocks.SWEET_BERRY_BUSH)
+    }
+    @JvmField
+    val FROG: KryptonEntityType<KryptonEntity> = register("frog", EntityCategories.CREATURE) {
+        size(0.5F, 0.5F)
+        clientTrackingRange(10)
     }
     @JvmField
     val GHAST: KryptonEntityType<KryptonEntity> = register("ghast", EntityCategories.MONSTER) {
@@ -541,6 +551,11 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
     }
     @JvmField
+    val TADPOLE: KryptonEntityType<KryptonEntity> = register("tadpole", EntityCategories.CREATURE) {
+        size(0.4F, 0.3F)
+        clientTrackingRange(10)
+    }
+    @JvmField
     val EGG: KryptonEntityType<KryptonEgg> = thrownItem("egg")
     @JvmField
     val ENDER_PEARL: KryptonEntityType<KryptonEnderPearl> = thrownItem("ender_pearl")
@@ -589,6 +604,12 @@ object KryptonEntityTypes {
     val WANDERING_TRADER: KryptonEntityType<KryptonEntity> = register("wandering_trader", EntityCategories.CREATURE) {
         size(0.6F, HUMAN_HEIGHT)
         clientTrackingRange(10)
+    }
+    @JvmField
+    val WARDEN: KryptonEntityType<KryptonEntity> = register("warden", EntityCategories.MONSTER) {
+        size(0.9F, 2.9F)
+        clientTrackingRange(16)
+        fireImmune()
     }
     @JvmField
     val WITCH: KryptonEntityType<KryptonEntity> = register("witch", EntityCategories.MONSTER) {
