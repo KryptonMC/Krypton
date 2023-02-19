@@ -158,6 +158,8 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         return CommandSourceStack(this, position, world, name, displayName, server, this)
     }
 
+    open fun headYaw(): Float = 0F
+
     companion object {
 
         private val NEXT_ENTITY_ID = AtomicInteger(0)

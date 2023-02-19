@@ -19,11 +19,10 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
-import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
@@ -32,12 +31,15 @@ data class PacketOutUpdateEntityPositionAndRotation(
     val deltaX: Short,
     val deltaY: Short,
     val deltaZ: Short,
-    val yaw: Float,
-    val pitch: Float,
+    val yaw: Byte,
+    val pitch: Byte,
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort(), buf.readShort(), buf.readShort(), buf.readAngle(), buf.readAngle(),
+    constructor(entityId: Int, dx: Short, dy: Short, dz: Short, yaw: Float, pitch: Float,
+                onGround: Boolean) : this(entityId, dx, dy, dz, Positioning.encodeRotation(yaw), Positioning.encodeRotation(pitch), onGround)
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort(), buf.readShort(), buf.readShort(), buf.readByte(), buf.readByte(),
         buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
@@ -45,8 +47,8 @@ data class PacketOutUpdateEntityPositionAndRotation(
         buf.writeShort(deltaX.toInt())
         buf.writeShort(deltaY.toInt())
         buf.writeShort(deltaZ.toInt())
-        buf.writeAngle(yaw)
-        buf.writeAngle(pitch)
+        buf.writeByte(yaw.toInt())
+        buf.writeByte(pitch.toInt())
         buf.writeBoolean(onGround)
     }
 }

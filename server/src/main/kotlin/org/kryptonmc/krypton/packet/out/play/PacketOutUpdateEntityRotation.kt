@@ -19,27 +19,29 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
-import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUpdateEntityRotation(
     override val entityId: Int,
-    val yaw: Float,
-    val pitch: Float,
+    val yaw: Byte,
+    val pitch: Byte,
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readAngle(), buf.readAngle(), buf.readBoolean())
+    constructor(entityId: Int, yaw: Float, pitch: Float,
+                onGround: Boolean) : this(entityId, Positioning.encodeRotation(yaw), Positioning.encodeRotation(pitch), onGround)
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readByte(), buf.readByte(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeAngle(yaw)
-        buf.writeAngle(pitch)
+        buf.writeByte(yaw.toInt())
+        buf.writeByte(pitch.toInt())
         buf.writeBoolean(onGround)
     }
 }

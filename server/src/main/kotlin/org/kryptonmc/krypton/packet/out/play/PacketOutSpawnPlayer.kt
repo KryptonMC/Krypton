@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Position
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import java.util.UUID
@@ -39,12 +39,12 @@ data class PacketOutSpawnPlayer(
     val x: Double,
     val y: Double,
     val z: Double,
-    val yaw: Float,
-    val pitch: Float
+    val yaw: Byte,
+    val pitch: Byte
 ) : EntityPacket {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
-        buf.readAngle(), buf.readAngle())
+        buf.readByte(), buf.readByte())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
@@ -52,16 +52,20 @@ data class PacketOutSpawnPlayer(
         buf.writeDouble(x)
         buf.writeDouble(y)
         buf.writeDouble(z)
-        buf.writeAngle(yaw)
-        buf.writeAngle(pitch)
+        buf.writeByte(yaw.toInt())
+        buf.writeByte(pitch.toInt())
     }
 
     companion object {
 
         @JvmStatic
-        fun create(player: KryptonPlayer): PacketOutSpawnPlayer {
-            return PacketOutSpawnPlayer(player.id, player.uuid, player.position.x, player.position.y, player.position.z, player.position.yaw,
-                player.position.pitch)
+        fun create(player: KryptonPlayer): PacketOutSpawnPlayer = from(player.id, player.uuid, player.position)
+
+        @JvmStatic
+        fun from(entityId: Int, uuid: UUID, pos: Position): PacketOutSpawnPlayer {
+            val pitch = Positioning.encodeRotation(pos.pitch)
+            val yaw = Positioning.encodeRotation(pos.yaw)
+            return PacketOutSpawnPlayer(entityId, uuid, pos.x, pos.y, pos.z, yaw, pitch)
         }
     }
 }

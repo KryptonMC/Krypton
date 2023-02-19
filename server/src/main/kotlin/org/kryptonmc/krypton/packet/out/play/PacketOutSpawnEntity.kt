@@ -19,17 +19,16 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Position
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEntityType
-import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.Positioning
-import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
@@ -43,9 +42,9 @@ data class PacketOutSpawnEntity(
     val x: Double,
     val y: Double,
     val z: Double,
-    val pitch: Float,
-    val yaw: Float,
-    val headYaw: Float,
+    val pitch: Byte,
+    val yaw: Byte,
+    val headYaw: Byte,
     val data: Int,
     val velocityX: Int,
     val velocityY: Int,
@@ -53,7 +52,7 @@ data class PacketOutSpawnEntity(
 ) : EntityPacket {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readById(KryptonRegistries.ENTITY_TYPE)!!, buf.readDouble(),
-        buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(), buf.readAngle(), buf.readVarInt(), buf.readShort().toInt(),
+        buf.readDouble(), buf.readDouble(), buf.readByte(), buf.readByte(), buf.readByte(), buf.readVarInt(), buf.readShort().toInt(),
         buf.readShort().toInt(), buf.readShort().toInt())
 
     override fun write(buf: ByteBuf) {
@@ -63,9 +62,9 @@ data class PacketOutSpawnEntity(
         buf.writeDouble(x)
         buf.writeDouble(y)
         buf.writeDouble(z)
-        buf.writeAngle(pitch)
-        buf.writeAngle(yaw)
-        buf.writeAngle(headYaw)
+        buf.writeByte(pitch.toInt())
+        buf.writeByte(yaw.toInt())
+        buf.writeByte(headYaw.toInt())
         buf.writeVarInt(data)
         buf.writeShort(velocityX)
         buf.writeShort(velocityY)
@@ -75,16 +74,20 @@ data class PacketOutSpawnEntity(
     companion object {
 
         @JvmStatic
-        fun fromEntity(entity: KryptonEntity): PacketOutSpawnEntity = create(entity, 0F)
+        fun create(entity: KryptonEntity): PacketOutSpawnEntity {
+            return from(entity.id, entity.uuid, entity.type, entity.position, entity.headYaw(), 0, entity.velocity)
+        }
 
         @JvmStatic
-        fun fromLivingEntity(entity: KryptonLivingEntity): PacketOutSpawnEntity = create(entity, entity.headYaw)
-
-        @JvmStatic
-        private fun create(entity: KryptonEntity, headYaw: Float): PacketOutSpawnEntity {
-            return PacketOutSpawnEntity(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y, entity.position.z,
-                entity.position.pitch, entity.position.yaw, headYaw, 0, Positioning.encodeVelocity(entity.velocity.x),
-                Positioning.encodeVelocity(entity.velocity.y), Positioning.encodeVelocity(entity.velocity.z))
+        fun from(entityId: Int, uuid: UUID, type: KryptonEntityType<*>, pos: Position, headYaw: Float, data: Int,
+                 velocity: Vec3d): PacketOutSpawnEntity {
+            val pitch = Positioning.encodeRotation(pos.pitch)
+            val yaw = Positioning.encodeRotation(pos.yaw)
+            val encodedHeadYaw = Positioning.encodeRotation(headYaw)
+            val dx = Positioning.encodeVelocity(velocity.x)
+            val dy = Positioning.encodeVelocity(velocity.y)
+            val dz = Positioning.encodeVelocity(velocity.z)
+            return PacketOutSpawnEntity(entityId, uuid, type, pos.x, pos.y, pos.z, pitch, yaw, encodedHeadYaw, data, dx, dy, dz)
         }
     }
 }

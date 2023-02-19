@@ -37,5 +37,11 @@ object Positioning {
      * units, measured in 1/8000 of a block per server tick.
      */
     @JvmStatic
-    fun encodeVelocity(velocity: Double): Int = (Maths.clamp(velocity, -3.9, 3.9) * 8000.0).toInt()
+    fun encodeVelocity(velocity: Double): Int {
+        val clamped = Maths.clamp(velocity, -3.9, 3.9)
+        return (clamped * 8000.0).toInt()
+    }
+
+    @JvmStatic
+    fun encodeRotation(rotation: Float): Byte = Maths.floor(rotation * 256F / 360F).toByte()
 }

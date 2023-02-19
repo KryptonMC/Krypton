@@ -323,15 +323,6 @@ fun ByteBuf.writeVec3d(vector: Vec3d) {
 
 fun ByteBuf.readVec3d(): Vec3d = Vec3d(readDouble(), readDouble(), readDouble())
 
-private const val MAX_BYTE_ANGLE = 256F
-private const val MAX_DEGREE_ANGLE = 360F
-
-fun ByteBuf.writeAngle(angle: Float) {
-    writeByte((angle * MAX_BYTE_ANGLE / MAX_DEGREE_ANGLE).toInt())
-}
-
-fun ByteBuf.readAngle(): Float = readByte().toFloat() * MAX_DEGREE_ANGLE / MAX_BYTE_ANGLE
-
 fun ByteBuf.writeKey(key: Key) {
     writeString(key.asString())
 }

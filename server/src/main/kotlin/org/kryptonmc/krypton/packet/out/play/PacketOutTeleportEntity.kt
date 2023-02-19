@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Position
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
-import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
@@ -33,12 +33,12 @@ data class PacketOutTeleportEntity(
     val x: Double,
     val y: Double,
     val z: Double,
-    val yaw: Float,
-    val pitch: Float,
+    val yaw: Byte,
+    val pitch: Byte,
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(),
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readByte(), buf.readByte(),
         buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
@@ -46,17 +46,21 @@ data class PacketOutTeleportEntity(
         buf.writeDouble(x)
         buf.writeDouble(y)
         buf.writeDouble(z)
-        buf.writeAngle(yaw)
-        buf.writeAngle(pitch)
+        buf.writeByte(yaw.toInt())
+        buf.writeByte(pitch.toInt())
         buf.writeBoolean(onGround)
     }
 
     companion object {
 
         @JvmStatic
-        fun create(entity: KryptonEntity): PacketOutTeleportEntity {
-            return PacketOutTeleportEntity(entity.id, entity.position.x, entity.position.y, entity.position.z, entity.position.yaw,
-                entity.position.pitch, entity.isOnGround)
+        fun create(entity: KryptonEntity): PacketOutTeleportEntity = from(entity.id, entity.position, entity.isOnGround)
+
+        @JvmStatic
+        fun from(entityId: Int, position: Position, onGround: Boolean): PacketOutTeleportEntity {
+            val yaw = Positioning.encodeRotation(position.yaw)
+            val pitch = Positioning.encodeRotation(position.pitch)
+            return PacketOutTeleportEntity(entityId, position.x, position.y, position.z, yaw, pitch, onGround)
         }
     }
 }

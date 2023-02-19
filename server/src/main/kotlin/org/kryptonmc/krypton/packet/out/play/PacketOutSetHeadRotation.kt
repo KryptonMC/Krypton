@@ -20,18 +20,19 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.readAngle
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSetHeadRotation(override val entityId: Int, val headYaw: Float) : EntityPacket {
+data class PacketOutSetHeadRotation(override val entityId: Int, val headYaw: Byte) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readAngle())
+    constructor(entityId: Int, headYaw: Float) : this(entityId, Maths.floor(headYaw * 256F / 360F).toByte())
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readByte())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeAngle(headYaw)
+        buf.writeByte(headYaw.toInt())
     }
 }

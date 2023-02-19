@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoRemove
 import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnExperienceOrb
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
@@ -46,9 +45,6 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
 
         viewer.connection.send(getSpawnPacket())
         viewer.connection.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
-
-        val headYaw = if (entity is KryptonLivingEntity) entity.headYaw else entity.position.yaw
-        viewer.connection.send(PacketOutSetHeadRotation(entity.id, headYaw))
 
         if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes.create(entity.id, entity.attributes.syncable()))
         entity.server.eventNode.fire(KryptonEntityEnterViewEvent(viewer, entity))
@@ -68,7 +64,7 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
 
     protected open fun getSpawnPacket(): Packet {
         if (entity is KryptonExperienceOrb) return PacketOutSpawnExperienceOrb.create(entity)
-        return PacketOutSpawnEntity.fromEntity(entity)
+        return PacketOutSpawnEntity.create(entity)
     }
 
     private class Player(entity: KryptonPlayer) : EntityViewingSystem<KryptonPlayer>(entity) {

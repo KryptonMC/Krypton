@@ -61,7 +61,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(DefaultAttributes.get(type))
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
-    var headYaw: Float = position.yaw
+    private var headYaw = position.yaw
 
     @Suppress("MemberVisibilityCanBePrivate")
     var lastHurtByMob: KryptonLivingEntity? = null
@@ -186,6 +186,8 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
         if (lastHurtByMob != null) return lastHurtByMob
         return null
     }
+
+    override fun headYaw(): Float = headYaw
 
     companion object {
 
