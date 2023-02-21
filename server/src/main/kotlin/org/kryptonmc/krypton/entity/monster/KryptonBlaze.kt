@@ -32,17 +32,13 @@ class KryptonBlaze(world: KryptonWorld) : KryptonMonster(world), Blaze {
         get() = KryptonEntityTypes.BLAZE
 
     override var isOnFire: Boolean
-        get() = onFire()
-        set(value) {
-            super.isOnFire = value
-        }
+        get() = data.getFlag(MetadataKeys.Blaze.FLAGS, 0)
+        set(value) = data.setFlag(MetadataKeys.Blaze.FLAGS, 0, value)
 
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Blaze.FLAGS, 0)
     }
-
-    private fun onFire(): Boolean = data.getFlag(MetadataKeys.Blaze.FLAGS, 0)
 
     companion object {
 
