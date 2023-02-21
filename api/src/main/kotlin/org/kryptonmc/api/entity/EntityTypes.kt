@@ -35,7 +35,16 @@ import org.kryptonmc.api.entity.aquatic.Salmon
 import org.kryptonmc.api.entity.aquatic.Squid
 import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.hanging.Painting
+import org.kryptonmc.api.entity.monster.Blaze
+import org.kryptonmc.api.entity.monster.CaveSpider
 import org.kryptonmc.api.entity.monster.Creeper
+import org.kryptonmc.api.entity.monster.Drowned
+import org.kryptonmc.api.entity.monster.Endermite
+import org.kryptonmc.api.entity.monster.Giant
+import org.kryptonmc.api.entity.monster.Guardian
+import org.kryptonmc.api.entity.monster.Husk
+import org.kryptonmc.api.entity.monster.Silverfish
+import org.kryptonmc.api.entity.monster.Spider
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.entity.projectile.Arrow
@@ -86,7 +95,7 @@ public object EntityTypes {
     @JvmField
     public val BEE: RegistryReference<EntityType<Bee>> = get("bee")
     @JvmField
-    public val BLAZE: RegistryReference<EntityType<Entity>> = get("blaze")
+    public val BLAZE: RegistryReference<EntityType<Blaze>> = get("blaze")
     @JvmField
     public val BOAT: RegistryReference<EntityType<Boat>> = get("boat")
     @JvmField
@@ -96,7 +105,7 @@ public object EntityTypes {
     @JvmField
     public val CAMEL: RegistryReference<EntityType<Entity>> = get("camel")
     @JvmField
-    public val CAVE_SPIDER: RegistryReference<EntityType<Entity>> = get("cave_spider")
+    public val CAVE_SPIDER: RegistryReference<EntityType<CaveSpider>> = get("cave_spider")
     @JvmField
     public val CHICKEN: RegistryReference<EntityType<Chicken>> = get("chicken")
     @JvmField
@@ -112,7 +121,7 @@ public object EntityTypes {
     @JvmField
     public val DRAGON_FIREBALL: RegistryReference<EntityType<DragonFireball>> = get("dragon_fireball")
     @JvmField
-    public val DROWNED: RegistryReference<EntityType<Entity>> = get("drowned")
+    public val DROWNED: RegistryReference<EntityType<Drowned>> = get("drowned")
     @JvmField
     public val ELDER_GUARDIAN: RegistryReference<EntityType<Entity>> = get("elder_guardian")
     @JvmField
@@ -122,7 +131,7 @@ public object EntityTypes {
     @JvmField
     public val ENDERMAN: RegistryReference<EntityType<Entity>> = get("enderman")
     @JvmField
-    public val ENDERMTIE: RegistryReference<EntityType<Entity>> = get("endermite")
+    public val ENDERMITE: RegistryReference<EntityType<Endermite>> = get("endermite")
     @JvmField
     public val EVOKER: RegistryReference<EntityType<Entity>> = get("evoker")
     @JvmField
@@ -142,7 +151,7 @@ public object EntityTypes {
     @JvmField
     public val GHAST: RegistryReference<EntityType<Entity>> = get("ghast")
     @JvmField
-    public val GIANT: RegistryReference<EntityType<Entity>> = get("giant")
+    public val GIANT: RegistryReference<EntityType<Giant>> = get("giant")
     @JvmField
     public val GLOW_ITEM_FRAME: RegistryReference<EntityType<Entity>> = get("glow_item_frame")
     @JvmField
@@ -150,13 +159,13 @@ public object EntityTypes {
     @JvmField
     public val GOAT: RegistryReference<EntityType<Goat>> = get("goat")
     @JvmField
-    public val GUARDIAN: RegistryReference<EntityType<Entity>> = get("guardian")
+    public val GUARDIAN: RegistryReference<EntityType<Guardian>> = get("guardian")
     @JvmField
     public val HOGLIN: RegistryReference<EntityType<Entity>> = get("hoglin")
     @JvmField
     public val HORSE: RegistryReference<EntityType<Entity>> = get("horse")
     @JvmField
-    public val HUSK: RegistryReference<EntityType<Entity>> = get("husk")
+    public val HUSK: RegistryReference<EntityType<Husk>> = get("husk")
     @JvmField
     public val ILLUSIONER: RegistryReference<EntityType<Entity>> = get("illusioner")
     @JvmField
@@ -234,7 +243,7 @@ public object EntityTypes {
     @JvmField
     public val SHULKER_BULLET: RegistryReference<EntityType<ShulkerBullet>> = get("shulker_bullet")
     @JvmField
-    public val SILVERFISH: RegistryReference<EntityType<Entity>> = get("silverfish")
+    public val SILVERFISH: RegistryReference<EntityType<Silverfish>> = get("silverfish")
     @JvmField
     public val SKELETON: RegistryReference<EntityType<Entity>> = get("skeleton")
     @JvmField
@@ -250,7 +259,7 @@ public object EntityTypes {
     @JvmField
     public val SPECTRAL_ARROW: RegistryReference<EntityType<SpectralArrow>> = get("spectral_arrow")
     @JvmField
-    public val SPIDER: RegistryReference<EntityType<Entity>> = get("spider")
+    public val SPIDER: RegistryReference<EntityType<Spider>> = get("spider")
     @JvmField
     public val SQUID: RegistryReference<EntityType<Squid>> = get("squid")
     @JvmField

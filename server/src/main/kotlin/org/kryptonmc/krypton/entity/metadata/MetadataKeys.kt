@@ -182,6 +182,12 @@ object MetadataKeys {
         val FLAGS: MetadataKey<Byte> = MetadataKey(15, MetadataSerializers.BYTE)
     }
 
+    object Blaze {
+
+        @JvmField
+        val FLAGS: MetadataKey<Byte> = MetadataKey(16, MetadataSerializers.BYTE)
+    }
+
     object Creeper {
 
         @JvmField
@@ -190,6 +196,26 @@ object MetadataKeys {
         val CHARGED: MetadataKey<Boolean> = MetadataKey(17, MetadataSerializers.BOOLEAN)
         @JvmField
         val IGNITED: MetadataKey<Boolean> = MetadataKey(18, MetadataSerializers.BOOLEAN)
+    }
+
+    object Guardian {
+
+        @JvmField
+        val MOVING: MetadataKey<Boolean> = MetadataKey(16, MetadataSerializers.BOOLEAN)
+        @JvmField
+        val TARGET_ID: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
+    }
+
+    object Skeleton {
+
+        @JvmField
+        val CONVERTING: MetadataKey<Boolean> = MetadataKey(16, MetadataSerializers.BOOLEAN)
+    }
+
+    object Spider {
+
+        @JvmField
+        val FLAGS: MetadataKey<Byte> = MetadataKey(16, MetadataSerializers.BYTE)
     }
 
     object Zombie {

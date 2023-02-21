@@ -41,7 +41,14 @@ import org.kryptonmc.krypton.entity.animal.KryptonWolf
 import org.kryptonmc.krypton.entity.aquatic.KryptonDolphin
 import org.kryptonmc.krypton.entity.aquatic.KryptonFish
 import org.kryptonmc.krypton.entity.aquatic.KryptonSquid
+import org.kryptonmc.krypton.entity.monster.KryptonBlaze
+import org.kryptonmc.krypton.entity.monster.KryptonCaveSpider
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
+import org.kryptonmc.krypton.entity.monster.KryptonEndermite
+import org.kryptonmc.krypton.entity.monster.KryptonGiant
+import org.kryptonmc.krypton.entity.monster.KryptonGuardian
+import org.kryptonmc.krypton.entity.monster.KryptonSilverfish
+import org.kryptonmc.krypton.entity.monster.KryptonSpider
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
@@ -52,15 +59,22 @@ object DefaultAttributes {
         .put(KryptonEntityTypes.AXOLOTL, KryptonAxolotl::attributes)
         .put(KryptonEntityTypes.BAT, KryptonBat::attributes)
         .put(KryptonEntityTypes.BEE, KryptonBee::attributes)
+        .put(KryptonEntityTypes.BLAZE, KryptonBlaze::attributes)
         .put(KryptonEntityTypes.CAT, KryptonCat::attributes)
+        .put(KryptonEntityTypes.CAVE_SPIDER, KryptonCaveSpider::attributes)
         .put(KryptonEntityTypes.CHICKEN, KryptonChicken::attributes)
         .put(KryptonEntityTypes.COD, KryptonFish::attributes)
         .put(KryptonEntityTypes.COW, KryptonCow::attributes)
         .put(KryptonEntityTypes.CREEPER, KryptonCreeper::attributes)
         .put(KryptonEntityTypes.DOLPHIN, KryptonDolphin::attributes)
+        .put(KryptonEntityTypes.DROWNED, KryptonZombie::attributes)
+        .put(KryptonEntityTypes.ENDERMITE, KryptonEndermite::attributes)
         .put(KryptonEntityTypes.FOX, KryptonFox::attributes)
+        .put(KryptonEntityTypes.GIANT, KryptonGiant::attributes)
         .put(KryptonEntityTypes.GLOW_SQUID, KryptonSquid::attributes)
         .put(KryptonEntityTypes.GOAT, KryptonGoat::attributes)
+        .put(KryptonEntityTypes.GUARDIAN, KryptonGuardian::attributes)
+        .put(KryptonEntityTypes.HUSK, KryptonZombie::attributes)
         .put(KryptonEntityTypes.MOOSHROOM, KryptonCow::attributes)
         .put(KryptonEntityTypes.OCELOT, KryptonOcelot::attributes)
         .put(KryptonEntityTypes.PANDA, KryptonPanda::attributes)
@@ -72,6 +86,8 @@ object DefaultAttributes {
         .put(KryptonEntityTypes.RABBIT, KryptonRabbit::attributes)
         .put(KryptonEntityTypes.SALMON, KryptonFish::attributes)
         .put(KryptonEntityTypes.SHEEP, KryptonSheep::attributes)
+        .put(KryptonEntityTypes.SILVERFISH, KryptonSilverfish::attributes)
+        .put(KryptonEntityTypes.SPIDER, KryptonSpider::attributes)
         .put(KryptonEntityTypes.SQUID, KryptonSquid::attributes)
         .put(KryptonEntityTypes.TROPICAL_FISH, KryptonFish::attributes)
         .put(KryptonEntityTypes.WOLF, KryptonWolf::attributes)

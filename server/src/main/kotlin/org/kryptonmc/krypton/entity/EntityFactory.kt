@@ -50,7 +50,16 @@ import org.kryptonmc.krypton.entity.aquatic.KryptonSalmon
 import org.kryptonmc.krypton.entity.aquatic.KryptonSquid
 import org.kryptonmc.krypton.entity.aquatic.KryptonTropicalFish
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
+import org.kryptonmc.krypton.entity.monster.KryptonBlaze
+import org.kryptonmc.krypton.entity.monster.KryptonCaveSpider
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
+import org.kryptonmc.krypton.entity.monster.KryptonDrowned
+import org.kryptonmc.krypton.entity.monster.KryptonEndermite
+import org.kryptonmc.krypton.entity.monster.KryptonGiant
+import org.kryptonmc.krypton.entity.monster.KryptonGuardian
+import org.kryptonmc.krypton.entity.monster.KryptonHusk
+import org.kryptonmc.krypton.entity.monster.KryptonSilverfish
+import org.kryptonmc.krypton.entity.monster.KryptonSpider
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.entity.projectile.KryptonArrow
 import org.kryptonmc.krypton.entity.projectile.KryptonDragonFireball
@@ -88,8 +97,10 @@ object EntityFactory {
         entry(EntityTypes.AXOLOTL, ::KryptonAxolotl),
         entry(EntityTypes.BAT, ::KryptonBat),
         entry(EntityTypes.BEE, ::KryptonBee),
+        entry(EntityTypes.BLAZE, ::KryptonBlaze),
         entry(EntityTypes.BOAT, ::KryptonBoat),
         entry(EntityTypes.CAT, ::KryptonCat),
+        entry(EntityTypes.CAVE_SPIDER, ::KryptonCaveSpider),
         entry(EntityTypes.CHICKEN, ::KryptonChicken),
         entry(EntityTypes.COD, ::KryptonCod),
         entry(EntityTypes.COMMAND_BLOCK_MINECART, ::KryptonCommandBlockMinecart),
@@ -97,8 +108,10 @@ object EntityFactory {
         entry(EntityTypes.CREEPER, ::KryptonCreeper),
         entry(EntityTypes.DOLPHIN, ::KryptonDolphin),
         entry(EntityTypes.DRAGON_FIREBALL, ::KryptonDragonFireball),
+        entry(EntityTypes.DROWNED, ::KryptonDrowned),
         entry(EntityTypes.EGG, ::KryptonEgg),
         entry(EntityTypes.ENDER_PEARL, ::KryptonEnderPearl),
+        entry(EntityTypes.ENDERMITE, ::KryptonEndermite),
         entry(EntityTypes.EXPERIENCE_BOTTLE, ::KryptonExperienceBottle),
         entry(EntityTypes.EXPERIENCE_ORB, ::KryptonExperienceOrb),
         entry(EntityTypes.FIREWORK_ROCKET, ::KryptonFireworkRocket),
@@ -106,8 +119,11 @@ object EntityFactory {
         entry(EntityTypes.FISHING_HOOK, ::KryptonFishingHook),
         entry(EntityTypes.FOX, ::KryptonFox),
         entry(EntityTypes.FURNACE_MINECART, ::KryptonFurnaceMinecart),
+        entry(EntityTypes.GIANT, ::KryptonGiant),
         entry(EntityTypes.GLOW_SQUID, ::KryptonGlowSquid),
         entry(EntityTypes.GOAT, ::KryptonGoat),
+        entry(EntityTypes.GUARDIAN, ::KryptonGuardian),
+        entry(EntityTypes.HUSK, ::KryptonHusk),
         entry(EntityTypes.LLAMA_SPIT, ::KryptonLlamaSpit),
         entry(EntityTypes.MINECART, ::KryptonMinecart),
         entry(EntityTypes.MOOSHROOM, ::KryptonMooshroom),
@@ -124,9 +140,11 @@ object EntityFactory {
         entry(EntityTypes.SALMON, ::KryptonSalmon),
         entry(EntityTypes.SHEEP, ::KryptonSheep),
         entry(EntityTypes.SHULKER_BULLET, ::KryptonShulkerBullet),
+        entry(EntityTypes.SILVERFISH, ::KryptonSilverfish),
         entry(EntityTypes.SMALL_FIREBALL, ::KryptonSmallFireball),
         entry(EntityTypes.SNOWBALL, ::KryptonSnowball),
         entry(EntityTypes.SPECTRAL_ARROW, ::KryptonSpectralArrow),
+        entry(EntityTypes.SPIDER, ::KryptonSpider),
         entry(EntityTypes.SQUID, ::KryptonSquid),
         entry(EntityTypes.TNT_MINECART, ::KryptonTNTMinecart),
         entry(EntityTypes.TRIDENT, ::KryptonTrident),

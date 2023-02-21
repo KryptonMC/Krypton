@@ -48,7 +48,16 @@ import org.kryptonmc.krypton.entity.aquatic.KryptonSalmon
 import org.kryptonmc.krypton.entity.aquatic.KryptonSquid
 import org.kryptonmc.krypton.entity.aquatic.KryptonTropicalFish
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
+import org.kryptonmc.krypton.entity.monster.KryptonBlaze
+import org.kryptonmc.krypton.entity.monster.KryptonCaveSpider
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
+import org.kryptonmc.krypton.entity.monster.KryptonDrowned
+import org.kryptonmc.krypton.entity.monster.KryptonEndermite
+import org.kryptonmc.krypton.entity.monster.KryptonGiant
+import org.kryptonmc.krypton.entity.monster.KryptonGuardian
+import org.kryptonmc.krypton.entity.monster.KryptonHusk
+import org.kryptonmc.krypton.entity.monster.KryptonSilverfish
+import org.kryptonmc.krypton.entity.monster.KryptonSpider
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.projectile.KryptonArrow
@@ -121,7 +130,7 @@ object KryptonEntityTypes {
         clientTrackingRange(8)
     }
     @JvmField
-    val BLAZE: KryptonEntityType<KryptonEntity> = register("blaze", EntityCategories.MONSTER) {
+    val BLAZE: KryptonEntityType<KryptonBlaze> = register("blaze", EntityCategories.MONSTER) {
         fireImmune()
         clientTrackingRange(8)
     }
@@ -146,7 +155,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
     }
     @JvmField
-    val CAVE_SPIDER: KryptonEntityType<KryptonEntity> = register("cave_spider", EntityCategories.MONSTER) {
+    val CAVE_SPIDER: KryptonEntityType<KryptonCaveSpider> = register("cave_spider", EntityCategories.MONSTER) {
         size(0.7F, 0.5F)
         clientTrackingRange(8)
     }
@@ -184,7 +193,7 @@ object KryptonEntityTypes {
         updateInterval(10)
     }
     @JvmField
-    val DROWNED: KryptonEntityType<KryptonEntity> = register("drowned", EntityCategories.MONSTER) {
+    val DROWNED: KryptonEntityType<KryptonDrowned> = register("drowned", EntityCategories.MONSTER) {
         size(0.6F, HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
@@ -211,7 +220,7 @@ object KryptonEntityTypes {
         clientTrackingRange(8)
     }
     @JvmField
-    val ENDERMTIE: KryptonEntityType<KryptonEntity> = register("endermite", EntityCategories.MONSTER) {
+    val ENDERMITE: KryptonEntityType<KryptonEndermite> = register("endermite", EntityCategories.MONSTER) {
         size(0.4F, 0.3F)
         clientTrackingRange(8)
     }
@@ -268,7 +277,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
     }
     @JvmField
-    val GIANT: KryptonEntityType<KryptonEntity> = register("giant", EntityCategories.MONSTER) {
+    val GIANT: KryptonEntityType<KryptonGiant> = register("giant", EntityCategories.MONSTER) {
         size(3.6F, 12F)
         clientTrackingRange(10)
     }
@@ -289,7 +298,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
     }
     @JvmField
-    val GUARDIAN: KryptonEntityType<KryptonEntity> = register("guardian", EntityCategories.MONSTER) {
+    val GUARDIAN: KryptonEntityType<KryptonGuardian> = register("guardian", EntityCategories.MONSTER) {
         size(0.85F, 0.85F)
         clientTrackingRange(8)
     }
@@ -304,7 +313,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
     }
     @JvmField
-    val HUSK: KryptonEntityType<KryptonEntity> = register("husk", EntityCategories.MONSTER) {
+    val HUSK: KryptonEntityType<KryptonHusk> = register("husk", EntityCategories.MONSTER) {
         size(0.6F, HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
@@ -490,7 +499,7 @@ object KryptonEntityTypes {
         clientTrackingRange(8)
     }
     @JvmField
-    val SILVERFISH: KryptonEntityType<KryptonEntity> = register("silverfish", EntityCategories.MONSTER) {
+    val SILVERFISH: KryptonEntityType<KryptonSilverfish> = register("silverfish", EntityCategories.MONSTER) {
         size(0.4F, 0.3F)
         clientTrackingRange(8)
     }
@@ -534,7 +543,7 @@ object KryptonEntityTypes {
         updateInterval(20)
     }
     @JvmField
-    val SPIDER: KryptonEntityType<KryptonEntity> = register("spider", EntityCategories.MONSTER) {
+    val SPIDER: KryptonEntityType<KryptonSpider> = register("spider", EntityCategories.MONSTER) {
         size(1.4F, 0.9F)
         clientTrackingRange(8)
     }

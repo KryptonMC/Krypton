@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.monster.ZombieSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonZombie(world: KryptonWorld) : KryptonMonster(world), Zombie {
+open class KryptonZombie(world: KryptonWorld) : KryptonMonster(world), Zombie {
 
     override val type: KryptonEntityType<KryptonZombie>
         get() = KryptonEntityTypes.ZOMBIE

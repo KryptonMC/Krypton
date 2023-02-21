@@ -9,7 +9,8 @@
 package org.kryptonmc.api.entity.monster
 
 /**
- * A creeper.
+ * A monster that creeps up on its victims and explodes when they least
+ * expect it.
  */
 public interface Creeper : Monster {
 
