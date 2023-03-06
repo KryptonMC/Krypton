@@ -1,4 +1,4 @@
-name: "Build"
+name: "build and publish docs"
 
 on: [push, pull_request]
 
@@ -38,3 +38,23 @@ jobs:
         env:
           PUBLISH_USERNAME: "${{ secrets.PUBLISH_USERNAME }}"
           PUBLISH_PASSWORD: "${{ secrets.PUBLISH_PASSWORD }}"
+  publish-docs:
+    if: "github.event_name == 'push' && github.ref_name == 'master'"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v3.3.0"
+      - name: "Set up JDK 17"
+        uses: "actions/setup-java@v3.9.0"
+        with:
+          java-version: 17
+          distribution: "temurin"
+      - name: "Generate documentation"
+        uses: "gradle/gradle-build-action@v2.3.3"
+        with:
+          arguments: "clean dokkaHtmlMultiModule"
+      - name: "Deploy to pages"
+        uses: "JamesIves/github-pages-deploy-action@v4.4.1"
+        with:
+          branch: "docs"
+          folder: "build/dokka/htmlMultiModule"
