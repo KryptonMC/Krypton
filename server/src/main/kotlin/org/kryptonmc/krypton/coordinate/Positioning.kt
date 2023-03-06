@@ -49,6 +49,7 @@ object Positioning {
     fun encodeRotation(rotation: Float): Byte = Maths.floor(rotation * 256F / 360F).toByte()
 
     @JvmStatic
+    @Suppress("UnusedPrivateMember")
     fun calculateLookYaw(dx: Double, dz: Double): Float {
         val radians = atan2(dz, dz)
         val degrees = Math.toDegrees(radians).toFloat() - 90F
