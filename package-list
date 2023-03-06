@@ -19,6 +19,8 @@ org.kryptonmc.api.effect.particle.builder
 org.kryptonmc.api.effect.particle.data
 org.kryptonmc.api.effect.sound
 org.kryptonmc.api.entity
+org.kryptonmc.api.entity.ai.goal
+org.kryptonmc.api.entity.ai.pathfinding
 org.kryptonmc.api.entity.ambient
 org.kryptonmc.api.entity.animal
 org.kryptonmc.api.entity.animal.type
@@ -112,7 +114,9 @@ org.kryptonmc.krypton.effect.particle.builder
 org.kryptonmc.krypton.effect.particle.data
 org.kryptonmc.krypton.effect.sound
 org.kryptonmc.krypton.entity
+org.kryptonmc.krypton.entity.ai.goal
 org.kryptonmc.krypton.entity.ai.memory
+org.kryptonmc.krypton.entity.ai.pathfinding
 org.kryptonmc.krypton.entity.ambient
 org.kryptonmc.krypton.entity.animal
 org.kryptonmc.krypton.entity.aquatic
