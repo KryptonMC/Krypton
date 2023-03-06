@@ -22,7 +22,6 @@ import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.user.BaseUser
-import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
 import java.net.InetSocketAddress
@@ -149,16 +148,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
      * @param pack the resource pack
      */
     public fun sendResourcePack(pack: ResourcePack)
-
-    /**
-     * Teleports this player to the given [position].
-     */
-    public fun teleport(position: Position)
-
-    /**
-     * Teleports this player to the given other [player].
-     */
-    public fun teleport(player: Player)
 
     /**
      * Makes this player start gliding (elytra flying).

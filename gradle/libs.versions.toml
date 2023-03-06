@@ -36,6 +36,7 @@ clikt = "3.5.0"
 bstats = "3.0.0"
 lmbda = "2.0.0"
 jctools = "4.0.1"
+hydrazine = "1.8.1"
 
 # Test
 junit-jupiter = "5.9.1"
@@ -131,6 +132,9 @@ fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil"
 flare-fastutil = { group = "space.vectrix.flare", name = "flare-fastutil", version.ref = "flare" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 jctools = { group = "org.jctools", name = "jctools-core", version.ref = "jctools" }
+
+# Pathfinding
+hydrazine = { group = "com.github.MadMartian", name = "hydrazine-path-finding", version.ref = "hydrazine" }
 
 # Testing
 junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit-jupiter" }

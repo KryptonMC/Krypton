@@ -56,6 +56,7 @@ dependencies {
     compileOnly(projects.internalAnnotations)
     ksp(projects.internalAp)
     implementation(libs.reflections)
+    implementation(libs.hydrazine)
 
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.engine)

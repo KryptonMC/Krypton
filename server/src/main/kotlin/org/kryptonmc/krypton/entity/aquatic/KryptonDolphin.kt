@@ -81,7 +81,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         if (skinMoisture <= 0) damage(KryptonDamageSource(DamageTypes.DRY_OUT), 1F)
         if (isOnGround) {
             velocity = velocity.add(randomVelocityModifier(random), GROUND_Y_VELOCITY_INCREASE, randomVelocityModifier(random))
-            position = position.withPitch(random.nextFloat() * MAX_ANGLE)
+            teleport(position.withPitch(random.nextFloat() * MAX_ANGLE))
             isOnGround = false
         }
     }

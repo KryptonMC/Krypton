@@ -8,6 +8,9 @@
  */
 package org.kryptonmc.api.entity
 
+import org.kryptonmc.api.entity.ai.goal.GoalSelector
+import org.kryptonmc.api.entity.ai.pathfinding.Navigator
+
 /**
  * An entity with a simple artificial intelligence that can drop items.
  */
@@ -28,12 +31,6 @@ public interface Mob : LivingEntity, Equipable {
     public var canPickUpLoot: Boolean
 
     /**
-     * If this mob has artificial intelligence.
-     */
-    @get:JvmName("hasAI")
-    public var hasAI: Boolean
-
-    /**
      * If this mob is hostile.
      */
     public var isAggressive: Boolean
@@ -42,4 +39,20 @@ public interface Mob : LivingEntity, Equipable {
      * The main hand of this mob.
      */
     public var mainHand: MainHand
+
+    /**
+     * If this mob has artificial intelligence.
+     */
+    @get:JvmName("hasAI")
+    public var hasAI: Boolean
+
+    /**
+     * The goal selector for selecting goals and targets.
+     */
+    public val goalSelector: GoalSelector
+
+    /**
+     * The navigator used for pathfinding.
+     */
+    public val navigator: Navigator
 }

@@ -32,14 +32,12 @@ import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
-import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
@@ -68,6 +66,7 @@ import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
 import org.kryptonmc.krypton.network.chat.RemoteChatSession
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
@@ -79,7 +78,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -263,16 +261,10 @@ class KryptonPlayer(
         }
     }
 
-    override fun teleport(position: Position) {
-        this.position = position
-        val packet = PacketOutTeleportEntity.create(this)
+    override fun sendPositionUpdate(packet: Packet) {
         connection.send(packet)
         viewingSystem.sendToViewers(packet)
         chunkViewingSystem.updateChunks()
-    }
-
-    override fun teleport(player: Player) {
-        teleport(player.position)
     }
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {

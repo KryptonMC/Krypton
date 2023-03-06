@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
+import org.kryptonmc.krypton.entity.ai.goal.KryptonGoalSelector
+import org.kryptonmc.krypton.entity.ai.pathfinding.KryptonNavigator
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -31,6 +33,7 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.collection.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
 
+@Suppress("LeakingThis")
 abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob {
 
     override val serializer: EntitySerializer<out KryptonMob>
@@ -45,6 +48,9 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
     final override var isPersistent: Boolean = false
     private var target: KryptonLivingEntity? = null
 
+    override val goalSelector: KryptonGoalSelector = KryptonGoalSelector()
+    override val navigator: KryptonNavigator = KryptonNavigator(this)
+
     final override var hasAI: Boolean
         get() = !data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI)
         set(value) = data.setFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI, !value)
@@ -54,6 +60,10 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
     final override var isAggressive: Boolean
         get() = data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE)
         set(value) = data.setFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE, value)
+
+    init {
+        registerGoals()
+    }
 
     override fun defineData() {
         super.defineData()
@@ -96,6 +106,25 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
         return InteractionResult.PASS
     }
     */
+
+    protected fun registerGoals() {
+        // No goals to register by default
+    }
+
+    override fun tick(time: Long) {
+        super.tick(time)
+        if (!isRemoved && hasAI) doAiTick(time)
+    }
+
+    private fun doAiTick(time: Long) {
+        goalSelector.tick(time)
+        navigator.tick()
+        aiTick()
+    }
+
+    protected open fun aiTick() {
+        // Do nothing by default - subtypes can override this to add custom AI logic
+    }
 
     protected fun target(): KryptonLivingEntity? = target
 

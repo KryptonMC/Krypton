@@ -284,6 +284,22 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public fun isUnderwater(): Boolean
 
     /**
+     * Teleports this entity to the given [position].
+     *
+     * @param position the position to teleport to
+     */
+    public fun teleport(position: Position)
+
+    /**
+     * Teleports this entity to the given other [entity].
+     *
+     * @param entity the entity to teleport to
+     */
+    public fun teleport(entity: Entity) {
+        teleport(entity.position)
+    }
+
+    /**
      * Damages this entity with the given [source].
      *
      * @param source the source of the damage

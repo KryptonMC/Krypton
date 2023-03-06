@@ -30,6 +30,7 @@ import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.components.BaseEntity
 import org.kryptonmc.krypton.entity.components.SerializableEntity
 import org.kryptonmc.krypton.entity.system.EntityVehicleSystem
@@ -38,8 +39,13 @@ import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.system.EntityViewingSystem
 import org.kryptonmc.krypton.entity.system.EntityWaterPhysicsSystem
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
+import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.ticking.Tickable
@@ -98,6 +104,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     }
 
     open fun tick() {
+        ticksExisted++
         waterPhysicsSystem.tick()
         scheduler.process()
         if (data.isDirty()) viewingSystem.sendToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
@@ -105,6 +112,37 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
             viewingSystem.sendToViewers(PacketOutSetEntityVelocity.fromEntity(this))
             wasDamaged = false
         }
+    }
+
+    final override fun teleport(position: Position) {
+        val old = this.position
+        this.position = position
+        updatePosition(old, position)
+    }
+
+    private fun updatePosition(old: Position, new: Position) {
+        if (new.x - old.x > 8 || new.y - old.y > 8 || new.z - old.z > 8) {
+            sendPositionUpdate(PacketOutTeleportEntity.create(this))
+            return
+        }
+
+        val dx = Positioning.calculateDelta(new.x, old.x)
+        val dy = Positioning.calculateDelta(new.y, old.y)
+        val dz = Positioning.calculateDelta(new.z, old.z)
+        val packet = if (new.yaw != old.yaw || new.pitch != old.pitch) {
+            if (dx == 0.toShort() && dy == 0.toShort() && dz == 0.toShort()) {
+                PacketOutUpdateEntityRotation(id, new.yaw, new.pitch, isOnGround)
+            } else {
+                PacketOutUpdateEntityPositionAndRotation(id, dx, dy, dz, new.yaw, new.pitch, isOnGround)
+            }
+        } else {
+            PacketOutUpdateEntityPosition(id, dx, dy, dz, isOnGround)
+        }
+        sendPositionUpdate(packet)
+    }
+
+    protected open fun sendPositionUpdate(packet: Packet) {
+        viewingSystem.sendToViewers(packet)
     }
 
     // TODO: Separate interaction logic

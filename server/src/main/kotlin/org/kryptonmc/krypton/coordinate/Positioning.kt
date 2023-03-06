@@ -19,6 +19,9 @@
 package org.kryptonmc.krypton.coordinate
 
 import org.kryptonmc.krypton.util.math.Maths
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.max
 
 object Positioning {
 
@@ -44,4 +47,19 @@ object Positioning {
 
     @JvmStatic
     fun encodeRotation(rotation: Float): Byte = Maths.floor(rotation * 256F / 360F).toByte()
+
+    @JvmStatic
+    fun calculateLookYaw(dx: Double, dz: Double): Float {
+        val radians = atan2(dz, dz)
+        val degrees = Math.toDegrees(radians).toFloat() - 90F
+        if (degrees < -180) return degrees + 360
+        if (degrees > 180) return degrees - 360
+        return degrees
+    }
+
+    @JvmStatic
+    fun calculateLookPitch(dx: Double, dy: Double, dz: Double): Float {
+        val radians = -atan2(dy, max(abs(dx), abs(dz)))
+        return Math.toDegrees(radians).toFloat()
+    }
 }
