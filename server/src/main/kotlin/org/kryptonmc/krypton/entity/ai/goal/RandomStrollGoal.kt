@@ -46,7 +46,7 @@ class RandomStrollGoal(private val entity: KryptonMob, private val radius: Int) 
         // Nothing to do
     }
 
-    override fun shouldStop(): Boolean = true
+    override fun shouldStop(): Boolean = entity.navigator.hasReachedTarget()
 
     override fun stop() {
         lastStroll = System.currentTimeMillis()

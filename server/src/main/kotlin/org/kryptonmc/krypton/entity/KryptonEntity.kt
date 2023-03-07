@@ -78,9 +78,13 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         private set
     final override var isRemoved: Boolean = false
         private set
-    private var wasDamaged = false
     final override var position: Position = Position.ZERO
     final override var velocity: Vec3d = Vec3d.ZERO
+        set(value) {
+            field = value
+            velocityNeedsUpdate = true
+        }
+    private var velocityNeedsUpdate = false
     final override var boundingBox: BoundingBox = BoundingBox.ZERO
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
@@ -111,9 +115,9 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         waterPhysicsSystem.tick()
         scheduler.process()
         if (data.isDirty()) viewingSystem.sendToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
-        if (wasDamaged) {
+        if (velocityNeedsUpdate) {
             viewingSystem.sendToViewers(PacketOutSetEntityVelocity.fromEntity(this))
-            wasDamaged = false
+            velocityNeedsUpdate = false
         }
     }
 
@@ -169,7 +173,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     }
 
     protected fun markDamaged() {
-        wasDamaged = true
+        velocityNeedsUpdate = true
     }
 
     override fun remove() {

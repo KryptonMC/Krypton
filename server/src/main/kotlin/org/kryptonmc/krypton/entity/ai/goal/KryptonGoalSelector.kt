@@ -55,6 +55,15 @@ class KryptonGoalSelector : GoalSelector {
         finders.removeIf { it.finder === finder }
     }
 
+    override fun findTarget(): Entity? {
+        if (finders.isEmpty()) return null
+        for (finder in finders) {
+            val target = finder.findTarget()
+            if (target != null) return target
+        }
+        return null
+    }
+
     fun tick(time: Long) {
         for (goal in goals) {
             if (!goal.isRunning()) {

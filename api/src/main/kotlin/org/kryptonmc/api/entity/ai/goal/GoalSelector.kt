@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.entity.ai.goal
 
+import org.kryptonmc.api.entity.Entity
+
 /**
  * Something that selects goals for an entity.
  */
@@ -69,4 +71,19 @@ public interface GoalSelector {
      * @param finder the target finder to remove
      */
     public fun removeTargetFinder(finder: TargetFinder)
+
+    /**
+     * Finds the target for this goal selector, trying all registered target
+     * finders until it finds one that returns a non-null target.
+     *
+     * This is intended to be used by goals to easily find targets without
+     * having to search the finders manually.
+     *
+     * This will return null if no target could be found. This could be
+     * because there are no target finders registered, or because none of the
+     * target finders produced a non-null target.
+     *
+     * @return the target, or null if no target could be found
+     */
+    public fun findTarget(): Entity?
 }
