@@ -26,7 +26,7 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     override fun size(): Int = registry.size()
 
-    override fun get(value: T): Int {
+    override fun getId(value: T): Int {
         val id = registry.getId(value)
         return if (id == -1) 0 else id
     }

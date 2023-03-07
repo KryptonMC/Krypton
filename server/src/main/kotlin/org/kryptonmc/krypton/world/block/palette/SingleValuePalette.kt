@@ -36,7 +36,7 @@ class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resiz
 
     override fun size(): Int = 1
 
-    override fun get(value: T): Int {
+    override fun getId(value: T): Int {
         if (this.value != null && this.value != value) return resizer.onResize(1, value)
         this.value = value
         return 0

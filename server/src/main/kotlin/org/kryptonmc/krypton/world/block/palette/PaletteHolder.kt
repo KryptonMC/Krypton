@@ -61,12 +61,12 @@ class PaletteHolder<T> : PaletteResizer<T> {
     constructor(strategy: Strategy<T>, value: T) {
         this.strategy = strategy
         data = createOrReuseData(null, 0)
-        data.palette.get(value) // Preload
+        data.palette.getId(value) // Preload
     }
 
     @Synchronized
     fun getAndSet(x: Int, y: Int, z: Int, value: T): T {
-        val id = data.palette.get(value)
+        val id = data.palette.getId(value)
         val newId = data.storage.getAndSet(strategy.indexOf(x, y, z), id)
         return data.palette.get(newId)
     }
@@ -77,7 +77,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
     @Synchronized
     fun set(x: Int, y: Int, z: Int, value: T) {
-        data.storage.set(strategy.indexOf(x, y, z), data.palette.get(value))
+        data.storage.set(strategy.indexOf(x, y, z), data.palette.getId(value))
     }
 
     @Synchronized
@@ -91,7 +91,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val size = strategy.calculateSize()
         val ids = IntArray(size)
         data.storage.unpack(ids)
-        swapPalette(ids) { palette.get(data.palette.get(it)) }
+        swapPalette(ids) { palette.getId(data.palette.get(it)) }
         val bits = strategy.calculateSerializationBits(palette.size())
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
@@ -111,7 +111,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val new = createOrReuseData(old, newBits)
         new.copyFrom(data.palette, data.storage)
         data = new
-        return new.palette.get(value)
+        return new.palette.getId(value)
     }
 
     private fun createOrReuseData(old: Data<T>?, bits: Int): Data<T> {
@@ -143,7 +143,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         fun copyFrom(oldPalette: Palette<T>, oldStorage: BitStorage) {
             for (i in 0 until oldStorage.size) {
                 val value = oldPalette.get(oldStorage.get(i))!!
-                storage.set(i, palette.get(value))
+                storage.set(i, palette.getId(value))
             }
         }
 
@@ -153,7 +153,9 @@ class PaletteHolder<T> : PaletteResizer<T> {
             buf.writeLongArray(storage.data)
         }
 
-        fun calculateSerializedSize(): Int = 1 + palette.calculateSerializedSize() + ByteBufExtras.getVarIntBytes(storage.size) + storage.sizeBytes()
+        fun calculateSerializedSize(): Int {
+            return 1 + palette.calculateSerializedSize() + ByteBufExtras.getVarIntBytes(storage.size) + storage.data.size * Long.SIZE_BYTES
+        }
 
         fun copy(): Data<T> = Data(configuration, storage.copy(), palette.copy())
     }

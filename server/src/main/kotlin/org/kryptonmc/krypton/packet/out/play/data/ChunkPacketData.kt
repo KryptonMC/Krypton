@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
-import org.kryptonmc.krypton.world.chunk.data.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
@@ -34,8 +33,6 @@ import org.kryptonmc.nbt.ImmutableCompoundTag
 @JvmRecord
 @Suppress("ArrayInDataClass")
 data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : Writable {
-
-    constructor(chunk: KryptonChunk) : this(extractHeightmaps(chunk), extractData(chunk))
 
     constructor(buf: ByteBuf) : this(buf.readNBT(), buf.readVarIntByteArray())
 
@@ -62,7 +59,7 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
         @JvmStatic
         private fun extractData(chunk: KryptonChunk): ByteArray {
-            val result = ByteArray(chunk.sections().sumOf(ChunkSection::calculateSerializedSize))
+            val result = ByteArray(chunk.sections().sumOf { it.calculateSerializedSize() })
             val buffer = Unpooled.wrappedBuffer(result).writerIndex(0)
             chunk.sections().forEach { it.write(buffer) }
             return result

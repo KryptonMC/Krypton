@@ -25,7 +25,7 @@ interface Palette<T> {
 
     fun size(): Int
 
-    fun get(value: T): Int
+    fun getId(value: T): Int
 
     fun get(id: Int): T
 

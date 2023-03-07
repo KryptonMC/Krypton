@@ -43,7 +43,7 @@ data class MapPalette<T>(
 
     override fun size(): Int = values.size()
 
-    override fun get(value: T): Int {
+    override fun getId(value: T): Int {
         var id = values.getId(value)
         if (id == -1) {
             id = values.add(value)

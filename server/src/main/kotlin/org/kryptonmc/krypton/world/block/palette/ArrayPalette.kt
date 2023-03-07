@@ -44,7 +44,7 @@ class ArrayPalette<T> private constructor(
 
     override fun size(): Int = size
 
-    override fun get(value: T): Int {
+    override fun getId(value: T): Int {
         for (i in 0 until size) {
             if (values[i] === value) return i
         }
