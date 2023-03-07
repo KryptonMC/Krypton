@@ -30,7 +30,9 @@ import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.coordinate.Positioning
+import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.entity.components.BaseEntity
 import org.kryptonmc.krypton.entity.components.SerializableEntity
 import org.kryptonmc.krypton.entity.system.EntityVehicleSystem
@@ -42,6 +44,7 @@ import org.kryptonmc.krypton.entity.system.EntityWaterPhysicsSystem
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRotation
@@ -55,6 +58,7 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.abs
 
 @Suppress("LeakingThis")
 abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntity, SerializableEntity, KryptonSender, Tickable {
@@ -121,28 +125,36 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     }
 
     private fun updatePosition(old: Position, new: Position) {
-        if (new.x - old.x > 8 || new.y - old.y > 8 || new.z - old.z > 8) {
-            sendPositionUpdate(PacketOutTeleportEntity.create(this))
-            return
-        }
+        val dx = abs(new.x - old.x)
+        val dy = abs(new.y - old.y)
+        val dz = abs(new.z - old.z)
+        val positionChange = dx != 0.0 || dy != 0.0 || dz != 0.0
+        val rotationChange = new.yaw != old.yaw || new.pitch != old.pitch
 
-        val dx = Positioning.calculateDelta(new.x, old.x)
-        val dy = Positioning.calculateDelta(new.y, old.y)
-        val dz = Positioning.calculateDelta(new.z, old.z)
-        val packet = if (new.yaw != old.yaw || new.pitch != old.pitch) {
-            if (dx == 0.toShort() && dy == 0.toShort() && dz == 0.toShort()) {
-                PacketOutUpdateEntityRotation(id, new.yaw, new.pitch, isOnGround)
-            } else {
-                PacketOutUpdateEntityPositionAndRotation(id, dx, dy, dz, new.yaw, new.pitch, isOnGround)
-            }
-        } else {
-            PacketOutUpdateEntityPosition(id, dx, dy, dz, isOnGround)
+        if (dx > 8 || dy > 8 || dz > 8) {
+            sendPositionUpdate(PacketOutTeleportEntity.create(this), old, new)
+            return
+        } else if (positionChange && rotationChange) {
+            sendPositionUpdate(PacketOutUpdateEntityPositionAndRotation.create(id, old, new, isOnGround), old, new)
+            viewingSystem.sendToViewers(PacketOutSetHeadRotation(id, new.yaw))
+        } else if (positionChange) {
+            sendPositionUpdate(PacketOutUpdateEntityPosition.create(id, old, new, isOnGround), old, new)
+        } else if (rotationChange) {
+            viewingSystem.sendToViewers(PacketOutUpdateEntityRotation(id, new.yaw, new.pitch, isOnGround))
+            viewingSystem.sendToViewers(PacketOutSetHeadRotation(id, new.yaw))
         }
-        sendPositionUpdate(packet)
     }
 
-    protected open fun sendPositionUpdate(packet: Packet) {
+    protected open fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {
         viewingSystem.sendToViewers(packet)
+
+        val oldChunkX = SectionPos.blockToSection(old.x)
+        val oldChunkZ = SectionPos.blockToSection(old.z)
+        val newChunkX = SectionPos.blockToSection(new.x)
+        val newChunkZ = SectionPos.blockToSection(new.z)
+        if (oldChunkX != newChunkX || oldChunkZ != newChunkZ) {
+            world.chunkManager.updateEntityPosition(this, ChunkPos(newChunkX, newChunkZ))
+        }
     }
 
     // TODO: Separate interaction logic

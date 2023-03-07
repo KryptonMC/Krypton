@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.coordinate.SectionPos
+import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.region.RegionFileManager
@@ -71,7 +72,12 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         }
 
         playersByChunk.computeIfAbsent(newPos.pack(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
-        world.server.tickDispatcher().queueElementUpdate(player, getChunk(newPos)!!)
+        updateEntityPosition(player, newPos)
+    }
+
+    fun updateEntityPosition(entity: KryptonEntity, newPos: ChunkPos) {
+        val newChunk = getChunk(newPos) ?: return
+        world.server.tickDispatcher().queueElementUpdate(entity, newChunk)
     }
 
     fun removePlayer(player: KryptonPlayer) {

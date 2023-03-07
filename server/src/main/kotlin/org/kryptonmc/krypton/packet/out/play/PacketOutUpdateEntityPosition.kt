@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Position
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
 import org.kryptonmc.krypton.util.readVarInt
@@ -41,5 +43,16 @@ data class PacketOutUpdateEntityPosition(
         buf.writeShort(deltaY.toInt())
         buf.writeShort(deltaZ.toInt())
         buf.writeBoolean(onGround)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun create(entityId: Int, oldPos: Position, newPos: Position, onGround: Boolean): PacketOutUpdateEntityPosition {
+            val deltaX = Positioning.calculateDelta(newPos.x, oldPos.x)
+            val deltaY = Positioning.calculateDelta(newPos.y, oldPos.y)
+            val deltaZ = Positioning.calculateDelta(newPos.z, oldPos.z)
+            return PacketOutUpdateEntityPosition(entityId, deltaX, deltaY, deltaZ, onGround)
+        }
     }
 }

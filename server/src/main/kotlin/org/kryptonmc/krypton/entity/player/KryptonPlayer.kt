@@ -38,6 +38,7 @@ import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
@@ -261,7 +262,7 @@ class KryptonPlayer(
         }
     }
 
-    override fun sendPositionUpdate(packet: Packet) {
+    override fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {
         connection.send(packet)
         viewingSystem.sendToViewers(packet)
         chunkViewingSystem.updateChunks()

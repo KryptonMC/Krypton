@@ -26,7 +26,6 @@ import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.KryptonMob
-import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -50,8 +49,8 @@ class KryptonNavigator(override val entity: KryptonMob) : Navigator {
         val speedY = dy * speed
         val speedZ = sin(radians) * speed
 
-        val yaw = Positioning.calculateLookYaw(dx, dz)
-        val pitch = Positioning.calculateLookPitch(dx, dy, dz)
+        val yaw = Positioning.calculateLookYaw(direction.x - position.x, direction.z - position.z)
+        val pitch = Positioning.calculateLookPitch(direction.x - position.x, direction.y - position.y, direction.z - position.z)
 
         val newPos = Position(position.x - speedX, position.y - speedY, position.z - speedZ, yaw, pitch)
         if (newPos == position) return // Don't move if we don't need to
