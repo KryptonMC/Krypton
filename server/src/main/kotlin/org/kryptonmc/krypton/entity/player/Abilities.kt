@@ -30,8 +30,8 @@ class Abilities {
     var canFly: Boolean = false
     var canInstantlyBuild: Boolean = false
     var canBuild: Boolean = true
-    var walkingSpeed: Float = 0.05F
-    var flyingSpeed: Float = 0.1F
+    var flyingSpeed: Float = 0.05F
+    var walkingSpeed: Float = 0.1F
 
     fun load(data: CompoundTag) {
         val abilities = if (data.contains(ABILITIES_TAG, CompoundTag.ID)) data.getCompound(ABILITIES_TAG) else return
