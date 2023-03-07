@@ -77,16 +77,11 @@ data class LightPacketData(
 
             for (i in sections.indices) {
                 val section = sections[i]
-                if (section.hasOnlyAir()) {
-                    emptySkyMask.set(i)
-                    emptyBlockMask.set(i)
-                    continue
-                }
 
                 // Deal with sky light data
                 if (hasNonZeroData(section.skyLight)) {
                     skyMask.set(i)
-                    skyLights.add(section.skyLight)
+                    skyLights.add(section.skyLight!!)
                 } else {
                     emptySkyMask.set(i)
                 }
@@ -94,7 +89,7 @@ data class LightPacketData(
                 // Deal with block light data
                 if (hasNonZeroData(section.blockLight)) {
                     blockMask.set(i)
-                    blockLights.add(section.blockLight)
+                    blockLights.add(section.blockLight!!)
                 } else {
                     emptyBlockMask.set(i)
                 }
@@ -104,7 +99,8 @@ data class LightPacketData(
         }
 
         @JvmStatic
-        private fun hasNonZeroData(array: ByteArray): Boolean {
+        private fun hasNonZeroData(array: ByteArray?): Boolean {
+            if (array == null) return false
             for (i in array.indices) {
                 if (array[i] != 0.toByte()) return true
             }

@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.data.ChunkSection
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
+import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.ImmutableListTag
@@ -77,7 +78,9 @@ object ChunkSerialization {
                     PaletteHolder(PaletteHolder.Strategy.biomes(biomeRegistry), biomeRegistry.get(BiomeKeys.PLAINS)!!)
                 }
 
-                val section = ChunkSection(y, blocks, biomes, sectionData.getByteArray("BlockLight"), sectionData.getByteArray("SkyLight"))
+                val blockLight = if (sectionData.contains("BlockLight", ByteArrayTag.ID)) sectionData.getByteArray("BlockLight") else null
+                val skyLight = if (sectionData.contains("SkyLight", ByteArrayTag.ID)) sectionData.getByteArray("SkyLight") else null
+                val section = ChunkSection(y, blocks, biomes, blockLight, skyLight)
                 sections[index] = section
             }
         }
@@ -144,8 +147,8 @@ object ChunkSerialization {
                     putByte("Y", i.toByte())
                     put("block_states", section.blocks.write { KryptonBlockState.CODEC.encodeStart(it, NbtOps.INSTANCE).result().get() })
                     put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
-                    if (section.blockLight.isNotEmpty()) putByteArray("BlockLight", section.blockLight)
-                    if (section.skyLight.isNotEmpty()) putByteArray("SkyLight", section.skyLight)
+                    if (section.blockLight != null) putByteArray("BlockLight", section.blockLight)
+                    if (section.skyLight != null) putByteArray("SkyLight", section.skyLight)
                 }
                 sectionList.add(sectionData)
             }

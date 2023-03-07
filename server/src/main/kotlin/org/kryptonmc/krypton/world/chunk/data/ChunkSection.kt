@@ -36,8 +36,8 @@ class ChunkSection(
     y: Int,
     val blocks: PaletteHolder<KryptonBlockState>,
     val biomes: PaletteHolder<Biome>,
-    val blockLight: ByteArray,
-    val skyLight: ByteArray
+    val blockLight: ByteArray?,
+    val skyLight: ByteArray?
 ) : NoiseBiomeSource {
 
     val bottomBlockY: Int = SectionPos.sectionToBlock(y)
@@ -51,8 +51,8 @@ class ChunkSection(
         y,
         PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState),
         PaletteHolder(PaletteHolder.Strategy.biomes(biomeRegistry), biomeRegistry.get(BiomeKeys.PLAINS)!!),
-        ByteArray(LIGHTS_SIZE),
-        ByteArray(LIGHTS_SIZE)
+        null,
+        null
     )
 
     fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
@@ -84,9 +84,4 @@ class ChunkSection(
     }
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biomes.get(x, y, z)
-
-    companion object {
-
-        private const val LIGHTS_SIZE = 2048
-    }
 }
