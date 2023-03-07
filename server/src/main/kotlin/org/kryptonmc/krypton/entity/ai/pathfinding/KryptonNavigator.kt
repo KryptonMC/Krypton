@@ -26,6 +26,10 @@ import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.KryptonMob
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 class KryptonNavigator(override val entity: KryptonMob) : Navigator {
 
@@ -35,16 +39,22 @@ class KryptonNavigator(override val entity: KryptonMob) : Navigator {
 
     override fun hasReachedTarget(): Boolean = target != null && entity.position.distanceSquared(target!!) < 0.0001
 
-    fun moveTowards(direction: Vec3d) {
+    fun moveTowards(direction: Vec3d, speed: Double) {
         val position = entity.position
-        val dx = direction.x - position.x
-        val dy = direction.y - position.y
-        val dz = direction.z - position.z
+        val dx = position.x - direction.x
+        val dy = position.y - direction.y
+        val dz = position.z - direction.z
+
+        val radians = atan2(dz, dx)
+        val speedX = cos(radians) * speed
+        val speedY = dy * speed
+        val speedZ = sin(radians) * speed
 
         val yaw = Positioning.calculateLookYaw(dx, dz)
         val pitch = Positioning.calculateLookPitch(dx, dy, dz)
-        val newPos = Position(direction.x, direction.y, direction.z, yaw, pitch)
-        if (newPos == entity.position) return // Don't move if we don't need to
+
+        val newPos = Position(position.x - speedX, position.y - speedY, position.z - speedZ, yaw, pitch)
+        if (newPos == position) return // Don't move if we don't need to
         entity.teleport(newPos)
     }
 

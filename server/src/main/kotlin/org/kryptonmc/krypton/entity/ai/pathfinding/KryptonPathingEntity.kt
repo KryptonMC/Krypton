@@ -62,7 +62,7 @@ class KryptonPathingEntity(private val navigator: KryptonNavigator) : IPathingEn
 
     override fun moveTo(position: Vec3d, passibility: Passibility, gravitation: Gravitation) {
         val target = KryptonVec3d(position.x, position.y, position.z)
-        navigator.moveTowards(target)
+        navigator.moveTowards(target, entity.attributes.getValue(KryptonAttributeTypes.MOVEMENT_SPEED))
         if (entity.position.y < target.y) {
             // Jump up if needed
             entity.velocity = KryptonVec3d(0.0, 2.5, 0.0)
