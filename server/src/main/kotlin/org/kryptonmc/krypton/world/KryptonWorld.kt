@@ -25,7 +25,6 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.scheduling.ExecutionType
@@ -43,6 +42,9 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.tracking.DefaultEntityTracker
+import org.kryptonmc.krypton.entity.tracking.EntityTracker
+import org.kryptonmc.krypton.entity.tracking.EntityTypeTarget
 import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
@@ -75,8 +77,7 @@ import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
-import java.util.Collections
-import java.util.concurrent.ConcurrentHashMap
+import java.util.function.Consumer
 
 class KryptonWorld(
     override val server: KryptonServer,
@@ -92,8 +93,14 @@ class KryptonWorld(
     override val registryHolder: RegistryHolder
         get() = KryptonDynamicRegistries.DynamicHolder
 
-    override val chunkManager: ChunkManager = ChunkManager(this)
+    val entityTracker: EntityTracker = DefaultEntityTracker(server.config.advanced.entityViewDistance)
     override val entityManager: EntityManager = EntityManager(this)
+    override val entities: Collection<KryptonEntity>
+        get() = entityTracker.entities()
+    override val players: Collection<KryptonPlayer>
+        get() = entityTracker.entitiesOfType(EntityTypeTarget.PLAYERS)
+
+    override val chunkManager: ChunkManager = ChunkManager(this)
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
     override val random: RandomSource = RandomSource.create()
     private val threadSafeRandom: RandomSource = RandomSource.createThreadSafe()
@@ -105,10 +112,6 @@ class KryptonWorld(
         }
     private var skyDarken = 0
 
-    // TODO: Replace with proper entity tracking
-    private val playerSet = ConcurrentHashMap.newKeySet<KryptonPlayer>()
-    override val players: Collection<Player>
-        get() = Collections.unmodifiableCollection(playerSet)
     var doNotSave: Boolean = false
 
     private var oldRainLevel = 0F
@@ -132,7 +135,7 @@ class KryptonWorld(
     init {
         updateSkyBrightness()
         prepareWeather()
-        scheduler.buildTask { PacketGrouping.sendGroupedPacket(playerSet, PacketOutUpdateTime.create(data)) { it.world === this } }
+        scheduler.buildTask { PacketGrouping.sendGroupedPacket(players, PacketOutUpdateTime.create(data)) { it.world === this } }
             .delay(TaskTime.seconds(1))
             .period(TaskTime.seconds(1))
             .executionType(ExecutionType.SYNCHRONOUS)
@@ -259,7 +262,7 @@ class KryptonWorld(
 
     @Suppress("UnusedPrivateMember")
     fun sendBlockUpdated(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
-        PacketGrouping.sendGroupedPacket(playerSet, PacketOutBlockUpdate(pos, newState))
+        PacketGrouping.sendGroupedPacket(players, PacketOutBlockUpdate(pos, newState))
         // TODO: Update pathfinding mobs
     }
 
@@ -428,15 +431,13 @@ class KryptonWorld(
 
     override fun skyDarken(): Int = skyDarken
 
-    override fun players(): Collection<KryptonPlayer> = playerSet
+    override fun players(): Collection<KryptonPlayer> = players
 
-    fun addPlayer(player: KryptonPlayer) {
-        playerSet.add(player)
+    override fun getNearbyEntities(position: Position, range: Double, callback: Consumer<Entity>) {
+        entityTracker.nearbyEntities(position, range) { callback.accept(it) }
     }
 
-    fun removePlayer(player: KryptonPlayer) {
-        playerSet.remove(player)
-    }
+    override fun getNearbyEntities(position: Position, range: Double): Collection<Entity> = entityTracker.nearbyEntities(position, range)
 
     override fun toString(): String = "KryptonWorld[${data.name}]"
 }

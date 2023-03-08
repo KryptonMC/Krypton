@@ -34,11 +34,12 @@ import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import java.nio.file.Path
+import java.util.function.Consumer
 
 /**
  * Represents a loaded world.
  */
-public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEntityContainer, ForwardingAudience, GameRuleHolder {
+public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEntityContainer, EntityContainer, ForwardingAudience, GameRuleHolder {
 
     /**
      * The server this world was loaded on.
@@ -78,12 +79,12 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     /**
      * All of the entities currently in this world.
      */
-    public val entities: Collection<Entity>
+    override val entities: Collection<Entity>
 
     /**
      * All of the players currently in this world.
      */
-    public val players: Collection<Player>
+    override val players: Collection<Player>
 
     /**
      * This world's border.
@@ -294,6 +295,26 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * @param position the position to spawn the entity at
      */
     public fun <T : Entity> spawnEntity(type: EntityType<T>, position: Position): T?
+
+    /**
+     * Gets all entities that are within the given [range] of the
+     * given [position], calling the given [callback] for each entity found.
+     *
+     * @param position the centre position to look around
+     * @param range the range to look for entities in
+     * @param callback the callback called for each entity found
+     */
+    public fun getNearbyEntities(position: Position, range: Double, callback: Consumer<Entity>)
+
+    /**
+     * Gets all entities that are within the given [range] of the
+     * given [position].
+     *
+     * @param position the centre position to look around
+     * @param range the range to look for entities in
+     * @return all found entities
+     */
+    public fun getNearbyEntities(position: Position, range: Double): Collection<Entity>
 
     public companion object {
 

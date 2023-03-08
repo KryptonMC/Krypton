@@ -37,5 +37,7 @@ data class AdvancedCategory(
     @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
     val saveThreshold: Int = 5,
     @Comment("Whether player chat messages should be sent to the console. Disable if you have a lot of players sending a lot of messages.")
-    val logPlayerChatMessages: Boolean = true
+    val logPlayerChatMessages: Boolean = true,
+    @Comment("The view (render) distance for entities, in chunks.")
+    val entityViewDistance: Int = 5
 )

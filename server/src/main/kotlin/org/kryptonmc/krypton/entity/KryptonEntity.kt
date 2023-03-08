@@ -36,14 +36,23 @@ import org.kryptonmc.krypton.entity.components.BaseEntity
 import org.kryptonmc.krypton.entity.components.SerializableEntity
 import org.kryptonmc.krypton.entity.system.EntityVehicleSystem
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.entity.system.EntityViewingSystem
 import org.kryptonmc.krypton.entity.system.EntityWaterPhysicsSystem
+import org.kryptonmc.krypton.entity.tracking.EntityTracker
+import org.kryptonmc.krypton.entity.tracking.EntityTypeTarget
+import org.kryptonmc.krypton.entity.tracking.EntityViewCallback
+import org.kryptonmc.krypton.entity.tracking.EntityViewingEngine
+import org.kryptonmc.krypton.event.player.KryptonEntityEnterViewEvent
+import org.kryptonmc.krypton.event.player.KryptonEntityExitViewEvent
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRotation
@@ -72,7 +81,22 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     final override val data: MetadataHolder = MetadataHolder(this)
     final override val vehicleSystem: EntityVehicleSystem = EntityVehicleSystem(this)
     final override val waterPhysicsSystem: EntityWaterPhysicsSystem = EntityWaterPhysicsSystem(this)
-    final override val viewingSystem: EntityViewingSystem<KryptonEntity> = EntityViewingSystem.create(this)
+
+    val viewingEngine: EntityViewingEngine = EntityViewingEngine(this)
+    val trackingTarget: EntityTypeTarget<KryptonEntity> = if (this is KryptonPlayer) EntityTypeTarget.PLAYERS else EntityTypeTarget.ENTITIES
+    val trackingViewCallback: EntityViewCallback<KryptonEntity> = object : EntityViewCallback<KryptonEntity> {
+        override fun add(entity: KryptonEntity) {
+            viewingEngine.handleEnterView(entity)
+        }
+
+        override fun remove(entity: KryptonEntity) {
+            viewingEngine.handleExitView(entity)
+        }
+
+        override fun referenceUpdate(position: Position, tracker: EntityTracker) {
+            viewingEngine.updateTracker(world, position)
+        }
+    }
 
     var eyeHeight: Float = 0F
         private set
@@ -114,9 +138,9 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         ticksExisted++
         waterPhysicsSystem.tick()
         scheduler.process()
-        if (data.isDirty()) viewingSystem.sendToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
+        if (data.isDirty()) sendPacketToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
         if (velocityNeedsUpdate) {
-            viewingSystem.sendToViewers(PacketOutSetEntityVelocity.fromEntity(this))
+            sendPacketToViewers(PacketOutSetEntityVelocity.fromEntity(this))
             velocityNeedsUpdate = false
         }
     }
@@ -139,17 +163,18 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
             return
         } else if (positionChange && rotationChange) {
             sendPositionUpdate(PacketOutUpdateEntityPositionAndRotation.create(id, old, new, isOnGround), old, new)
-            viewingSystem.sendToViewers(PacketOutSetHeadRotation(id, new.yaw))
+            sendPacketToViewers(PacketOutSetHeadRotation(id, new.yaw))
         } else if (positionChange) {
             sendPositionUpdate(PacketOutUpdateEntityPosition.create(id, old, new, isOnGround), old, new)
         } else if (rotationChange) {
-            viewingSystem.sendToViewers(PacketOutUpdateEntityRotation(id, new.yaw, new.pitch, isOnGround))
-            viewingSystem.sendToViewers(PacketOutSetHeadRotation(id, new.yaw))
+            sendPacketToViewers(PacketOutUpdateEntityRotation(id, new.yaw, new.pitch, isOnGround))
+            sendPacketToViewers(PacketOutSetHeadRotation(id, new.yaw))
         }
     }
 
     protected open fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {
-        viewingSystem.sendToViewers(packet)
+        sendPacketToViewers(packet)
+        world.entityTracker.onMove(this, new, trackingTarget, trackingViewCallback)
 
         val oldChunkX = SectionPos.blockToSection(old.x)
         val oldChunkZ = SectionPos.blockToSection(old.z)
@@ -212,6 +237,27 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     }
 
     open fun headYaw(): Float = 0F
+
+    open fun viewDistance(): Int = server.config.advanced.entityViewDistance
+
+    open fun showToViewer(viewer: KryptonPlayer) {
+        server.eventNode.fire(KryptonEntityEnterViewEvent(viewer, this))
+
+        viewer.connection.send(getSpawnPacket())
+        if (velocity.lengthSquared() > 0.001) viewer.connection.send(PacketOutSetEntityVelocity.fromEntity(this))
+        viewer.connection.send(PacketOutSetEntityMetadata(id, data.collectAll()))
+    }
+
+    open fun hideFromViewer(viewer: KryptonPlayer) {
+        server.eventNode.fire(KryptonEntityExitViewEvent(viewer, this))
+        viewer.connection.send(PacketOutRemoveEntities.removeSingle(this))
+    }
+
+    fun sendPacketToViewers(packet: Packet) {
+        PacketGrouping.sendGroupedPacket(viewingEngine.viewers(), packet)
+    }
+
+    protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity.create(this)
 
     companion object {
 

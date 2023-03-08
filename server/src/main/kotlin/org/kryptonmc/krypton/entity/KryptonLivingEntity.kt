@@ -42,6 +42,7 @@ import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.entity.components.KryptonEquipable
 import org.kryptonmc.krypton.entity.util.EquipmentSlots
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateAttributes
 import org.kryptonmc.krypton.world.KryptonWorld
 
 @Suppress("LeakingThis")
@@ -188,6 +189,11 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     }
 
     override fun headYaw(): Float = headYaw
+
+    override fun showToViewer(viewer: KryptonPlayer) {
+        super.showToViewer(viewer)
+        viewer.connection.send(PacketOutUpdateAttributes.create(id, attributes.syncable()))
+    }
 
     companion object {
 

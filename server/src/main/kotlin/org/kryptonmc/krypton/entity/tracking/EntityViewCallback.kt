@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.components
+package org.kryptonmc.krypton.entity.tracking
 
-import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.entity.system.EntityViewingSystem
 
-interface Viewable : Entity {
+interface EntityViewCallback<E : KryptonEntity> {
 
-    val viewingSystem: EntityViewingSystem<KryptonEntity>
+    fun add(entity: E)
 
-    fun addViewer(player: KryptonPlayer): Boolean = viewingSystem.addViewer(player)
+    fun remove(entity: E)
 
-    fun removeViewer(player: KryptonPlayer): Boolean = viewingSystem.removeViewer(player)
+    fun referenceUpdate(position: Position, tracker: EntityTracker) {
+        // Do nothing by default
+    }
 }

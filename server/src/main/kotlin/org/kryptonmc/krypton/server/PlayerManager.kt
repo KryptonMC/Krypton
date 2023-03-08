@@ -120,7 +120,6 @@ class PlayerManager(private val server: KryptonServer) {
 
         val world = server.worldManager.worlds.get(dimension) ?: server.worldManager.default
         player.world = world
-        world.addPlayer(player)
         val location = player.position
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at $location")
 
@@ -206,7 +205,6 @@ class PlayerManager(private val server: KryptonServer) {
 
         // Remove from caches
         player.world.removeEntity(player)
-        player.world.removePlayer(player)
         players.remove(player)
         playersByName.remove(player.profile.name)
         playersByUUID.remove(player.uuid)

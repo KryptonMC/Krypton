@@ -9,14 +9,17 @@
 package org.kryptonmc.api.world.chunk
 
 import org.kryptonmc.api.block.BlockContainer
+import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.FluidContainer
+import org.kryptonmc.api.world.EntityContainer
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.BiomeContainer
 
 /**
  * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
-public interface Chunk : BlockContainer, FluidContainer, BiomeContainer {
+public interface Chunk : BlockContainer, FluidContainer, BiomeContainer, EntityContainer {
 
     /**
      * The world this chunk is in.
@@ -58,4 +61,14 @@ public interface Chunk : BlockContainer, FluidContainer, BiomeContainer {
      * saved to disk.
      */
     public val lastUpdate: Long
+
+    /**
+     * All of the entities currently in this chunk.
+     */
+    override val entities: Collection<Entity>
+
+    /**
+     * All of the players currently in this chunk.
+     */
+    override val players: Collection<Player>
 }

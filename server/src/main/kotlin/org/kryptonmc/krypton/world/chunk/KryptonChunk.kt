@@ -18,12 +18,15 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.entity.tracking.EntityTypeTarget
 import org.kryptonmc.krypton.ticking.Tickable
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -55,6 +58,11 @@ class KryptonChunk(
         get() = position.z
 
     val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight.fromChunk(this, true) }
+
+    override val entities: Collection<Entity>
+        get() = world.entityTracker.entitiesInChunk(position)
+    override val players: Collection<Player>
+        get() = world.entityTracker.entitiesInChunkOfType(position, EntityTypeTarget.PLAYERS)
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
 //        if (world.isDebug) {

@@ -72,14 +72,18 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoRemove
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
+import org.kryptonmc.krypton.util.ImmutableLists
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -263,7 +267,8 @@ class KryptonPlayer(
     }
 
     override fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {
-        viewingSystem.sendToViewers(packet)
+        sendPacketToViewers(packet)
+        world.entityTracker.onMove(this, new, trackingTarget, trackingViewCallback)
         chunkViewingSystem.updateChunks()
         updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
         hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
@@ -388,6 +393,20 @@ class KryptonPlayer(
     }
 
     override fun isOnline(): Boolean = server.getPlayer(uuid) === this
+
+    override fun viewDistance(): Int = settings.viewDistance
+
+    override fun showToViewer(viewer: KryptonPlayer) {
+        viewer.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(ImmutableLists.of(this)))
+        super.showToViewer(viewer)
+    }
+
+    override fun hideFromViewer(viewer: KryptonPlayer) {
+        super.hideFromViewer(viewer)
+        viewer.connection.send(PacketOutPlayerInfoRemove(this))
+    }
+
+    override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer.create(this)
 
     companion object {
 

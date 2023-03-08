@@ -122,7 +122,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
                 offset = offset.normalize().multiply(FLUID_VECTOR_MAGIC)
             }
             entity.velocity = entity.velocity.add(offset)
-            entity.viewingSystem.sendToViewers(PacketOutSetEntityVelocity.fromEntity(entity))
+            entity.sendPacketToViewers(PacketOutSetEntityVelocity.fromEntity(entity))
         }
 
         fluidHeights.put(tag, amount)

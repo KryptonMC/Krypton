@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.function.UnaryOperator
 
-interface BaseEntity : BaseDataHolder, NameableTeamMember, Rideable, Viewable, WaterPushable, Damageable, Interactable {
+interface BaseEntity : BaseDataHolder, NameableTeamMember, Rideable, WaterPushable, Damageable, Interactable {
 
     val isRemoved: Boolean
 

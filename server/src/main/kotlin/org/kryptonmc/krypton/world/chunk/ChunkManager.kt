@@ -18,23 +18,20 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.apache.logging.log4j.LogManager
-import java.util.concurrent.ConcurrentHashMap
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.tracking.EntityTypeTarget
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.function.Consumer
-import java.util.function.LongFunction
 
 class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
     private val chunkMap = Long2ObjectSyncMap.hashmap<KryptonChunk>()
-    private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
     fun chunks(): Collection<KryptonChunk> = chunkMap.values
@@ -52,6 +49,8 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     }
 
     fun updatePlayerPosition(player: KryptonPlayer, oldPos: ChunkPos, newPos: ChunkPos, viewDistance: Int) {
+        if (oldPos == newPos) return
+
         val chunksInRange = (viewDistance * 2 + 1) * (viewDistance * 2 + 1)
         for (i in 0 until chunksInRange) {
             val pos = Maths.chunkInSpiral(i, newPos.x, newPos.z)
@@ -59,19 +58,6 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             loadChunk(pos)
         }
 
-        if (oldPos == newPos) {
-            if (playersByChunk.containsKey(newPos.pack())) return
-            playersByChunk.computeIfAbsent(newPos.pack(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
-            return
-        }
-
-        val oldSet = playersByChunk.get(oldPos.pack())
-        if (oldSet != null) {
-            oldSet.remove(player)
-            if (oldSet.isEmpty()) playersByChunk.remove(oldPos.pack())
-        }
-
-        playersByChunk.computeIfAbsent(newPos.pack(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
         updateEntityPosition(player, newPos)
     }
 
@@ -83,34 +69,17 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     fun removePlayer(player: KryptonPlayer) {
         val viewDistance = world.server.config.world.viewDistance
         val chunkPos = ChunkPos(SectionPos.blockToSection(player.position.x), SectionPos.blockToSection(player.position.z))
-        val packedPos = chunkPos.pack()
 
         val chunksInRange = (viewDistance * 2 + 1) * (viewDistance * 2 + 1)
         for (i in 0 until chunksInRange) {
             val pos = Maths.chunkInSpiral(i, chunkPos.x, chunkPos.z)
-            if (getChunk(pos) == null) continue // Not loaded, no need to unload it
-
-            val playerSet = playersByChunk.get(pos.pack()) ?: continue
-            if (playerSet.isEmpty()) {
-                // Since there's no players in this chunk, we're safe to unload it
-                unloadChunk(chunkPos.x, chunkPos.z)
-            }
+            val chunk = getChunk(pos) ?: continue // Not loaded, no need to unload it
+            if (chunk.players.isEmpty()) unloadChunk(chunkPos.x, chunkPos.z)
         }
 
+        val playersInChunk = world.entityTracker.entitiesInChunkOfType(chunkPos, EntityTypeTarget.PLAYERS)
+        if (playersInChunk.isEmpty()) unloadChunk(chunkPos.x, chunkPos.z)
         world.server.tickDispatcher().queueElementRemove(player)
-
-        val playerSet = playersByChunk.get(packedPos)
-        if (playerSet == null) {
-            LOGGER.warn("Chunk at $chunkPos, which disconnecting player ${player.name} is in, does not have any players registered in it!")
-            return
-        }
-
-        playerSet.remove(player)
-        if (playerSet.isEmpty()) {
-            playersByChunk.remove(packedPos)
-            // This will likely have been skipped earlier in the main loop, so we'll just make sure this chunk gets unloaded if it needs to be.
-            unloadChunk(chunkPos.x, chunkPos.z)
-        }
     }
 
     fun loadChunk(pos: ChunkPos): KryptonChunk? {
@@ -153,6 +122,5 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
         private const val STARTING_AREA_RADIUS = 12
         private const val STARTING_AREA_SIZE = (STARTING_AREA_RADIUS * 2 + 1) * (STARTING_AREA_RADIUS * 2 + 1)
-        private val LOGGER = LogManager.getLogger()
     }
 }
