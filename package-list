@@ -137,6 +137,7 @@ org.kryptonmc.krypton.entity.serializer.player
 org.kryptonmc.krypton.entity.serializer.projectile
 org.kryptonmc.krypton.entity.serializer.vehicle
 org.kryptonmc.krypton.entity.system
+org.kryptonmc.krypton.entity.tracking
 org.kryptonmc.krypton.entity.util
 org.kryptonmc.krypton.entity.vehicle
 org.kryptonmc.krypton.entity.villagerdata
