@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.packet.MovementPacket
@@ -34,6 +35,8 @@ data class PacketInSetPlayerPositionAndRotation(
 ) : MovementPacket, InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(), buf.readBoolean())
+
+    fun position(): Position = Position(x, y, z, yaw, pitch)
 
     override fun write(buf: ByteBuf) {
         buf.writeDouble(x)

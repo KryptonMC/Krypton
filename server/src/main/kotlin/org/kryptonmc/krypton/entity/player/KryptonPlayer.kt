@@ -263,9 +263,10 @@ class KryptonPlayer(
     }
 
     override fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {
-        connection.send(packet)
         viewingSystem.sendToViewers(packet)
         chunkViewingSystem.updateChunks()
+        updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
+        hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
     }
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {

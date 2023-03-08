@@ -61,7 +61,6 @@ import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.SignableCommand
 import org.kryptonmc.krypton.network.chat.SignedMessageBody
 import org.kryptonmc.krypton.network.chat.SignedMessageChain
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatCommand
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
@@ -95,14 +94,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDisguisedChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutTagQueryResponse
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRotation
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.util.FutureChain
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
@@ -475,63 +469,27 @@ class PlayPacketHandler(
     }
 
     fun handlePlayerPosition(packet: PacketInSetPlayerPosition) {
-        updatePosition(packet.x, packet.y, packet.z) { dx, dy, dz -> PacketOutUpdateEntityPosition(player.id, dx, dy, dz, packet.onGround) }
+        handlePositionRotationUpdate(player.position.withCoordinates(packet.x, packet.y, packet.z), packet.onGround)
     }
 
     fun handlePlayerRotation(packet: PacketInSetPlayerRotation) {
-        if (!updateRotation(packet.yaw, packet.pitch)) return
-        server.connectionManager.sendGroupedPacket(PacketOutUpdateEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) {
-            it !== player
-        }
-        server.connectionManager.sendGroupedPacket(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
+        handlePositionRotationUpdate(player.position.withRotation(packet.yaw, packet.pitch), packet.onGround)
     }
 
     fun handlePlayerPositionAndRotation(packet: PacketInSetPlayerPositionAndRotation) {
-        updatePosition(packet.x, packet.y, packet.z) { dx, dy, dz ->
-            PacketOutUpdateEntityPositionAndRotation(player.id, dx, dy, dz, packet.yaw, packet.pitch, packet.onGround)
-        }
-        // It may seem weird at first that we update the rotation afterwards, considering we use the rotation in the update packet above.
-        // However, we're always using the packet's values, which are the updated values, and we'll have to send that packet anyway, so
-        // there's no point checking whether the rotation has changed or not beforehand.
-        if (updateRotation(packet.yaw, packet.pitch)) {
-            server.connectionManager.sendGroupedPacket(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
-        }
+        handlePositionRotationUpdate(packet.position(), packet.onGround)
     }
 
-    private fun updatePosition(x: Double, y: Double, z: Double, updatePacket: MovementPacketSupplier) {
+    private fun handlePositionRotationUpdate(newPosition: Position, onGround: Boolean) {
         val oldPosition = player.position
-        if (oldPosition.x == x && oldPosition.y == y && oldPosition.z == z) {
-            // We haven't moved at all. We can avoid constructing the Vector3d object entirely,
-            // avoid calling the move event, and just fast nope out.
-            return
-        }
+        if (oldPosition == newPosition) return // Position hasn't changed, no need to do anything
 
-        val newPosition = oldPosition.withCoordinates(x, y, z)
+        // TODO: Figure out if we should make an entity move event and move this there, so the event is called on teleportation too
         val event = server.eventNode.fire(KryptonPlayerMoveEvent(player, oldPosition, newPosition))
         if (!event.isAllowed()) return
 
-        player.position = event.result?.newPosition ?: newPosition
-
-        val dx = Positioning.calculateDelta(x, oldPosition.x)
-        val dy = Positioning.calculateDelta(y, oldPosition.y)
-        val dz = Positioning.calculateDelta(z, oldPosition.z)
-        player.viewingSystem.sendToViewers(updatePacket.get(dx, dy, dz))
-        onMove(newPosition, oldPosition)
-    }
-
-    private fun updateRotation(yaw: Float, pitch: Float): Boolean {
-        val oldPosition = player.position
-        if (oldPosition.yaw == yaw && oldPosition.pitch == pitch) {
-            // We haven't rotated at all. We can avoid calling the event and just fast nope out.
-            return false
-        }
-
-        val newPosition = oldPosition.withRotation(yaw, pitch)
-        val event = server.eventNode.fire(KryptonPlayerMoveEvent(player, oldPosition, newPosition))
-        if (!event.isAllowed()) return false
-
-        player.position = event.result?.newPosition ?: newPosition
-        return true
+        player.isOnGround = onGround
+        player.teleport(newPosition)
     }
 
     fun handlePluginMessage(packet: PacketInPluginMessage) {
@@ -565,17 +523,6 @@ class PlayPacketHandler(
             return
         }
         server.eventNode.fire(KryptonPlayerResourcePackStatusEvent(player, packet.status))
-    }
-
-    private fun onMove(new: Position, old: Position) {
-        player.chunkViewingSystem.updateChunks()
-        player.updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
-        player.hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
-    }
-
-    private fun interface MovementPacketSupplier {
-
-        fun get(dx: Short, dy: Short, dz: Short): Packet
     }
 
     companion object {
