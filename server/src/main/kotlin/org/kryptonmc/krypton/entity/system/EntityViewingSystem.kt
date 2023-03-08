@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonEntityEnterViewEvent
 import org.kryptonmc.krypton.event.player.KryptonEntityExitViewEvent
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoRemove
@@ -59,7 +60,7 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
     }
 
     fun sendToViewers(packet: Packet) {
-        entity.server.connectionManager.sendGroupedPacket(viewers, packet)
+        PacketGrouping.sendGroupedPacket(viewers, packet)
     }
 
     protected open fun getSpawnPacket(): Packet {

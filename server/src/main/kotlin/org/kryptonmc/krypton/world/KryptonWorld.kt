@@ -25,6 +25,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.scheduling.ExecutionType
@@ -42,7 +43,7 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
@@ -74,6 +75,7 @@ import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
 class KryptonWorld(
@@ -103,7 +105,10 @@ class KryptonWorld(
         }
     private var skyDarken = 0
 
-    override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    // TODO: Replace with proper entity tracking
+    private val playerSet = ConcurrentHashMap.newKeySet<KryptonPlayer>()
+    override val players: Collection<Player>
+        get() = Collections.unmodifiableCollection(playerSet)
     var doNotSave: Boolean = false
 
     private var oldRainLevel = 0F
@@ -127,7 +132,7 @@ class KryptonWorld(
     init {
         updateSkyBrightness()
         prepareWeather()
-        scheduler.buildTask { sendGroupedPacket(PacketOutUpdateTime.create(data)) { it.world === this } }
+        scheduler.buildTask { PacketGrouping.sendGroupedPacket(playerSet, PacketOutUpdateTime.create(data)) { it.world === this } }
             .delay(TaskTime.seconds(1))
             .period(TaskTime.seconds(1))
             .executionType(ExecutionType.SYNCHRONOUS)
@@ -254,7 +259,7 @@ class KryptonWorld(
 
     @Suppress("UnusedPrivateMember")
     fun sendBlockUpdated(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
-        server.connectionManager.sendGroupedPacket(players, PacketOutBlockUpdate(pos, newState))
+        PacketGrouping.sendGroupedPacket(playerSet, PacketOutBlockUpdate(pos, newState))
         // TODO: Update pathfinding mobs
     }
 
@@ -421,11 +426,17 @@ class KryptonWorld(
         return cachedPointers!!
     }
 
-    override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        server.connectionManager.sendGroupedPacket(players, packet)
+    override fun skyDarken(): Int = skyDarken
+
+    override fun players(): Collection<KryptonPlayer> = playerSet
+
+    fun addPlayer(player: KryptonPlayer) {
+        playerSet.add(player)
     }
 
-    override fun skyDarken(): Int = skyDarken
+    fun removePlayer(player: KryptonPlayer) {
+        playerSet.remove(player)
+    }
 
     override fun toString(): String = "KryptonWorld[${data.name}]"
 }

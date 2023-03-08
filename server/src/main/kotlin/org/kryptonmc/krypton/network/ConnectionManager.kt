@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.network
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.PlayerManager
@@ -51,23 +50,11 @@ class ConnectionManager(private val playerManager: PlayerManager, motd: Componen
     }
 
     fun sendGroupedPacket(packet: Packet) {
-        sendGroupedPacket(packet, ALWAYS_TRUE)
+        sendGroupedPacket(packet, null)
     }
 
-    fun sendGroupedPacket(packet: Packet, predicate: Predicate<KryptonPlayer>) {
-        sendGroupedPacket(playerManager.players(), packet, predicate)
-    }
-
-    fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        sendGroupedPacket(players, packet, ALWAYS_TRUE)
-    }
-
-    fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer>) {
-        if (players.isEmpty()) return
-        val finalBuffer = PacketFraming.frame(packet)
-        val framedPacket = FramedPacket(finalBuffer)
-        players.forEach { if (it.isOnline() && predicate.test(it)) it.connection.write(framedPacket) }
-        finalBuffer.release()
+    fun sendGroupedPacket(packet: Packet, predicate: Predicate<KryptonPlayer>?) {
+        PacketGrouping.sendGroupedPacket(playerManager.players(), packet, predicate)
     }
 
     fun tick(time: Long) {
@@ -101,6 +88,5 @@ class ConnectionManager(private val playerManager: PlayerManager, motd: Componen
         private const val UPDATE_STATUS_INTERVAL = 5000L
         private const val WAIT_AFTER_INVALID_STATUS_TIME = 1000L
         private const val MAXIMUM_SAMPLED_PLAYERS = 12
-        private val ALWAYS_TRUE = Predicate<KryptonPlayer> { true }
     }
 }

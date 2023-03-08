@@ -33,6 +33,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.packet.Packet
@@ -50,20 +51,18 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
-import java.util.function.Predicate
+import kotlin.random.Random
 
-interface PacketGroupingAudience : ForwardingAudience {
+fun interface PacketGroupingAudience : ForwardingAudience {
 
-    val players: Collection<KryptonPlayer>
+    fun players(): Collection<KryptonPlayer>
 
-    fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet)
-
-    fun sendGroupedPacket(packet: Packet, filter: Predicate<KryptonPlayer>)
-
-    fun generateSoundSeed(): Long
+    fun generateSoundSeed(): Long {
+        return Random.nextLong()
+    }
 
     private fun sendGroupedPacket(packet: Packet) {
-        sendGroupedPacket(players, packet)
+        PacketGrouping.sendGroupedPacket(players(), packet)
     }
 
     override fun deleteMessage(signature: SignedMessage.Signature) {
@@ -84,7 +83,8 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun sendMessage(message: Component, boundChatType: ChatType.Bound) {
-        sendGroupedPacket(PacketOutDisguisedChat(message, RichChatType.Bound.from(boundChatType).toNetwork())) { it.acceptsChatMessages() }
+        val type = RichChatType.Bound.from(boundChatType).toNetwork()
+        PacketGrouping.sendGroupedPacket(players(), PacketOutDisguisedChat(message, type)) { it.acceptsChatMessages() }
     }
 
     override fun sendActionBar(message: Component) {
@@ -157,8 +157,8 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     override fun openBook(book: Book) {
         val item = KryptonAdventure.toItemStack(book)
-        players.forEach { it.openBook(item) }
+        players().forEach { it.openBook(item) }
     }
 
-    override fun audiences(): Iterable<Audience> = players
+    override fun audiences(): Iterable<Audience> = players()
 }

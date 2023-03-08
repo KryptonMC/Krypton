@@ -26,10 +26,8 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.ConnectionManager
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.server.PlayerManager
 import java.util.Collections
-import java.util.function.Predicate
 
 interface ServerAudience : Server, PacketGroupingAudience {
 
@@ -37,9 +35,11 @@ interface ServerAudience : Server, PacketGroupingAudience {
     val playerManager: PlayerManager
 
     override val players: Collection<KryptonPlayer>
-        get() = Collections.unmodifiableCollection(playerManager.players())
+        get() = players()
 
-    override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
+    override fun players(): Collection<KryptonPlayer> = Collections.unmodifiableCollection(playerManager.players())
+
+    override fun audiences(): Iterable<Audience> = players().asSequence().plus(console).asIterable()
 
     override fun sendMessage(message: Component) {
         super<PacketGroupingAudience>.sendMessage(message)
@@ -59,13 +59,5 @@ interface ServerAudience : Server, PacketGroupingAudience {
     override fun deleteMessage(signature: SignedMessage.Signature) {
         super<PacketGroupingAudience>.deleteMessage(signature)
         console.deleteMessage(signature)
-    }
-
-    override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        connectionManager.sendGroupedPacket(players, packet)
-    }
-
-    override fun sendGroupedPacket(packet: Packet, filter: Predicate<KryptonPlayer>) {
-        connectionManager.sendGroupedPacket(players, packet, filter)
     }
 }

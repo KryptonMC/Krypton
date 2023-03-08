@@ -29,8 +29,6 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -42,7 +40,6 @@ import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.nio.file.Path
-import java.util.function.Predicate
 
 interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
@@ -107,13 +104,5 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override fun unloadChunk(x: Int, z: Int) {
         chunkManager.unloadChunk(x, z)
-    }
-
-    override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        server.connectionManager.sendGroupedPacket(players, packet)
-    }
-
-    override fun sendGroupedPacket(packet: Packet, filter: Predicate<KryptonPlayer>) {
-        server.connectionManager.sendGroupedPacket(players, packet, filter)
     }
 }

@@ -22,6 +22,7 @@ import com.google.common.collect.MapMaker
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.components.NetworkPlayer
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import java.util.Collections
 import java.util.UUID
@@ -42,9 +43,9 @@ object BossBarManager : BossBar.Listener {
 
     fun addBar(bar: BossBar, audience: PacketGroupingAudience) {
         val holder = getOrCreate(bar)
-        val addedPlayers = audience.players.filter(holder.subscribers::add)
+        val addedPlayers = audience.players().filter(holder.subscribers::add)
         if (addedPlayers.isNotEmpty()) {
-            audience.sendGroupedPacket(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
+            PacketGrouping.sendGroupedPacket(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
         }
     }
 
@@ -55,9 +56,9 @@ object BossBarManager : BossBar.Listener {
 
     fun removeBar(bar: BossBar, audience: PacketGroupingAudience) {
         val holder = bars.get(bar) ?: return
-        val addedPlayers = audience.players.filter(holder.subscribers::add)
-        if (addedPlayers.isNotEmpty()) {
-            audience.sendGroupedPacket(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
+        val removedPlayers = audience.players().filter(holder.subscribers::remove)
+        if (removedPlayers.isNotEmpty()) {
+            PacketGrouping.sendGroupedPacket(removedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
         }
     }
 
