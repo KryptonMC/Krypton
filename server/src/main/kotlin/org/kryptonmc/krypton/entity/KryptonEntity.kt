@@ -74,7 +74,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override val serializer: EntitySerializer<out KryptonEntity>
         get() = BaseEntitySerializer
 
-    protected val random = RandomSource.create()
+    val random: RandomSource = RandomSource.create()
     final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid: UUID = Maths.createInsecureUUID(random)
 

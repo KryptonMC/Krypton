@@ -107,7 +107,7 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
     }
     */
 
-    protected fun registerGoals() {
+    protected open fun registerGoals() {
         // No goals to register by default
     }
 
@@ -126,7 +126,7 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
         // Do nothing by default - subtypes can override this to add custom AI logic
     }
 
-    protected fun target(): KryptonLivingEntity? = target
+    fun target(): KryptonLivingEntity? = target
 
     open fun setTarget(target: KryptonLivingEntity?) {
         this.target = target
