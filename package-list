@@ -117,6 +117,7 @@ org.kryptonmc.krypton.entity
 org.kryptonmc.krypton.entity.ai.goal
 org.kryptonmc.krypton.entity.ai.memory
 org.kryptonmc.krypton.entity.ai.pathfinding
+org.kryptonmc.krypton.entity.ai.targeting
 org.kryptonmc.krypton.entity.ambient
 org.kryptonmc.krypton.entity.animal
 org.kryptonmc.krypton.entity.aquatic
