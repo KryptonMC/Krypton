@@ -100,8 +100,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     var eyeHeight: Float = 0F
         private set
-    final override var isRemoved: Boolean = false
-        private set
+    private var removed = false
     final override var position: Position = Position.ZERO
     final override var velocity: Vec3d = Vec3d.ZERO
         set(value) {
@@ -130,15 +129,24 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     }
 
     override fun tick(time: Long) {
-        // We don't need the time for any of the entity ticking logic for now.
+        // Tick the scheduler here so that we can schedule things for the next tick within the tick.
+        scheduler.process()
+
+        // Run the main tick
         tick()
+
+        // Do things that we need to do after the tick
+        postTick()
     }
 
     open fun tick() {
         ticksExisted++
         waterPhysicsSystem.tick()
-        scheduler.process()
-        if (data.isDirty()) sendPacketToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
+    }
+
+    // This is for certain things that need to always be sent after the tick is finished, like update packets.
+    protected open fun postTick() {
+        if (data.isDirty()) sendPacketToViewersAndSelf(PacketOutSetEntityMetadata(id, data.collectDirty()))
         if (velocityNeedsUpdate) {
             sendPacketToViewers(PacketOutSetEntityVelocity.fromEntity(this))
             velocityNeedsUpdate = false
@@ -159,6 +167,8 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         val rotationChange = new.yaw != old.yaw || new.pitch != old.pitch
 
         if (dx > 8 || dy > 8 || dz > 8) {
+            // The update packets can only handle a maximum of 8 blocks in any direction due to the way they
+            // are designed, and so, if an entity moves more than 8 blocks, we need to teleport them.
             sendPositionUpdate(PacketOutTeleportEntity.create(this), old, new)
             return
         } else if (positionChange && rotationChange) {
@@ -188,8 +198,9 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     // TODO: Separate interaction logic
     //open fun interact(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
 
-    override fun isInvulnerableTo(source: KryptonDamageSource): Boolean =
-        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer()
+    override fun isInvulnerableTo(source: KryptonDamageSource): Boolean {
+        return isRemoved() || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer()
+    }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isInvulnerableTo(source)) return false
@@ -202,8 +213,8 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     }
 
     override fun remove() {
-        if (isRemoved) return
-        isRemoved = true
+        if (removed) return
+        removed = true
         vehicleSystem.ejectVehicle()
         vehicleSystem.ejectPassengers()
         world.removeEntity(this)
@@ -238,8 +249,6 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     open fun headYaw(): Float = 0F
 
-    open fun viewDistance(): Int = server.config.advanced.entityViewDistance
-
     open fun showToViewer(viewer: KryptonPlayer) {
         server.eventNode.fire(KryptonEntityEnterViewEvent(viewer, this))
 
@@ -257,7 +266,13 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         PacketGrouping.sendGroupedPacket(viewingEngine.viewers(), packet)
     }
 
+    protected open fun sendPacketToViewersAndSelf(packet: Packet) {
+        sendPacketToViewers(packet)
+    }
+
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity.create(this)
+
+    override fun isRemoved(): Boolean = removed
 
     companion object {
 

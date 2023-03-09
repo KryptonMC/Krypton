@@ -67,12 +67,15 @@ class KryptonGoalSelector : GoalSelector {
     fun tick(time: Long) {
         for (goal in goals) {
             if (!goal.isRunning()) {
+                // If the goal isn't running, try to see if we can start it
                 if (goal.canUse()) goal.start()
                 continue
             }
             if (goal.shouldStop()) {
+                // If the goal should be stopped, stop it
                 goal.stop()
             } else {
+                // Update the goal
                 goal.tick(time)
             }
         }

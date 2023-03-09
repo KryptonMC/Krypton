@@ -22,6 +22,11 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.ImmutableLists
 
+/**
+ * A target for entities. This is used to separate entities in to groups in tracking, so
+ * they can be retrieved as a group, which is faster than manually filtering a list
+ * every time.
+ */
 interface EntityTypeTarget<out E : KryptonEntity> {
 
     val type: Class<out E>

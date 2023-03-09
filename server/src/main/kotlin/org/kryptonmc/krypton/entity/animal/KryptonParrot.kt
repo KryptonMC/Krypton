@@ -53,32 +53,6 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
 
     override fun canMate(target: Animal): Boolean = false
 
-    /*
-    override fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult {
-        val heldItem = player.heldItem(hand)
-        if (!isTame && TAME_FOOD.contains(heldItem.type)) {
-            if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
-            if (!isSilent) world.playSound(location, SoundEvents.PARROT_EAT, soundSource, 1F, 1F + (Random.nextFloat() - Random.nextFloat()) * 0.2F)
-            // TODO: Send taming result
-            if (Random.nextInt(10) == 0) tame(player)
-            return InteractionResult.CONSUME
-        }
-        if (heldItem.type === POISONOUS_FOOD) {
-            if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
-            // TODO: Add poison potion effect
-            if (player.gameMode == GameMode.CREATIVE || !isInvulnerable) {
-                damage(KryptonEntityDamageSource(DamageTypes.PLAYER_ATTACK, player), 3.4028235E38F)
-            }
-            return InteractionResult.CONSUME
-        }
-        if (isOnGround && isTame && owner === player) {
-            isOrderedToSit = !isOrderedToSit
-            return InteractionResult.CONSUME
-        }
-        return super.mobInteract(player, hand)
-    }
-    */
-
     override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
 
     override fun voicePitch(): Float = (random.nextFloat() - random.nextFloat()) * 0.2F + 1F
@@ -86,8 +60,6 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
     companion object {
 
         private val TYPES = ParrotVariant.values()
-        //private val TAME_FOOD = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
-        //private val POISONOUS_FOOD = ItemTypes.COOKIE
 
         private const val DEFAULT_MAX_HEALTH = 6.0
         private const val DEFAULT_FLYING_SPEED = 0.4

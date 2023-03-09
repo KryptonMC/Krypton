@@ -27,6 +27,7 @@ import org.kryptonmc.serialization.nbt.NbtOps
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
+// TODO: Redo this entirely. This is a mess of vanilla code and Krypton code, and has some weird stuff. This can be greatly simplified.
 class Brain<E : KryptonLivingEntity> {
 
     private val memories = ConcurrentHashMap<MemoryKey<*>, Optional<Memory<*>>>()

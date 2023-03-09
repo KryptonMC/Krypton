@@ -65,6 +65,7 @@ class KryptonEntityType<out T : KryptonEntity>(
     override fun isImmuneTo(block: BlockState): Boolean = isImmuneTo(block.downcast())
 
     fun isImmuneTo(block: KryptonBlockState): Boolean {
+        // This is vanilla logic
         if (immuneTo.contains(block.block)) return true
         if (!isImmuneToFire && block.isBurning()) return false
         return block.eq(KryptonBlocks.WITHER_ROSE) || block.eq(KryptonBlocks.SWEET_BERRY_BUSH) || block.eq(KryptonBlocks.CACTUS) ||

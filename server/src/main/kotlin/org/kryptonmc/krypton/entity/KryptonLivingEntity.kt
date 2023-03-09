@@ -128,6 +128,11 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
         data.define(MetadataKeys.LivingEntity.BED_LOCATION, null)
     }
 
+    override fun postTick() {
+        super.postTick()
+        if (attributes.isDirty()) sendPacketToViewersAndSelf(PacketOutUpdateAttributes.create(id, attributes.dirty()))
+    }
+
     abstract override fun getEquipment(slot: EquipmentSlot): KryptonItemStack
 
     override fun getHeldItem(hand: Hand): KryptonItemStack {

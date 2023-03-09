@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
@@ -73,15 +72,17 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
         companion object {
 
             @JvmStatic
-            fun from(attribute: KryptonAttribute): AttributeSnapshot =
-                AttributeSnapshot(attribute.type, attribute.baseValue, Collections.unmodifiableCollection(attribute.modifiers))
+            fun from(attribute: KryptonAttribute): AttributeSnapshot {
+                return AttributeSnapshot(attribute.type, attribute.baseValue, Collections.unmodifiableCollection(attribute.modifiers))
+            }
         }
     }
 
     companion object {
 
         @JvmStatic
-        fun create(id: Int, attributes: Iterable<KryptonAttribute>): PacketOutUpdateAttributes =
-            PacketOutUpdateAttributes(id, attributes.mapTo(persistentListOf<AttributeSnapshot>().builder(), AttributeSnapshot::from).build())
+        fun create(id: Int, attributes: Iterable<KryptonAttribute>): PacketOutUpdateAttributes {
+            return PacketOutUpdateAttributes(id, attributes.map { AttributeSnapshot.from(it) })
+        }
     }
 }

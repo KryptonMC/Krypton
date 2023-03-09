@@ -79,13 +79,15 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
 
     /**
      * The current position of this entity.
+     *
+     * This can be updated using [teleport].
      */
     public val position: Position
 
     /**
      * The current delta X, Y, and Z values of this entity, in metres per tick.
      */
-    public val velocity: Vec3d
+    public var velocity: Vec3d
 
     /**
      * The current bounding box of this entity. This is used to determine the
@@ -129,7 +131,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     /**
      * If this entity is on terra firma.
      */
-    public var isOnGround: Boolean
+    public val isOnGround: Boolean
 
     /**
      * If this entity is sneaking.

@@ -68,8 +68,9 @@ data class PlayerPublicKey(val data: Data) {
 
         fun hasExpired(duration: Duration): Boolean = expiryTime.plus(duration).isBefore(Instant.now())
 
-        override fun equals(other: Any?): Boolean =
-            other is Data && expiryTime == other.expiryTime && key == other.key && keySignature.contentEquals(other.keySignature)
+        override fun equals(other: Any?): Boolean {
+            return other is Data && expiryTime == other.expiryTime && key == other.key && keySignature.contentEquals(other.keySignature)
+        }
 
         companion object {
 

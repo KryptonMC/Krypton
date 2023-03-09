@@ -34,6 +34,12 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import kotlin.math.abs
 
+/**
+ * The default implementation of the entity tracker, used by the server.
+ *
+ * Separating out the specification from the implementation lets us easily swap out the implementation
+ * if we want to, without having to change all the call sites.
+ */
 class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker {
 
     private val entries = EntityTypeTarget.VALUES.map { TargetEntry(it) }.toTypedArray()
@@ -60,6 +66,7 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
 
     override fun <E : KryptonEntity> remove(entity: KryptonEntity, target: EntityTypeTarget<E>, callback: EntityViewCallback<E>?) {
         val position = entityPositions.remove(entity.id) ?: return
+
         val index = ChunkPos.pack(position.chunkX(), position.chunkZ())
         for (entry in entries) {
             if (!entry.target.type.isInstance(entity)) continue
@@ -79,7 +86,10 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
     override fun <E : KryptonEntity> onMove(entity: KryptonEntity, newPosition: Position, target: EntityTypeTarget<E>,
                                             callback: EntityViewCallback<E>?) {
         val oldPosition = entityPositions.put(entity.id, newPosition)
-        if (oldPosition == null || oldPosition.chunkX() == newPosition.chunkX() && oldPosition.chunkZ() == newPosition.chunkZ()) return
+        if (oldPosition == null || oldPosition.chunkX() == newPosition.chunkX() && oldPosition.chunkZ() == newPosition.chunkZ()) {
+            // If the chunk position hasn't changed, we don't need to do any view updating, and we're done.
+            return
+        }
 
         val oldIndex = ChunkPos.pack(oldPosition.chunkX(), oldPosition.chunkZ())
         val newIndex = ChunkPos.pack(newPosition.chunkX(), newPosition.chunkZ())
@@ -182,18 +192,22 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
         return result
     }
 
+    /**
+     * Calculates the view difference between the two positions, adds any entities that came in to view, and removes
+     * any entities that went out of view.
+     */
     @Suppress("UNCHECKED_CAST")
     private fun <E : KryptonEntity> difference(old: Position, new: Position, target: EntityTypeTarget<E>, callback: EntityViewCallback<E>) {
         val entry = entries[target.ordinal]
         forDifferingChunksInRange(new.chunkX(), new.chunkZ(), old.chunkX(), old.chunkZ(), entityViewDistance, { x, z ->
-            // Add
+            // Entities come in to view
             val entities = entry.chunkEntities.get(ChunkPos.pack(x, z))
             if (entities.isNullOrEmpty()) return@forDifferingChunksInRange
             for (entity in entities) {
                 callback.add(entity as E)
             }
         }, { x, z ->
-            // Remove
+            // Entities go out of view
             val entities = entry.chunkEntities.get(ChunkPos.pack(x, z))
             if (entities.isNullOrEmpty()) return@forDifferingChunksInRange
             for (entity in entities) {
@@ -202,6 +216,9 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
         })
     }
 
+    /**
+     * Holder for the entities for a specific target.
+     */
     private class TargetEntry<E : KryptonEntity>(val target: EntityTypeTarget<E>) {
 
         val entities: MutableSet<E> = ConcurrentHashMap.newKeySet()
@@ -226,6 +243,7 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
 
     companion object {
 
+        // Used by EntityTypeTarget for ordinal values.
         @JvmField
         val TARGET_COUNTER: AtomicInteger = AtomicInteger()
 
@@ -242,6 +260,8 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
         private fun forDifferingChunksInRange(chunkX: Int, chunkZ: Int, oldChunkX: Int, oldChunkZ: Int, range: Int, consumer: ChunkPosConsumer) {
             for (x in chunkX - range..chunkX + range) {
                 for (z in chunkZ - range..chunkZ + range) {
+                    // If the difference between either the x and old x or z and old z is > range, then the chunk is
+                    // newly in range, and we can process it.
                     if (abs(x - oldChunkX) > range || abs(z - oldChunkZ) > range) consumer.accept(x, z)
                 }
             }

@@ -28,6 +28,8 @@ import org.kryptonmc.krypton.coordinate.ChunkPos
 import java.util.concurrent.CompletableFuture
 import kotlin.math.abs
 
+// TODO: This system is quite old, and based off of Glowstone. It's not the most efficient, and can likely
+//  be replaced with something better.
 class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
 
     private var previousCenter = ChunkPos.ZERO

@@ -206,12 +206,6 @@ object MetadataKeys {
         val TARGET_ID: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
     }
 
-    object Skeleton {
-
-        @JvmField
-        val CONVERTING: MetadataKey<Boolean> = MetadataKey(16, MetadataSerializers.BOOLEAN)
-    }
-
     object Spider {
 
         @JvmField

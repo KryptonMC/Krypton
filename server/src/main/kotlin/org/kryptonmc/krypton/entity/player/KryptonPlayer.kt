@@ -78,7 +78,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
@@ -117,7 +116,7 @@ class KryptonPlayer(
 
     override val hungerSystem: PlayerHungerSystem = PlayerHungerSystem(this)
     override val gameModeSystem: PlayerGameModeSystem = PlayerGameModeSystem(this)
-    val chunkViewingSystem: PlayerChunkViewingSystem = PlayerChunkViewingSystem(this)
+    private val chunkViewingSystem = PlayerChunkViewingSystem(this)
 
     override val abilities: Abilities = Abilities()
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
@@ -158,6 +157,7 @@ class KryptonPlayer(
         set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
 
     init {
+        // This ensures that if player data loading is disabled, the player gets put at the spawn position, not (0, 0, 0)
         position = world.data.spawnPos().asPosition()
     }
 
@@ -205,7 +205,6 @@ class KryptonPlayer(
         gameModeSystem.tick()
         hungerSystem.tick()
         itemCooldownTracker.tick()
-        if (data.isDirty()) connection.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
     }
 
     @Suppress("UnusedPrivateMember") // We will use the position later.
@@ -272,6 +271,10 @@ class KryptonPlayer(
         chunkViewingSystem.updateChunks()
         updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
         hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
+    }
+
+    fun sendInitialChunks() {
+        chunkViewingSystem.loadInitialChunks()
     }
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
@@ -394,8 +397,6 @@ class KryptonPlayer(
 
     override fun isOnline(): Boolean = server.getPlayer(uuid) === this
 
-    override fun viewDistance(): Int = settings.viewDistance
-
     override fun showToViewer(viewer: KryptonPlayer) {
         viewer.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(ImmutableLists.of(this)))
         super.showToViewer(viewer)
@@ -404,6 +405,11 @@ class KryptonPlayer(
     override fun hideFromViewer(viewer: KryptonPlayer) {
         super.hideFromViewer(viewer)
         viewer.connection.send(PacketOutPlayerInfoRemove(this))
+    }
+
+    override fun sendPacketToViewersAndSelf(packet: Packet) {
+        connection.send(packet)
+        super.sendPacketToViewersAndSelf(packet)
     }
 
     override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer.create(this)

@@ -113,7 +113,7 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
 
     override fun tick(time: Long) {
         super.tick(time)
-        if (!isRemoved && hasAI) doAiTick(time)
+        if (!isRemoved() && hasAI) doAiTick(time)
     }
 
     private fun doAiTick(time: Long) {

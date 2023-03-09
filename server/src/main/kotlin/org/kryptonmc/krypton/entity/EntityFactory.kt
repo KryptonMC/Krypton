@@ -87,6 +87,12 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import java.util.function.Function
 
+/**
+ * This exists primarily because not all entities are implemented yet, and so this logic,
+ * which would normally be in KryptonEntityType using a factory, is here instead.
+ *
+ * This is used for instantiating new entities from type and NBT.
+ */
 object EntityFactory {
 
     private val LOGGER = LogManager.getLogger()
@@ -155,9 +161,21 @@ object EntityFactory {
         entry(EntityTypes.ZOMBIE, ::KryptonZombie)
     )
 
+    /**
+     * This does nothing more than lookup the entity's factory in the map using the type
+     * and instantiate the entity with the world. It will return an entity with all of its
+     * data set to the default values on initialisation.
+     */
     @JvmStatic
     fun create(type: EntityType<Entity>, world: KryptonWorld): KryptonEntity? = TYPE_MAP.get(type)?.apply(world)
 
+    /**
+     * This is used to create an entity from an NBT tag.
+     *
+     * It will try to resolve the entity's type from the given id, warning and returning null if
+     * it can't resolve the type, and then will use that to create the entity, and further, load
+     * its data from the nbt tag, if it is non-null.
+     */
     @JvmStatic
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
         return try {

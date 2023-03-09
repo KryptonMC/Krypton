@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate.Action
 import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
+// TODO: Most of this logic is from vanilla, and we can probably get rid of it and replace it with something better.
 class PlayerGameModeSystem(private val player: KryptonPlayer) {
 
     private var gameMode = GameMode.SURVIVAL

@@ -25,6 +25,12 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import java.util.function.Consumer
 import java.util.function.Predicate
 
+/**
+ * The entity tracker is responsible for tracking entities in the world. It keeps track of what position
+ * and chunk every entity is in, and what entities can see what other entities.
+ *
+ * This is primarily based off of Minestom's entity tracking system.
+ */
 interface EntityTracker {
 
     /**

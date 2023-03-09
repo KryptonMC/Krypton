@@ -57,8 +57,8 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world), Creeper {
     }
 
     override fun tick() {
-        tickIgnite()
         super.tick()
+        tickIgnite()
     }
 
     private fun tickIgnite() {

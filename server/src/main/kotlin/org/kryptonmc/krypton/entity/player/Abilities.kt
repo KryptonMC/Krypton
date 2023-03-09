@@ -30,20 +30,23 @@ class Abilities {
     var canFly: Boolean = false
     var canInstantlyBuild: Boolean = false
     var canBuild: Boolean = true
-    var flyingSpeed: Float = 0.05F
-    var walkingSpeed: Float = 0.1F
+    var flyingSpeed: Float = 0.05F // Default flying speed from vanilla
+    var walkingSpeed: Float = 0.1F // Default walking speed from vanilla
 
     fun load(data: CompoundTag) {
-        val abilities = if (data.contains(ABILITIES_TAG, CompoundTag.ID)) data.getCompound(ABILITIES_TAG) else return
+        if (!data.contains(ABILITIES_TAG, CompoundTag.ID)) return
+        val abilities = data.getCompound(ABILITIES_TAG)
+
         invulnerable = abilities.getBoolean(INVULNERABLE_TAG)
         flying = abilities.getBoolean(FLYING_TAG)
         canFly = abilities.getBoolean(MAY_FLY_TAG)
         canInstantlyBuild = abilities.getBoolean(INSTABUILD_TAG)
+        if (abilities.contains(MAY_BUILD_TAG, ByteTag.ID)) canBuild = abilities.getBoolean(MAY_BUILD_TAG)
+
         if (abilities.hasNumber(FLY_SPEED_TAG)) {
             flyingSpeed = abilities.getFloat(FLY_SPEED_TAG)
             walkingSpeed = abilities.getFloat(WALK_SPEED_TAG)
         }
-        if (abilities.contains(MAY_BUILD_TAG, ByteTag.ID)) canBuild = abilities.getBoolean(MAY_BUILD_TAG)
     }
 
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.compound(ABILITIES_TAG) {

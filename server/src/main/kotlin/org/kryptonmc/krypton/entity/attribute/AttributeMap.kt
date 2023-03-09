@@ -91,6 +91,14 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     fun save(): ListTag = list { attributes.values.forEach { add(it.save()) } }
 
+    fun isDirty(): Boolean = dirty.isNotEmpty()
+
+    fun dirty(): List<KryptonAttribute> {
+        val copy = ArrayList(dirty)
+        dirty.clear()
+        return copy
+    }
+
     private fun onModified(attribute: KryptonAttribute) {
         if (attribute.type.sendToClient) dirty.add(attribute)
     }

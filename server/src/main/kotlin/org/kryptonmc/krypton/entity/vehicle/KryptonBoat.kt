@@ -68,7 +68,7 @@ open class KryptonBoat(world: KryptonWorld) : KryptonEntity(world), Boat {
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isInvulnerableTo(source)) return false
-        if (isRemoved) return true
+        if (isRemoved()) return true
         damageDirection = -damageDirection
         damageTimer = DEFAULT_DAMAGE_TIMER
         damageTaken += damage * DAMAGE_INCREASE_MULTIPLIER

@@ -34,10 +34,12 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
     fun tick() {
         tickCount++
         if (cooldowns.isEmpty()) return
+
         val iterator = cooldowns.entries.iterator() // so we can use remove
         while (iterator.hasNext()) {
             val entry = iterator.next()
             if (entry.value.endTime > tickCount) continue
+
             iterator.remove()
             onCooldownEnded(entry.key)
         }

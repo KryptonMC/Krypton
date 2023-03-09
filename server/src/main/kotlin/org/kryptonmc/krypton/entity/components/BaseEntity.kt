@@ -29,15 +29,15 @@ import java.util.function.UnaryOperator
 
 interface BaseEntity : BaseDataHolder, NameableTeamMember, Rideable, WaterPushable, Damageable, Interactable {
 
-    val isRemoved: Boolean
-
     override val world: KryptonWorld
     override val server: KryptonServer
         get() = world.server
 
+    fun isRemoved(): Boolean
+
     fun maxAirTicks(): Int = DEFAULT_MAX_AIR
 
-    fun isAlive(): Boolean = !isRemoved
+    fun isAlive(): Boolean = !isRemoved()
 
     override fun defineData() {
         data.define(MetadataKeys.Entity.FLAGS, 0)

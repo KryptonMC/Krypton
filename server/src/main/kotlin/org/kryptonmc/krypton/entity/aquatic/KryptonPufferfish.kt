@@ -49,8 +49,8 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world), Pufferfish {
     }
 
     override fun tick() {
-        handleInflation()
         super.tick()
+        handleInflation()
     }
 
     private fun handleInflation() {

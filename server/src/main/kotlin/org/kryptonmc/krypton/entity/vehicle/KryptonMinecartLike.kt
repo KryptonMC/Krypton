@@ -74,7 +74,7 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
-        if (isRemoved) return true
+        if (isRemoved()) return true
         if (isInvulnerableTo(source)) return false
         hurtDirection = -hurtDirection
         damageTimer = DEFAULT_DAMAGE_TIMER

@@ -86,17 +86,6 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         }
     }
 
-    /*
-    override fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult {
-        val heldItem = player.heldItem(hand)
-        if (heldItem.isEmpty() || !ItemTags.FISHES.contains(heldItem.type)) return super.mobInteract(player, hand)
-        playSound(SoundEvents.DOLPHIN_EAT, 1F, 1F)
-        gotFish = true
-        if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
-        return InteractionResult.CONSUME
-    }
-    */
-
     override fun maxAirTicks(): Int = MAX_AIR
 
     companion object {

@@ -181,9 +181,7 @@ class PlayerManager(private val server: KryptonServer) {
         player.connection.send(PacketOutSynchronizePlayerPosition.fromPlayer(player))
         player.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(players))
         world.spawnPlayer(player)
-
-        // Send the initial chunk stream
-        player.chunkViewingSystem.loadInitialChunks()
+        player.sendInitialChunks()
 
         // TODO: Custom boss events, resource pack pack, mob effects
         sendWorldInfo(world, player)
