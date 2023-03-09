@@ -38,6 +38,7 @@ import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.nbt.CompoundTag
+import java.util.function.Predicate
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonChunk(
@@ -127,4 +128,12 @@ class KryptonChunk(
     fun minimumLightSection(): Int = minimumSection() - 1
 
     fun maximumLightSection(): Int = minimumLightSection() + lightSectionCount()
+
+    override fun <E : Entity> getEntitiesOfType(type: Class<E>): Collection<E> {
+        return world.entityTracker.entitiesInChunkOfType(position, type, null)
+    }
+
+    override fun <E : Entity> getEntitiesOfType(type: Class<E>, predicate: Predicate<E>): Collection<E> {
+        return world.entityTracker.entitiesInChunkOfType(position, type, predicate)
+    }
 }

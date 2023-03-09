@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity.tracking
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectFunction
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.coordinate.SectionPos
@@ -30,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
+import java.util.function.Predicate
 import kotlin.math.abs
 
 class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker {
@@ -108,6 +110,19 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
     }
 
     @Suppress("UNCHECKED_CAST")
+    override fun <E : Entity> entitiesInChunkOfType(position: ChunkPos, type: Class<E>, predicate: Predicate<E>?): Collection<E> {
+        val entry = entries[EntityTypeTarget.ENTITIES.ordinal]
+        val chunkEntities = entry.getByChunk(position.pack())
+        val result = ArrayList<E>()
+        for (entity in chunkEntities) {
+            if (!type.isInstance(entity)) continue
+            entity as E
+            if (predicate == null || predicate.test(entity)) result.add(entity)
+        }
+        return result
+    }
+
+    @Suppress("UNCHECKED_CAST")
     private fun <E : KryptonEntity> nearbyChunkEntities(chunkX: Int, chunkZ: Int, chunkRange: Int, target: EntityTypeTarget<E>, query: Consumer<E>) {
         val entities = entries[target.ordinal].chunkEntities
         if (chunkRange == 0) {
@@ -154,6 +169,18 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
 
     @Suppress("UNCHECKED_CAST")
     override fun <E : KryptonEntity> entitiesOfType(target: EntityTypeTarget<E>): Set<E> = entries[target.ordinal].entitiesView as Set<E>
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <E : Entity> entitiesOfType(type: Class<E>, predicate: Predicate<E>?): Collection<E> {
+        val result = ArrayList<E>()
+        val entry = entries[EntityTypeTarget.ENTITIES.ordinal]
+        for (entity in entry.entitiesView) {
+            if (!type.isInstance(entity)) continue
+            entity as E
+            if (predicate == null || predicate.test(entity)) result.add(entity)
+        }
+        return result
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun <E : KryptonEntity> difference(old: Position, new: Position, target: EntityTypeTarget<E>, callback: EntityViewCallback<E>) {

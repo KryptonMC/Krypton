@@ -78,6 +78,7 @@ import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.util.function.Consumer
+import java.util.function.Predicate
 
 class KryptonWorld(
     override val server: KryptonServer,
@@ -170,6 +171,29 @@ class KryptonWorld(
     fun removeEntity(entity: KryptonEntity) {
         entityManager.removeEntity(entity)
     }
+
+    override fun <E : Entity> getEntitiesOfType(type: Class<E>): Collection<E> = entityTracker.entitiesOfType(type, null)
+
+    override fun <E : Entity> getEntitiesOfType(type: Class<E>, predicate: Predicate<E>): Collection<E> {
+        return entityTracker.entitiesOfType(type, predicate)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <E : Entity> getNearbyEntitiesOfType(position: Position, range: Double, type: Class<E>, callback: Consumer<E>) {
+        entityTracker.nearbyEntitiesOfType(position, range, EntityTypeTarget.ENTITIES) { if (type.isInstance(it)) callback.accept(it as E) }
+    }
+
+    override fun <E : Entity> getNearbyEntitiesOfType(position: Position, range: Double, type: Class<E>): Collection<E> {
+        val result = ArrayList<E>()
+        entityTracker.nearbyEntitiesOfType(position, range, EntityTypeTarget.ENTITIES) { if (type.isInstance(it)) result.add(it as E) }
+        return result
+    }
+
+    override fun getNearbyEntities(position: Position, range: Double, callback: Consumer<Entity>) {
+        entityTracker.nearbyEntities(position, range) { callback.accept(it) }
+    }
+
+    override fun getNearbyEntities(position: Position, range: Double): Collection<Entity> = entityTracker.nearbyEntities(position, range)
 
     override fun worldEvent(pos: Vec3i, event: Int, data: Int, except: KryptonPlayer?) {
         server.playerManager.broadcast(PacketOutWorldEvent(event, pos, data, false), this, pos, 64.0, except)
@@ -432,12 +456,6 @@ class KryptonWorld(
     override fun skyDarken(): Int = skyDarken
 
     override fun players(): Collection<KryptonPlayer> = players
-
-    override fun getNearbyEntities(position: Position, range: Double, callback: Consumer<Entity>) {
-        entityTracker.nearbyEntities(position, range) { callback.accept(it) }
-    }
-
-    override fun getNearbyEntities(position: Position, range: Double): Collection<Entity> = entityTracker.nearbyEntities(position, range)
 
     override fun toString(): String = "KryptonWorld[${data.name}]"
 }

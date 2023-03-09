@@ -297,6 +297,31 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     public fun <T : Entity> spawnEntity(type: EntityType<T>, position: Position): T?
 
     /**
+     * Gets all entities of the given [type] that are within the given [range]
+     * of the given [position], calling the given [callback] for each entity
+     * found.
+     *
+     * @param E the entity type
+     * @param position the centre position to look around
+     * @param range the range to look for entities in
+     * @param type the type of entities to find
+     * @param callback the callback called for each entity found
+     */
+    public fun <E : Entity> getNearbyEntitiesOfType(position: Position, range: Double, type: Class<E>, callback: Consumer<E>)
+
+    /**
+     * Gets all entities of the given [type] that are within the given [range]
+     * of the given [position].
+     *
+     * @param E the entity type
+     * @param position the centre position to look around
+     * @param range the range to look for entities in
+     * @param type the type of entities to find
+     * @return all found entities of the given type
+     */
+    public fun <E : Entity> getNearbyEntitiesOfType(position: Position, range: Double, type: Class<E>): Collection<E>
+
+    /**
      * Gets all entities that are within the given [range] of the
      * given [position], calling the given [callback] for each entity found.
      *

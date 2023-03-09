@@ -18,10 +18,12 @@
  */
 package org.kryptonmc.krypton.entity.tracking
 
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.entity.KryptonEntity
 import java.util.function.Consumer
+import java.util.function.Predicate
 
 interface EntityTracker {
 
@@ -45,6 +47,11 @@ interface EntityTracker {
      * Gets all entities matching the target in the chunk at the given position.
      */
     fun <E : KryptonEntity> entitiesInChunkOfType(position: ChunkPos, target: EntityTypeTarget<E>): Collection<E>
+
+    /**
+     * Gets all entities in the chunk at the given position of the given type matching the predicate, if given.
+     */
+    fun <E : Entity> entitiesInChunkOfType(position: ChunkPos, type: Class<E>, predicate: Predicate<E>?): Collection<E>
 
     /**
      * Gets all entities in the chunk at the given position.
@@ -76,6 +83,11 @@ interface EntityTracker {
      * Gets all entities matching the target.
      */
     fun <E : KryptonEntity> entitiesOfType(target: EntityTypeTarget<E>): Set<E>
+
+    /**
+     * Gets all entities of the given type matching the predicate, if given.
+     */
+    fun <E : Entity> entitiesOfType(type: Class<E>, predicate: Predicate<E>?): Collection<E>
 
     /**
      * Gets all entities tracked by the tracker.
