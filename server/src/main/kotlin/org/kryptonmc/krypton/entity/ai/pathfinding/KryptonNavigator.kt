@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.ai.pathfinding
 
 import com.extollit.gaming.ai.path.HydrazinePathFinder
 import com.extollit.gaming.ai.path.PathOptions
+import com.extollit.gaming.ai.path.model.IPath
 import org.kryptonmc.api.entity.ai.pathfinding.Navigator
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
@@ -34,9 +35,10 @@ class KryptonNavigator(override val entity: KryptonMob) : Navigator {
 
     private val pathingEntity = KryptonPathingEntity(this)
     private var pathfinder = HydrazinePathFinder(pathingEntity, KryptonInstanceSpace(entity.world))
+    private var currentPath: IPath? = null
     override var target: Vec3d? = null
 
-    override fun hasReachedTarget(): Boolean = target != null && entity.position.distanceSquared(target!!) < 0.0001
+    override fun hasReachedTarget(): Boolean = currentPath == null || currentPath!!.done()
 
     fun moveTowards(direction: Vec3d, speed: Double) {
         val position = entity.position
@@ -79,20 +81,22 @@ class KryptonNavigator(override val entity: KryptonMob) : Navigator {
         if (position == null) return false
 
         val pathOptions = PathOptions().targetingStrategy(PathOptions.TargetingStrategy.gravitySnap)
-        val path = pathfinder.initiatePathTo(position.x, position.y, position.z, pathOptions)
+        val path = pathfinder.initiatePathTo(position.x, position.y, position.z, pathOptions) ?: return false
 
-        val success = path != null
-        target = if (success) position else null
-        return success
+        currentPath = path
+        target = position
+        return true
     }
 
     fun tick() {
-        if (target == null) return
+        if (currentPath == null) return
         if (entity.isDead) return // Dead entities cannot pathfind
-        if (pathfinder.updatePathFor(pathingEntity) == null || hasReachedTarget()) reset()
+        currentPath = pathfinder.updatePathFor(pathingEntity)
+        if (hasReachedTarget()) reset()
     }
 
     private fun reset() {
+        currentPath = null
         target = null
         pathfinder.reset()
     }
