@@ -19,12 +19,21 @@
 package org.kryptonmc.krypton.entity.ai.memory
 
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.nbt.NbtOps
 
-interface Memory<T : Any> {
+class ExpirableMemory<T : Any>(override val value: T?, private var ttl: Long) : Memory<T> {
 
-    val value: T?
+    override fun tick() {
+        ttl--
+    }
 
-    fun tick()
+    override fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder {
+        return data.compound(key.key().asString()) {
+            if (value != null) put("value", key.codec.encodeStart(value, NbtOps.INSTANCE).result().get())
+            putLong("ttl", ttl)
+        }
+    }
 
-    fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder
+    override fun toString(): String = "ExpirableMemory(value=$value, ttl=$ttl)"
 }

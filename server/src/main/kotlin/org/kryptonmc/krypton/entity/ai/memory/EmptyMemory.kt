@@ -20,11 +20,16 @@ package org.kryptonmc.krypton.entity.ai.memory
 
 import org.kryptonmc.nbt.CompoundTag
 
-interface Memory<T : Any> {
+object EmptyMemory : Memory<Any> {
 
-    val value: T?
+    override val value: Any?
+        get() = null
 
-    fun tick()
+    override fun tick() {
+        // Nothing to do
+    }
 
-    fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder
+    override fun save(key: MemoryKey<in Any>, data: CompoundTag.Builder): CompoundTag.Builder {
+        throw UnsupportedOperationException("Cannot save empty memory!")
+    }
 }

@@ -19,12 +19,21 @@
 package org.kryptonmc.krypton.entity.ai.memory
 
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.nbt.NbtOps
 
-interface Memory<T : Any> {
+// A static memory is a memory that does not expire.
+class StaticMemory<T : Any>(override val value: T?) : Memory<T> {
 
-    val value: T?
+    override fun tick() {
+        // Do nothing - no expiry for static memories
+    }
 
-    fun tick()
+    override fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder {
+        return data.compound(key.key().asString()) {
+            if (value != null) put("value", key.codec.encodeStart(value, NbtOps.INSTANCE).result().get())
+        }
+    }
 
-    fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder
+    override fun toString(): String = "StaticMemory(value=$value)"
 }
