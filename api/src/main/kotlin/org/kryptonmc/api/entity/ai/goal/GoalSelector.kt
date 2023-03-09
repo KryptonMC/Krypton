@@ -73,14 +73,14 @@ public interface GoalSelector {
     public fun removeTargetFinder(finder: TargetFinder)
 
     /**
-     * Finds the target for this goal selector, trying all registered target
-     * finders until it finds one that returns a non-null target.
+     * Finds the target for this goal selector, trying all target finders
+     * currently in use until it finds one that returns a non-null target.
      *
      * This is intended to be used by goals to easily find targets without
      * having to search the finders manually.
      *
      * This will return null if no target could be found. This could be
-     * because there are no target finders registered, or because none of the
+     * because there are no target finders in use, or because none of the
      * target finders produced a non-null target.
      *
      * @return the target, or null if no target could be found

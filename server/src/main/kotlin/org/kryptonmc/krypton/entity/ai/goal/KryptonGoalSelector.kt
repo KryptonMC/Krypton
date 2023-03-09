@@ -58,6 +58,7 @@ class KryptonGoalSelector : GoalSelector {
     override fun findTarget(): Entity? {
         if (finders.isEmpty()) return null
         for (finder in finders) {
+            if (!finder.isInUse()) continue
             val target = finder.findTarget()
             if (target != null) return target
         }
@@ -77,6 +78,16 @@ class KryptonGoalSelector : GoalSelector {
             } else {
                 // Update the goal
                 goal.tick(time)
+            }
+        }
+        for (finder in finders) {
+            if (!finder.isInUse()) {
+                // If the finder isn't being used, try to see if we can start using it
+                if (finder.canUse()) finder.startUsing()
+                continue
+            }
+            if (finder.shouldRemove()) {
+                finder.remove()
             }
         }
     }
@@ -118,6 +129,42 @@ class KryptonGoalSelector : GoalSelector {
 
     private class PrioritizedTargetFinder(val finder: TargetFinder, val priority: Int) : TargetFinder {
 
+        private var inUse = false
+
         override fun findTarget(): Entity? = finder.findTarget()
+
+        override fun canUse(): Boolean = finder.canUse()
+
+        fun isInUse(): Boolean = inUse
+
+        fun startUsing() {
+            if (inUse) return
+            inUse = true
+            onStartUsing()
+        }
+
+        override fun onStartUsing() {
+            finder.onStartUsing()
+        }
+
+        override fun shouldRemove(): Boolean = finder.shouldRemove()
+
+        fun remove() {
+            if (!inUse) return
+            inUse = false
+            onRemove()
+        }
+
+        override fun onRemove() {
+            finder.onRemove()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || javaClass != other.javaClass) return false
+            return finder == (other as PrioritizedTargetFinder).finder
+        }
+
+        override fun hashCode(): Int = finder.hashCode()
     }
 }
