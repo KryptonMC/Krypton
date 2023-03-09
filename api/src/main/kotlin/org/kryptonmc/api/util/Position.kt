@@ -8,8 +8,11 @@
  */
 package org.kryptonmc.api.util
 
+import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.floor
+import kotlin.math.max
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -139,6 +142,19 @@ public data class Position(
      * @return the new position
      */
     public fun withRotation(yaw: Float, pitch: Float): Position = Position(this.x, this.y, this.z, yaw, pitch)
+
+    /**
+     * Creates a new position with the rotation such that they are looking at
+     * the given [target] vector.
+     *
+     * @param target the target vector to look at
+     * @return the resulting position
+     */
+    public fun withLookAt(target: Vec3d): Position {
+        if (x.compareTo(target.x) == 0 && y.compareTo(target.y) == 0 && z.compareTo(target.z) == 0) return this
+        val delta = Vec3d(target.x - x, target.y - y, target.z - z).normalize()
+        return withRotation(calculateLookYaw(delta.x, delta.z), calculateLookPitch(delta.x, delta.y, delta.z))
+    }
 
     /**
      * Gets a unit vector pointing in the direction that this position is
@@ -454,5 +470,20 @@ public data class Position(
          */
         @JvmField
         public val ZERO: Position = Position(0.0, 0.0, 0.0, 0F, 0F)
+
+        @JvmStatic
+        private fun calculateLookYaw(dx: Double, dz: Double): Float {
+            val radians = atan2(dz, dx)
+            val degrees = Math.toDegrees(radians).toFloat() - 90
+            if (degrees < -180) return degrees + 360
+            if (degrees > 180) return degrees - 360
+            return degrees
+        }
+
+        @JvmStatic
+        private fun calculateLookPitch(dx: Double, dy: Double, dz: Double): Float {
+            val radians = -atan2(dy, max(abs(dx), abs(dz)))
+            return Math.toDegrees(radians).toFloat()
+        }
     }
 }
