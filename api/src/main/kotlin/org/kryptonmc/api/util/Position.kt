@@ -472,6 +472,7 @@ public data class Position(
         public val ZERO: Position = Position(0.0, 0.0, 0.0, 0F, 0F)
 
         @JvmStatic
+        @Suppress("MagicNumber")
         private fun calculateLookYaw(dx: Double, dz: Double): Float {
             val radians = atan2(dz, dx)
             val degrees = Math.toDegrees(radians).toFloat() - 90

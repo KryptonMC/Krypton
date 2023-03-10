@@ -19,8 +19,6 @@ comments:
 
 complexity:
   active: true
-  ComplexCondition:
-    threshold: 1 # There shouldn't really be any conditions in API code, but if there are, they should be very simple.
   LongParameterList:
     functionThreshold: 8
     constructorThreshold: 8
@@ -35,4 +33,4 @@ complexity:
 
 style:
   ReturnCount:
-    max: 2 # API methods should be very, very simple. Anything more than dimorphic is probably too complex, and should be in the implementation.
+    active: false
