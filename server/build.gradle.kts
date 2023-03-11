@@ -2,7 +2,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("io.gitlab.arturbosch.detekt")
-    id("info.solidsoft.pitest")
     id("com.google.devtools.ksp")
 }
 
@@ -67,7 +66,6 @@ dependencies {
     testRuntimeOnly(libs.bytebuddy)
     testImplementation(projects.internalAnnotations)
     testImplementation(libs.equalsVerifier)
-    pitest(libs.arcmutateKotlin)
     testImplementation(libs.jsonassert)
 }
 
@@ -84,12 +82,6 @@ license {
         "**/console/BrigadierCompleter.kt",
         "**/console/BrigadierHighlighter.kt"
     )
-}
-
-pitest {
-    pitestVersion.set(libs.versions.pitest)
-    junit5PluginVersion.set("1.0.0")
-    targetClasses.set(setOf("org.kryptonmc.api.*", "org.kryptonmc.krypton.*"))
 }
 
 tasks {

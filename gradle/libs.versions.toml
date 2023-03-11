@@ -45,8 +45,6 @@ mockk = "1.13.3"
 bytebuddy = "1.12.19"
 jimfs = "1.2"
 reflections = "0.10.2"
-pitest = "1.10.1"
-arcmutateKotlin = "0.2.2"
 equalsVerifier = "3.12.1"
 jsonassert = "1.5.1"
 
@@ -56,7 +54,6 @@ apache-httpclient = "5.2.1"
 grgit = "5.0.0"
 
 # Plugin versions
-indra = "3.0.1"
 licenser = "0.6.1"
 dokka = "1.7.20"
 detekt = "1.22.0"
@@ -146,7 +143,6 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 bytebuddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "bytebuddy" }
 jimfs = { group = "com.google.jimfs", name = "jimfs", version.ref = "jimfs" }
 reflections = { group = "org.reflections", name = "reflections", version.ref = "reflections" }
-arcmutateKotlin = { group = "com.groupcdg.pitest", name = "pitest-kotlin-plugin", version.ref = "arcmutateKotlin" }
 equalsVerifier = { group = "nl.jqno.equalsverifier", name = "equalsverifier", version.ref = "equalsVerifier" }
 jsonassert = { group = "org.skyscreamer", name = "jsonassert", version.ref = "jsonassert" }
 
@@ -156,7 +152,6 @@ apache-httpclient = { group = "org.apache.httpcomponents.client5", name = "httpc
 grgit = { group = "org.ajoberstar.grgit", name = "grgit-core", version.ref = "grgit" }
 
 # Plugins
-plugin-indra = { group = "net.kyori", name = "indra-common", version.ref = "indra" }
 plugin-licenser = { group = "gradle.plugin.org.cadixdev.gradle", name = "licenser", version.ref = "licenser" }
 plugin-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 plugin-dokka = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
@@ -164,7 +159,6 @@ plugin-detekt = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-p
 plugin-vanillaGradle = { group = "org.spongepowered", name = "vanillagradle", version.ref = "vanillaGradle" }
 plugin-shadow = { group = "gradle.plugin.com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
 plugin-ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
-plugin-pitest = { group = "info.solidsoft.gradle.pitest", name = "gradle-pitest-plugin", version.ref = "pitestPlugin" }
 
 # Extras dependencies
 dokka-core = { group = "org.jetbrains.dokka", name = "dokka-core", version.ref = "dokka" }

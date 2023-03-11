@@ -7,21 +7,17 @@ tasks {
     javadoc {
         enabled = false
     }
-    javadocJar {
-        from(dokkaJavadoc)
+    create<Jar>("allSourcesJar") {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
     }
-}
-
-java {
-    withSourcesJar()
-    withJavadocJar()
 }
 
 publishing {
     repositories {
         maven {
             name = "krypton"
-            url = uri("https://repo.kryptonmc.org/releases")
+            url = uri("https://repo.kryptonmc.org/snapshots")
 
             if (System.getenv("PUBLISH_USERNAME") != null) {
                 // If this env variable is present, we're running in CI, and we want to use the credentials from the secrets
@@ -39,8 +35,7 @@ publishing {
         create<MavenPublication>("maven") {
             artifactId = "krypton-${project.name}"
             from(components["kotlin"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
+            artifact(tasks["allSourcesJar"])
 
             pom {
                 name.set("Krypton")
@@ -56,16 +51,32 @@ publishing {
                 developers {
                     developer("bombardygamer", "Callum Seabrook", "callum.seabrook@prevarinite.com", "Europe/London", "Lead Developer")
                     developer("therealjan", "Jan", "jan.m.tennert@gmail.com", "Europe/Berlin", "Developer")
+                    developer("tomlister", "Tom Lister", "tom@tomlister.net", "Australia/Sydney", "Developer")
                 }
 
                 contributors {
-                    contributor("Brandon Li", "brandonli2006ma@gmail.com", "America/New_York")
                     contributor("Nicole Barningham", "esophose@gmail.com", "America/Boise")
                     contributor("Alex Wood", "alexljwood24@hotmail.co.uk", "Europe/London")
                 }
 
+                scm {
+                    connection.set("scm:git:https://github.com/KryptonMC/Krypton.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/KryptonMC/Krypton.git")
+                    url.set("https://github.com/KryptonMC/Krypton")
+                }
+
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("https://github.com/KryptonMC/Krypton/issues")
+                }
+
+                ciManagement {
+                    system.set("GitHub Actions")
+                    url.set("https://github.com/KryptonMC/Krypton/actions")
+                }
+
                 distributionManagement {
-                    downloadUrl.set("https://ci.kryptonmc.org/job/Krypton/lastSuccessfulBuild/Krypton")
+                    downloadUrl.set("https://api.kryptonmc.org/downloads/v1/krypton/latest/download")
                 }
             }
         }

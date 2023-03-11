@@ -10,7 +10,6 @@ dependencies {
     implementation(libs.grgit)
 
     // Plugins
-    implementation(libs.plugin.indra)
     implementation(libs.plugin.licenser)
     implementation(libs.plugin.kotlin)
     implementation(libs.plugin.dokka)
@@ -18,7 +17,6 @@ dependencies {
     implementation(libs.plugin.vanillaGradle)
     implementation(libs.plugin.shadow)
     implementation(libs.plugin.ksp)
-    implementation(libs.plugin.pitest)
 }
 
 dependencies {

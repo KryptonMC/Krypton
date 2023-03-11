@@ -19,7 +19,7 @@ tasks {
     }
     withType<ShadowJar> {
         archiveFileName.set("Krypton-${project.version}.jar")
-        transform<Log4j2PluginsCacheFileTransformer>()
+        transform(Log4j2PluginsCacheFileTransformer::class.java)
 
         fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
         dataExclusions(global.versions.minecraft.get(), "attributes", "biomes", "block_properties", "blocks", "commands", "custom_statistic",
@@ -39,7 +39,10 @@ tasks {
     }
 }
 
-applyImplJarMetadata("org.kryptonmc.server", "Krypton") {
+configureJarMetadata("org.kryptonmc.server") {
+    put("Implementation-Title", "Krypton")
+    put("Implementation-Vendor", "KryptonMC")
+    put("Implementation-Version", version.toString())
     put("Main-Class", "org.kryptonmc.krypton.KryptonKt")
     put("Multi-Release", "true")
 }
