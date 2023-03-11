@@ -191,6 +191,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         val newChunkX = SectionPos.blockToSection(new.x)
         val newChunkZ = SectionPos.blockToSection(new.z)
         if (oldChunkX != newChunkX || oldChunkZ != newChunkZ) {
+            if (this is KryptonPlayer) updateChunks()
             world.chunkManager.updateEntityPosition(this, ChunkPos(newChunkX, newChunkZ))
         }
     }

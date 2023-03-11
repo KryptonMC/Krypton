@@ -18,93 +18,49 @@
  */
 package org.kryptonmc.krypton.entity.system
 
-import it.unimi.dsi.fastutil.longs.LongArrayList
-import it.unimi.dsi.fastutil.longs.LongArraySet
-import it.unimi.dsi.fastutil.longs.LongSet
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.util.ChunkUtil
 import java.util.concurrent.CompletableFuture
-import kotlin.math.abs
 
-// TODO: This system is quite old, and based off of Glowstone. It's not the most efficient, and can likely
-//  be replaced with something better.
 class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
 
     private var previousCenter = ChunkPos.ZERO
-    private val visibleChunks = LongArraySet()
+    private val chunkAdder = ChunkUtil.ChunkPosConsumer { x, z ->
+        val chunk = player.world.chunkManager.getChunk(x, z) ?: return@ChunkPosConsumer
+        player.connection.write(chunk.cachedPacket)
+    }
+    private val chunkRemover = ChunkUtil.ChunkPosConsumer { x, z ->
+        player.connection.send(PacketOutUnloadChunk(x, z))
+    }
 
     fun loadInitialChunks() {
-        updateChunks(true)
+        val center = ChunkPos.forEntityPosition(player.position)
+        previousCenter = center
+
+        val range = player.server.config.world.viewDistance
+        player.world.chunkManager.updateEntityPosition(player, center)
+
+        CompletableFuture.runAsync {
+            player.connection.send(PacketOutSetCenterChunk(center.x, center.z))
+            ChunkUtil.forChunksInRange(center.x, center.z, range) { x, z ->
+                val pos = ChunkPos(x, z)
+                val chunk = player.world.chunkManager.loadChunk(pos) ?: return@forChunksInRange
+                player.connection.write(chunk.cachedPacket)
+            }
+        }
     }
 
     fun updateChunks() {
-        updateChunks(false)
-    }
-
-    private fun updateChunks(firstLoad: Boolean) {
-        var previousChunks: LongSet? = null
-        val newChunks = LongArrayList()
-
         val oldCenter = previousCenter
         val newCenter = ChunkPos.forEntityPosition(player.position)
         previousCenter = newCenter
-        val radius = player.server.config.world.viewDistance
 
-        if (firstLoad) {
-            for (x in newCenter.x - radius..newCenter.x + radius) {
-                for (z in newCenter.z - radius..newCenter.z + radius) {
-                    newChunks.add(ChunkPos.pack(x, z))
-                }
-            }
-        } else if (abs(newCenter.x - oldCenter.x) > radius || abs(newCenter.z - oldCenter.z) > radius) {
-            visibleChunks.clear()
-            for (x in newCenter.x - radius..newCenter.x + radius) {
-                for (z in newCenter.z - radius..newCenter.z + radius) {
-                    newChunks.add(ChunkPos.pack(x, z))
-                }
-            }
-        } else if (oldCenter.x != newCenter.x || oldCenter.z != newCenter.z) {
-            previousChunks = LongArraySet(visibleChunks)
-            for (x in newCenter.x - radius..newCenter.x + radius) {
-                for (z in newCenter.z - radius..newCenter.z + radius) {
-                    val pos = ChunkPos.pack(x, z)
-                    if (visibleChunks.contains(pos)) previousChunks.remove(pos) else newChunks.add(pos)
-                }
-            }
-        } else {
-            return
-        }
-
-        newChunks.sortWith { a, b ->
-            var dx = 16 * a.toInt() + 8 - player.position.x
-            var dz = 16 * (a shr 32).toInt() + 8 - player.position.z
-            val da = dx * dx + dz * dz
-            dx = 16 * b.toInt() + 8 - player.position.x
-            dz = 16 * (b shr 32).toInt() + 8 - player.position.z
-            val db = dx * dx + dz * dz
-            da.compareTo(db)
-        }
-
-        visibleChunks.addAll(newChunks)
-        val oldPosForPlayer = if (firstLoad) newCenter else oldCenter
-
-        player.world.chunkManager.updatePlayerPosition(player, oldPosForPlayer, newCenter, radius)
-
-        CompletableFuture.runAsync {
-            player.connection.send(PacketOutSetCenterChunk(newCenter.x, newCenter.z))
-            newChunks.forEach {
-                val chunk = player.world.chunkManager.getChunk(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
-                player.connection.write(chunk.cachedPacket)
-            }
-
-            if (previousChunks == null) return@runAsync
-            previousChunks.forEach {
-                player.connection.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
-                visibleChunks.remove(it)
-            }
-            previousChunks.clear()
-        }
+        val range = player.server.config.world.viewDistance
+        player.connection.send(PacketOutSetCenterChunk(newCenter.x, newCenter.z))
+        player.world.chunkManager.updatePlayerPosition(player, oldCenter, newCenter, range)
+        ChunkUtil.forDifferingChunksInRange(newCenter.x, newCenter.z, oldCenter.x, oldCenter.z, range, chunkAdder, chunkRemover)
     }
 }

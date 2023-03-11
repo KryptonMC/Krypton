@@ -266,15 +266,17 @@ class KryptonPlayer(
     }
 
     override fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {
-        sendPacketToViewers(packet)
-        world.entityTracker.onMove(this, new, trackingTarget, trackingViewCallback)
-        chunkViewingSystem.updateChunks()
+        super.sendPositionUpdate(packet, old, new)
         updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
         hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
     }
 
     fun sendInitialChunks() {
         chunkViewingSystem.loadInitialChunks()
+    }
+
+    fun updateChunks() {
+        chunkViewingSystem.updateChunks()
     }
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {

@@ -24,6 +24,7 @@ import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.util.ChunkUtil
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.Collections
@@ -32,7 +33,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 import java.util.function.Predicate
-import kotlin.math.abs
 
 /**
  * The default implementation of the entity tracker, used by the server.
@@ -140,7 +140,7 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
             if (!chunkEntities.isNullOrEmpty()) chunkEntities.forEach(query)
             return
         }
-        forChunksInRange(chunkX, chunkZ, chunkRange) { x, z ->
+        ChunkUtil.forChunksInRange(chunkX, chunkZ, chunkRange) { x, z ->
             val chunkEntities = entities.get(ChunkPos.pack(x, z)) as? List<E>
             if (chunkEntities.isNullOrEmpty()) return@forChunksInRange
             chunkEntities.forEach(query)
@@ -167,7 +167,7 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
         }
 
         val chunkRange = SectionPos.blockToSection(range) + 1
-        forChunksInRange(position.chunkX(), position.chunkZ(), chunkRange) { x, z ->
+        ChunkUtil.forChunksInRange(position.chunkX(), position.chunkZ(), chunkRange) { x, z ->
             val chunkEntities = entities.get(ChunkPos.pack(x, z)) as? List<E>
             if (chunkEntities.isNullOrEmpty()) return@forChunksInRange
             chunkEntities.forEach { entity ->
@@ -199,7 +199,7 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
     @Suppress("UNCHECKED_CAST")
     private fun <E : KryptonEntity> difference(old: Position, new: Position, target: EntityTypeTarget<E>, callback: EntityViewCallback<E>) {
         val entry = entries[target.ordinal]
-        forDifferingChunksInRange(new.chunkX(), new.chunkZ(), old.chunkX(), old.chunkZ(), entityViewDistance, { x, z ->
+        ChunkUtil.forDifferingChunksInRange(new.chunkX(), new.chunkZ(), old.chunkX(), old.chunkZ(), entityViewDistance, { x, z ->
             // Entities come in to view
             val entities = entry.chunkEntities.get(ChunkPos.pack(x, z))
             if (entities.isNullOrEmpty()) return@forDifferingChunksInRange
@@ -236,44 +236,10 @@ class DefaultEntityTracker(private val entityViewDistance: Int) : EntityTracker 
         }
     }
 
-    private fun interface ChunkPosConsumer {
-
-        fun accept(x: Int, z: Int)
-    }
-
     companion object {
 
         // Used by EntityTypeTarget for ordinal values.
         @JvmField
         val TARGET_COUNTER: AtomicInteger = AtomicInteger()
-
-        @JvmStatic
-        private fun forChunksInRange(chunkX: Int, chunkZ: Int, range: Int, consumer: ChunkPosConsumer) {
-            for (x in -range..range) {
-                for (z in -range..range) {
-                    consumer.accept(chunkX + x, chunkZ + z)
-                }
-            }
-        }
-
-        @JvmStatic
-        private fun forDifferingChunksInRange(chunkX: Int, chunkZ: Int, oldChunkX: Int, oldChunkZ: Int, range: Int, consumer: ChunkPosConsumer) {
-            for (x in chunkX - range..chunkX + range) {
-                for (z in chunkZ - range..chunkZ + range) {
-                    // If the difference between either the x and old x or z and old z is > range, then the chunk is
-                    // newly in range, and we can process it.
-                    if (abs(x - oldChunkX) > range || abs(z - oldChunkZ) > range) consumer.accept(x, z)
-                }
-            }
-        }
-
-        @JvmStatic
-        private fun forDifferingChunksInRange(chunkX: Int, chunkZ: Int, oldChunkX: Int, oldChunkZ: Int, range: Int,
-                                              newConsumer: ChunkPosConsumer, oldConsumer: ChunkPosConsumer) {
-            // Find the new chunks
-            forDifferingChunksInRange(chunkX, chunkZ, oldChunkX, oldChunkZ, range, newConsumer)
-            // Find the old chunks
-            forDifferingChunksInRange(oldChunkX, oldChunkZ, chunkX, chunkZ, range, oldConsumer)
-        }
     }
 }
