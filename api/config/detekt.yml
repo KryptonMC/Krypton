@@ -1,9 +1,5 @@
 comments:
   active: true
-  CommentOverPrivateFunction:
-    active: true # There shouldn't be private functions anyway, but if there are, they definitely shouldn't need comments.
-  CommentOverPrivateProperty:
-    active: true # There shouldn't be private properties anyway, but if there are, they definitely shouldn't need comments.
   UndocumentedPublicClass:
     active: true
     excludes: ["**/test/**"]
@@ -24,13 +20,7 @@ complexity:
     constructorThreshold: 8
   MethodOverloading:
     threshold: 20
-  NestedBlockDepth:
-    threshold: 2 # There shouldn't be any nested blocks in API code.
   TooManyFunctions:
     ignoreOverridden: true
     thresholdInFiles: 30
     thresholdInInterfaces: 40
-
-style:
-  ReturnCount:
-    active: false

@@ -37,6 +37,8 @@ complexity:
     ignoreAnnotated: ["Catalogue"]
   MethodOverloading:
     active: true
+  NestedBlockDepth:
+    active: false
   NestedScopeFunctions:
     active: true
   ReplaceSafeCallChainWithRun:
@@ -167,6 +169,8 @@ style:
     active: true
   RedundantHigherOrderMapUsage:
     active: true
+  ReturnCount:
+    active: false
   SpacingBetweenPackageAndImports:
     active: true
   ThrowsCount:

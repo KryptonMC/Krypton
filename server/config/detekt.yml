@@ -11,8 +11,6 @@ complexity:
     functionThreshold: 10
     constructorThreshold: 10
     ignoreAnnotated: ['javax.annotation.concurrent.Immutable']
-  NestedBlockDepth:
-    active: false
   TooManyFunctions:
     active: false
 
@@ -29,6 +27,4 @@ style:
   MagicNumber:
     active: false
   OptionalWhenBraces:
-    active: false
-  ReturnCount:
     active: false
