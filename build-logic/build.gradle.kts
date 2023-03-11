@@ -1,8 +1,15 @@
 plugins {
     `kotlin-dsl`
+    `java-gradle-plugin`
 }
 
 dependencies {
+    // Dependencies for downloads plugin
+    implementation(libs.apache.httpclient)
+    implementation(libs.gson)
+    implementation(libs.grgit)
+
+    // Plugins
     implementation(libs.plugin.indra)
     implementation(libs.plugin.licenser)
     implementation(libs.plugin.kotlin)
@@ -16,6 +23,15 @@ dependencies {
 
 dependencies {
     compileOnly(files(libs::class.java.protectionDomain.codeSource.location))
+}
+
+gradlePlugin {
+    plugins {
+        create("downloads-upload") {
+            id = "org.kryptonmc.downloads.upload"
+            implementationClass = "org.kryptonmc.downloads.UploadToApiPlugin"
+        }
+    }
 }
 
 java {

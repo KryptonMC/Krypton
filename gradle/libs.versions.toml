@@ -52,6 +52,8 @@ jsonassert = "1.5.1"
 
 # Extras
 ksp = "1.8.0-RC-1.0.8"
+apache-httpclient = "5.2.1"
+grgit = "5.0.0"
 
 # Plugin versions
 indra = "3.0.1"
@@ -150,6 +152,8 @@ jsonassert = { group = "org.skyscreamer", name = "jsonassert", version.ref = "js
 
 # Extras
 ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+apache-httpclient = { group = "org.apache.httpcomponents.client5", name = "httpclient5", version.ref = "apache-httpclient" }
+grgit = { group = "org.ajoberstar.grgit", name = "grgit-core", version.ref = "grgit" }
 
 # Plugins
 plugin-indra = { group = "net.kyori", name = "indra-common", version.ref = "indra" }

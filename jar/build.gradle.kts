@@ -4,6 +4,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCach
 plugins {
     kotlin("jvm")
     id("com.github.johnrengelman.shadow")
+    id("org.kryptonmc.downloads.upload")
 }
 
 dependencies {
@@ -17,8 +18,7 @@ tasks {
         dependsOn(shadowJar)
     }
     withType<ShadowJar> {
-        val buildNumber = System.getenv("BUILD_NUMBER")?.let { "-$it" }.orEmpty()
-        archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
+        archiveFileName.set("Krypton-${project.version}.jar")
         transform<Log4j2PluginsCacheFileTransformer>()
 
         fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
@@ -32,6 +32,10 @@ tasks {
         exclude("dataconverter.mixins.json", "fabric.mod.json") // Stuff left in from DataConverter that doesn't make any sense for us.
 
         relocate("org.bstats", "org.kryptonmc.krypton.bstats")
+    }
+    uploadToApi {
+        dependsOn(shadowJar)
+        file.set(shadowJar.get().archiveFile)
     }
 }
 

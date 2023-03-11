@@ -32,6 +32,11 @@ jobs:
         with:
           name: "jar"
           path: "jar/build/libs/Krypton-*.jar"
+      - name: "Upload to downloads API"
+        if: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
+        run: "./gradlew uploadToApi"
+        env:
+          DOWNLOADS_API_TOKEN: "${{ secrets.DOWNLOADS_API_TOKEN }}"
       - name: "Publish to Maven"
         if: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
         run: "./gradlew publish"
