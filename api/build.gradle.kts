@@ -50,7 +50,6 @@ dependencies {
 }
 
 license {
-    header(project.resources.text.fromFile("HEADER.txt"))
     exclude(
         // Velocity derivatives, with a special header
         "**/plugin/InvalidPluginException.kt",
