@@ -1,15 +1,10 @@
 /*
- * This file is part of the Krypton API, and originates from the Sponge API,
- * licensed under the MIT license.
+ * This file is part of the Krypton API, licensed under the MIT license.
  *
- * Copyright (c) SpongePowered <https://www.spongepowered.org>
- * Copyright (c) contributors (Sponge API)
+ * Copyright (C) 2021-2022 KryptonMC and the contributors to the Krypton project.
  *
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
- *
- * For the original file that this file is derived from, see here:
- * https://github.com/SpongePowered/SpongeAPI/blob/api-8/src/main/java/org/spongepowered/api/world/gamerule/GameRules.java
  */
 package org.kryptonmc.api.world.rule
 

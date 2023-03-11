@@ -50,14 +50,6 @@ license {
     header(project.resources.text.fromFile("HEADER.txt"))
     exclude(
         // Velocity derivatives, with a special header
-        "**/event/ComponentResult.kt",
-        "**/event/Continuation.kt",
-        "**/event/EventHandler.kt",
-        "**/event/EventManager.kt",
-        "**/event/EventTask.kt",
-        "**/event/GenericResult.kt",
-        "**/event/ResultedEvent.kt",
-        "**/event/server/SetupPermissionsEvent.kt",
         "**/plugin/InvalidPluginException.kt",
         "**/plugin/PluginContainer.kt",
         "**/plugin/PluginDependency.kt",
@@ -67,10 +59,7 @@ license {
         "**/plugin/annotation/Dependency.kt",
         "**/plugin/annotation/Plugin.kt",
         "**/permission/PermissionFunction.kt",
-        "**/permission/PermissionProvider.kt",
-        "**/permission/Subject.kt",
-        // Sponge derivatives, with a special header
-        "**/world/rule/GameRules.kt"
+        "**/permission/Subject.kt"
     )
 }
 

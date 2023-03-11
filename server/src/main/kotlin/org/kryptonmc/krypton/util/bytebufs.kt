@@ -1,9 +1,7 @@
 /*
- * This file is part of the Krypton project, and parts of it originate from the
- * Velocity project, licensed under the GNU General Public License v3.0
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
  *
  * Copyright (C) 2021-2022 KryptonMC and the contributors of the Krypton project
- * Copyright (C) 2018 Velocity Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * For the original file that parts of this file are derived from, see here:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/protocol/ProtocolUtils.java
  */
 package org.kryptonmc.krypton.util
 
@@ -68,7 +63,6 @@ import java.util.Arrays
 import java.util.BitSet
 import java.util.EnumSet
 import java.util.UUID
-import kotlin.math.min
 
 /*
  * The var int encoding is a variable-length encoding, which consists of a sequence of bytes, with 7 bits representing the value, and the 8th bit
@@ -87,19 +81,21 @@ import kotlin.math.min
  * With var longs, these methods are simply extended to 10 bytes.
  */
 
-@Suppress("MagicNumber") // Easier to explain this in a comment than create loads of constants
+// https://github.com/jvm-profiling-tools/async-profiler/blob/a38a375dc62b31a8109f3af97366a307abb0fe6f/src/converter/one/jfr/JfrReader.java#L393
+@Suppress("MagicNumber")
 fun ByteBuf.readVarInt(): Int {
-    var i = 0
-    val maxRead = min(5, readableBytes())
-    for (j in 0 until maxRead) {
+    var result = 0
+    var shift = 0
+    while (true) {
         val next = readByte()
-        i = i or (next.toInt() and 0x7F shl j * 7)
-        if (next.toInt() and 0x80 != 128) return i // If there's no more var int bytes after this, we're done
+        result = result or ((next.toInt() and 0x7F) shl shift)
+        if (next >= 0) return result
+        shift += 7
     }
-    return Int.MAX_VALUE
 }
 
-// This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
+// This way of writing var ints came from an article by Andrew Steinborn of Velocity.
+// The article: https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
 @Suppress("MagicNumber") // Explained in a comment on readVarInt
 fun ByteBuf.writeVarInt(value: Int) {
     when {
@@ -117,22 +113,24 @@ fun ByteBuf.writeVarInt(value: Int) {
     }
 }
 
-@Suppress("MagicNumber") // Explained in a comment on readVarInt
+// https://github.com/async-profiler/async-profiler/blob/a38a375dc62b31a8109f3af97366a307abb0fe6f/src/converter/one/jfr/JfrReader.java#L404
+@Suppress("MagicNumber")
 fun ByteBuf.readVarLong(): Long {
-    var i = 0L
-    val maxRead = min(10, readableBytes())
-    for (j in 0 until maxRead) {
+    var result = 0L
+    var shift = 0
+    while (shift < 56) {
         val next = readByte()
-        i = i or (next.toLong() and 0x7F shl j * 7)
-        if (next.toLong() and 0x80 != 0x80L) return i // If there's no more var int bytes after this, we're done
+        result = result or ((next.toInt() and 0x7F) shl shift).toLong()
+        if (next >= 0) return result
+        shift += 7
     }
-    return Long.MAX_VALUE
+    return result or ((readByte().toInt() and 0xFF) shl 56).toLong()
 }
 
 // This is my own completely crazy extension of the above `writeVarInt` function, created by Andrew Steinborn of Velocity,
 // to the 10-bit var long. This is pretty much completely unnecessary, but it functions as expected, and was a challenge in
 // the article cited on the above method, so I thought it was worth putting it in here.
-@Suppress("MagicNumber") // Explained in a comment on readVarInt
+@Suppress("MagicNumber")
 fun ByteBuf.writeVarLong(value: Long) {
     when {
         value and (0xFFFFFFFF shl 7) == 0L -> writeByte(value.toInt())

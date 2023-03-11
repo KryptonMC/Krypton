@@ -77,18 +77,9 @@ license {
         "**/*.conf",
         "**/*.json",
         // Velocity derivatives, with a special header
-        "**/event/CustomHandlerAdapter.kt",
-        "**/event/EventTypeTracker.kt",
-        "**/event/KryptonEventManager.kt",
-        "**/event/UntargetedEventHandler.kt",
-        "**/plugin/KryptonPluginContainer.kt",
         "**/plugin/KryptonPluginManager.kt",
         "**/plugin/PluginClassLoader.kt",
         "**/plugin/PluginDependencies.kt",
-        "**/plugin/loader/LoadedPluginDescription.kt",
-        "**/plugin/loader/LoadedPluginDescriptionCandidate.kt",
-        "**/plugin/loader/PluginLoader.kt",
-        "**/util/bytebufs.kt",
         // Sponge derivatives, with a special header
         "**/console/BrigadierCompleter.kt",
         "**/console/BrigadierHighlighter.kt"

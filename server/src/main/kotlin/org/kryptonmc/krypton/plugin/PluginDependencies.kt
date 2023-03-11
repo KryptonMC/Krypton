@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/PaperMC/Velocity/blob/e8bf6ab5222d8bbf4e59e7c4d5400b10ab4c7e81/proxy/src/main/java/com/velocitypowered/proxy/plugin/util/PluginDependencyUtils.java
+ * https://github.com/PaperMC/Velocity/blob/959e75d16db352924e679fb5be545ee9b264fbd2/proxy/src/main/java/com/velocitypowered/proxy/plugin/util/PluginDependencyUtils.java
  */
 package org.kryptonmc.krypton.plugin
 
