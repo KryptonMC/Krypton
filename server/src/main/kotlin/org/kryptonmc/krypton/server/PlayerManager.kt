@@ -27,7 +27,6 @@ import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonPlayerQuitEvent
@@ -56,6 +55,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.locale.DisconnectMessages
+import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
@@ -74,8 +74,6 @@ import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.function.Function
-import java.util.function.Predicate
 
 class PlayerManager(private val server: KryptonServer) {
 
@@ -236,39 +234,24 @@ class PlayerManager(private val server: KryptonServer) {
         broadcast(packet, world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), radius, except)
     }
 
-    fun broadcastSystemMessage(message: Component, overlay: Boolean) {
-        broadcastSystemMessage(message, { message }, overlay)
-    }
-
-    fun broadcastSystemMessage(message: Component, messageExtractor: Function<KryptonPlayer, Component?>, overlay: Boolean) {
+    private fun broadcastSystemMessage(message: Component, overlay: Boolean) {
         server.console.sendSystemMessage(message)
-        players.forEach { player ->
-            messageExtractor.apply(player)?.let { player.sendSystemMessage(it, overlay) }
-        }
-    }
-
-    fun broadcastChatMessage(message: PlayerChatMessage, source: CommandSourceStack, type: RichChatType.Bound) {
-        broadcastChatMessage(message, { source.shouldFilterMessageTo(it) }, source.getPlayer(), type)
+        server.connectionManager.sendGroupedPacket(PacketOutSystemChat(message, overlay)) { it.acceptsSystemMessages(overlay) }
     }
 
     fun broadcastChatMessage(message: PlayerChatMessage, source: KryptonPlayer, type: RichChatType.Bound) {
-        broadcastChatMessage(message, { source.shouldFilterMessageTo(it) }, source, type)
-    }
-
-    private fun broadcastChatMessage(message: PlayerChatMessage, filterPredicate: Predicate<KryptonPlayer>, source: KryptonPlayer?,
-                                     type: RichChatType.Bound) {
         val trusted = verifyChatTrusted(message)
         server.console.logChatMessage(message.decoratedContent(), type, if (trusted) null else "Not Secure")
         val outgoingMessage = OutgoingChatMessage.create(message)
 
         var fullyFiltered = false
         players.forEach {
-            val filter = filterPredicate.test(it)
+            val filter = source.shouldFilterMessageTo(it)
             it.sendChatMessage(outgoingMessage, filter, type)
             fullyFiltered = fullyFiltered or (filter && message.isFullyFiltered())
         }
 
-        if (fullyFiltered && source != null) source.sendSystemMessage(CHAT_FILTERED_FULL)
+        if (fullyFiltered) source.sendSystemMessage(CHAT_FILTERED_FULL)
     }
 
     private fun verifyChatTrusted(message: PlayerChatMessage): Boolean = message.hasSignature() && !message.hasExpired(Instant.now())

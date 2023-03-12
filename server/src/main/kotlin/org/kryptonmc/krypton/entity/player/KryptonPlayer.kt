@@ -23,7 +23,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
@@ -42,7 +41,6 @@ import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -63,7 +61,6 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
-import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
 import org.kryptonmc.krypton.network.chat.RemoteChatSession
@@ -363,14 +360,7 @@ class KryptonPlayer(
 
     fun sendSystemMessage(message: Component, overlay: Boolean) {
         if (!acceptsSystemMessages(overlay)) return
-        connection.send(PacketOutSystemChat(message, overlay), PacketSendListener.sendOnFailure {
-            if (acceptsSystemMessages(false)) {
-                val notDelivered = Component.text(KryptonAdventure.toPlainText(message, 256), NamedTextColor.YELLOW)
-                PacketOutSystemChat(Component.translatable("multiplayer.message_not_delivered", NamedTextColor.RED, notDelivered), false)
-            } else {
-                null
-            }
-        })
+        connection.send(PacketOutSystemChat(message, overlay))
     }
 
     fun sendChatMessage(message: OutgoingChatMessage, filter: Boolean, type: RichChatType.Bound) {
@@ -382,7 +372,7 @@ class KryptonPlayer(
         return settings.filterText || target.settings.filterText
     }
 
-    private fun acceptsSystemMessages(overlay: Boolean): Boolean = if (settings.chatVisibility == ChatVisibility.HIDDEN) overlay else true
+    fun acceptsSystemMessages(overlay: Boolean): Boolean = if (settings.chatVisibility == ChatVisibility.HIDDEN) overlay else true
 
     fun acceptsChatMessages(): Boolean = settings.chatVisibility == ChatVisibility.FULL
 

@@ -83,7 +83,7 @@ class LoginPacketHandler(
         if (!server.config.isOnline || server.config.proxy.mode.authenticatesUsers) {
             if (server.config.proxy.mode == ProxyCategory.Mode.MODERN) {
                 // Try to establish Velocity connection.
-                connection.writeAndFlush(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
+                connection.writeNow(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
             } else {
                 processOfflineLogin(packet.name)
             }
@@ -91,7 +91,7 @@ class LoginPacketHandler(
         }
 
         // The server isn't offline and the client wasn't forwarded, enable encryption.
-        connection.writeAndFlush(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
+        connection.writeNow(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
     }
 
     private fun processOfflineLogin(name: String) {
@@ -183,7 +183,7 @@ class LoginPacketHandler(
 
     private fun finishLogin(player: KryptonPlayer) {
         connection.enableCompression()
-        connection.writeAndFlush(PacketOutLoginSuccess.create(player.profile))
+        connection.writeNow(PacketOutLoginSuccess.create(player.profile))
         connection.setState(PacketState.PLAY)
         connection.setHandler(PlayPacketHandler(server, connection, player))
 
@@ -217,8 +217,7 @@ class LoginPacketHandler(
     private fun disconnect(reason: Component) {
         val translated = MinecraftTranslationManager.render(reason)
         LOGGER.info("Disconnecting ${formatName()}: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
-        connection.writeAndFlush(PacketOutLoginDisconnect(reason))
-        connection.disconnect(reason)
+        connection.writeAndDisconnect(PacketOutLoginDisconnect(reason), reason)
     }
 
     override fun onDisconnect(message: Component) {

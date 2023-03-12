@@ -30,7 +30,5 @@ interface NetworkConnection {
 
     fun send(packet: Packet)
 
-    fun send(packet: Packet, listener: PacketSendListener)
-
     fun write(packet: GenericPacket)
 }

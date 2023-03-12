@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.testutil
 
 import org.kryptonmc.krypton.network.NetworkConnection
-import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.Packet
 import java.net.InetAddress
@@ -38,11 +37,6 @@ class TestConnection : NetworkConnection {
 
     override fun send(packet: Packet) {
         write(packet)
-    }
-
-    override fun send(packet: Packet, listener: PacketSendListener) {
-        write(packet)
-        // TODO: Decide how to use the listener
     }
 
     override fun write(packet: GenericPacket) {

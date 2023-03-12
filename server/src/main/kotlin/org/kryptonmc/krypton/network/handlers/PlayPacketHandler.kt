@@ -49,7 +49,6 @@ import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.network.NettyConnection
-import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.network.chat.ChatUtil
 import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.network.chat.LastSeenMessages
@@ -160,7 +159,7 @@ class PlayPacketHandler(
     }
 
     fun disconnect(reason: Component) {
-        connection.send(PacketOutDisconnect(reason), PacketSendListener.thenRun { connection.disconnect(reason) })
+        connection.writeAndDisconnect(PacketOutDisconnect(reason), reason)
         connection.setReadOnly()
     }
 

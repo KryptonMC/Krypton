@@ -86,7 +86,6 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     fun setState(newState: PacketState) {
         channel.attr(PACKET_STATE_ATTRIBUTE).set(newState)
         channel.config().isAutoRead = true
-        LOGGER.debug("Enabled auto-read because state changed to $newState.")
     }
 
     override fun latency(): Int = latency
@@ -104,7 +103,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         }
 
         // Tell the client to update its compression threshold and create our compressor
-        writeAndFlush(PacketOutSetCompression(threshold))
+        writeNow(PacketOutSetCompression(threshold))
         compressionEnabled = true
         val compressor = Natives.compress.get().create(4)
         encoder = PacketCompressor(compressor, threshold)
@@ -155,10 +154,6 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         writePacket(packet)
     }
 
-    override fun send(packet: Packet, listener: PacketSendListener) {
-        writeAndFlush(packet, listener)
-    }
-
     override fun write(packet: GenericPacket) {
         when (packet) {
             is Packet -> writePacket(packet)
@@ -190,23 +185,23 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         }
     }
 
-    fun writeAndFlush(packet: Packet) {
+    fun writeAndDisconnect(packet: Packet, disconnectReason: Component) {
+        writeAndFlush(packet) { disconnect(disconnectReason) }
+    }
+
+    /**
+     * This exists for certain packets that need to be written out immediately, usually because
+     * they need to happen before a change of state, e.g. the login success packet, which needs to
+     * be sent before the state is changed to PLAY.
+     */
+    fun writeNow(packet: Packet) {
         writeAndFlush(packet, null)
     }
 
-    private fun writeAndFlush(packet: Packet, listener: PacketSendListener?) {
+    private fun writeAndFlush(packet: Packet, listener: ChannelFutureListener?) {
         writeWaitingPackets()
         val future = channel.writeAndFlush(packet)
-        if (listener != null) {
-            future.addListener {
-                if (it.isSuccess) {
-                    listener.onSuccess()
-                } else {
-                    val failPacket = listener.onFailure()
-                    if (failPacket != null) channel.writeAndFlush(failPacket).addListener(FIRE_EXCEPTION_ON_FAILURE_UNLESS_CLOSED)
-                }
-            }
-        }
+        if (listener != null) future.addListener(listener)
         future.addListener(FIRE_EXCEPTION_ON_FAILURE_UNLESS_CLOSED)
     }
 
@@ -269,7 +264,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         if (noExistingFault) {
             LOGGER.debug("Failed to send packet or received invalid packet!", cause)
             val packet = if (currentState() == PacketState.LOGIN) PacketOutLoginDisconnect(reason) else PacketOutDisconnect(reason)
-            writeAndFlush(packet, PacketSendListener.thenRun { disconnect(reason) })
+            writeAndDisconnect(packet, reason)
             setReadOnly()
         } else {
             LOGGER.debug("Double fault!", cause)

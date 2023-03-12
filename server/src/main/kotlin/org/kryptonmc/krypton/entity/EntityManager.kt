@@ -105,8 +105,10 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         // TODO: World border
         player.connection.send(PacketOutUpdateTime.create(world.data))
 
-        val chunk = checkNotNull(world.getChunk(player.position.chunkX(), player.position.chunkZ())) {
-            "The chunk that player ${player.name} is in is not loaded!"
+        val chunk = world.loadChunk(player.position.chunkX(), player.position.chunkZ())
+        if (chunk == null) {
+            LOGGER.error("The chunk that player ${player.name} is loading in to is not loaded! Refusing to spawn ${player.name}!")
+            return
         }
 
         entityTracker.add(player, player.position, player.trackingTarget, player.trackingViewCallback)
