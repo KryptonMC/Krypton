@@ -29,8 +29,8 @@ interface GameModePlayer : Player {
     override var gameMode: GameMode
         get() = gameModeSystem.gameMode()
         set(value) {
-            updateGameMode(value, PlayerChangeGameModeEvent.Cause.API)
+            updateGameMode(value)
         }
 
-    fun updateGameMode(mode: GameMode, cause: PlayerChangeGameModeEvent.Cause): PlayerChangeGameModeEvent?
+    fun updateGameMode(mode: GameMode): PlayerChangeGameModeEvent?
 }

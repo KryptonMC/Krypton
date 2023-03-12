@@ -34,8 +34,10 @@ data class WorldCategory(
     val name: String = "world",
     @Comment("Settings for world generation")
     val generator: GeneratorCategory = GeneratorCategory(),
-    @Comment("The gamemode for this world. Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
-    val gameMode: GameMode = GameMode.SURVIVAL,
+    @Comment("The game mode for this world. Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
+    val defaultGameMode: GameMode = GameMode.SURVIVAL,
+    @Comment("Whether the game mode should be forced for all players in the world.")
+    val forceDefaultGameMode: Boolean = false,
     @Comment("The default difficulty. Valid values are: 0-3 (legacy), peaceful, easy, normal and hard (case insensitive).")
     val difficulty: Difficulty = Difficulty.NORMAL,
     @Comment("If this server is in hardcore mode. Currently does nothing.")

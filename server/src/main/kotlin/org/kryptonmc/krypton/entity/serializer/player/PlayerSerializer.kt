@@ -20,11 +20,14 @@ package org.kryptonmc.krypton.entity.serializer.player
 
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.RespawnData
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
+import org.kryptonmc.krypton.util.enumhelper.GameModes
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
@@ -55,6 +58,10 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
     override fun load(entity: KryptonPlayer, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
+        val gameMode = if (data.hasNumber(GAME_TYPE_TAG)) GameModes.fromIdOrDefault(data.getInt(GAME_TYPE_TAG)) else null
+        val oldGameMode = if (data.hasNumber(PREVIOUS_GAME_TYPE_TAG)) GameModes.fromId(data.getInt(PREVIOUS_GAME_TYPE_TAG)) else null
+        entity.gameModeSystem.setGameMode(selectGameMode(entity, gameMode), oldGameMode)
+
         entity.inventory.load(data.getList(INVENTORY_TAG, CompoundTag.ID))
         entity.inventory.heldSlot = data.getInt(SELECTED_SLOT_TAG)
         entity.data.set(MetadataKeys.Player.SCORE, data.getInt(SCORE_TAG))
@@ -80,6 +87,12 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             entity.firstJoined = Instant.ofEpochMilli(kryptonData.getLong(FIRST_JOINED_TAG))
             entity.lastJoined = Instant.ofEpochMilli(kryptonData.getLong(LAST_JOINED_TAG))
         }
+    }
+
+    private fun selectGameMode(player: KryptonPlayer, loadedMode: GameMode?): GameMode {
+        val config = player.server.config.world
+        if (config.forceDefaultGameMode || loadedMode == null) return config.defaultGameMode
+        return loadedMode
     }
 
     override fun save(entity: KryptonPlayer): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {

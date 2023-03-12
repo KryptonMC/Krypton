@@ -29,33 +29,6 @@ public interface PlayerChangeGameModeEvent : PlayerEvent, DeniableEventWithResul
     public val newGameMode: GameMode
 
     /**
-     * The cause of the game mode being changed for the player.
-     */
-    public val cause: Cause
-
-    /**
-     * The cause of the game mode change.
-     */
-    public enum class Cause {
-
-        /**
-         * The game mode was changed through the API, by using
-         * [org.kryptonmc.api.entity.player.Player.gameMode].
-         */
-        API,
-
-        /**
-         * The game mode was changed by a command, such as `/gamemode`.
-         */
-        COMMAND,
-
-        /**
-         * The game mode was loaded from the player's data.
-         */
-        LOAD
-    }
-
-    /**
      * The result of an attempt to change a player's game mode.
      *
      * This allows plugins to completely overwrite the game mode that the

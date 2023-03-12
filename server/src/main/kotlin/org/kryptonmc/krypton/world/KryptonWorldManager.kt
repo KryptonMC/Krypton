@@ -88,7 +88,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
             val worldData = storageManager.load(path) ?: PrimaryWorldData(
                 folderName,
                 worldFolder.resolve(path),
-                server.config.world.gameMode,
+                server.config.world.defaultGameMode,
                 server.config.world.difficulty,
                 server.config.world.hardcore,
                 WorldGameRules(),

@@ -31,6 +31,9 @@ object GameModes {
     fun fromId(id: Int): GameMode? = VALUES.getOrNull(id)
 
     @JvmStatic
+    fun fromIdOrDefault(id: Int): GameMode = fromId(id) ?: GameMode.SURVIVAL
+
+    @JvmStatic
     fun fromName(name: String): GameMode? = BY_NAME.get(name)
 
     @JvmStatic

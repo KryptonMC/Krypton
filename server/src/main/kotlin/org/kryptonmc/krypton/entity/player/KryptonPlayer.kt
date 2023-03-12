@@ -156,11 +156,6 @@ class KryptonPlayer(
         get() = data.get(MetadataKeys.Player.ADDITIONAL_HEARTS)
         set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
 
-    init {
-        // This ensures that if player data loading is disabled, the player gets put at the spawn position, not (0, 0, 0)
-        position = world.data.spawnPos().asPosition()
-    }
-
     override fun defineData() {
         super<KryptonLivingEntity>.defineData()
         data.define(MetadataKeys.Player.ADDITIONAL_HEARTS, 0F)
@@ -171,8 +166,8 @@ class KryptonPlayer(
         data.define(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.EMPTY)
     }
 
-    override fun updateGameMode(mode: GameMode, cause: PlayerChangeGameModeEvent.Cause): PlayerChangeGameModeEvent? {
-        val event = gameModeSystem.changeGameMode(mode, cause)
+    override fun updateGameMode(mode: GameMode): PlayerChangeGameModeEvent? {
+        val event = gameModeSystem.changeGameMode(mode)
         if (event == null || !event.isAllowed()) return null
 
         connection.send(PacketOutGameEvent(GameEventTypes.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
@@ -319,7 +314,7 @@ class KryptonPlayer(
         // TODO: Stop sleeping if sleeping
     }
 
-    override fun onAbilitiesUpdate() {
+    fun onAbilitiesUpdate() {
         if (connection.inPlayState()) connection.send(PacketOutAbilities.create(abilities))
         removeEffectParticles()
         isInvisible = gameMode == GameMode.SPECTATOR

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.components
 
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.entity.player.Abilities
+import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 
 /**
  * A delegate that moves the API implementations for abilities out of the main
@@ -28,7 +29,7 @@ import org.kryptonmc.krypton.entity.player.Abilities
  * Note that, due to the way invulnerability works, it does not have an
  * overriding delegate here to abilities.
  */
-interface AbilitiesDelegate : Player {
+interface AbilitiesDelegate : NetworkPlayer, Player {
 
     val abilities: Abilities
 
@@ -36,38 +37,40 @@ interface AbilitiesDelegate : Player {
         get() = abilities.flying
         set(value) {
             abilities.flying = value
-            onAbilitiesUpdate()
+            updateAbilities()
         }
     override var canFly: Boolean
         get() = abilities.canFly
         set(value) {
             abilities.canFly = value
-            onAbilitiesUpdate()
+            updateAbilities()
         }
     override var canInstantlyBuild: Boolean
         get() = abilities.canInstantlyBuild
         set(value) {
             abilities.canInstantlyBuild = value
-            onAbilitiesUpdate()
+            updateAbilities()
         }
     override var canBuild: Boolean
         get() = abilities.canBuild
         set(value) {
             abilities.canBuild = value
-            onAbilitiesUpdate()
+            updateAbilities()
         }
     override var walkingSpeed: Float
         get() = abilities.walkingSpeed
         set(value) {
             abilities.walkingSpeed = value
-            onAbilitiesUpdate()
+            updateAbilities()
         }
     override var flyingSpeed: Float
         get() = abilities.flyingSpeed
         set(value) {
             abilities.flyingSpeed = value
-            onAbilitiesUpdate()
+            updateAbilities()
         }
 
-    fun onAbilitiesUpdate()
+    private fun updateAbilities() {
+        connection.send(PacketOutAbilities.create(abilities))
+    }
 }

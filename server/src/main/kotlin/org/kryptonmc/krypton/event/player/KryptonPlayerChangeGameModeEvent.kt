@@ -26,6 +26,5 @@ import org.kryptonmc.api.world.GameMode
 class KryptonPlayerChangeGameModeEvent(
     override val player: Player,
     override val oldGameMode: GameMode,
-    override val newGameMode: GameMode,
-    override val cause: PlayerChangeGameModeEvent.Cause
+    override val newGameMode: GameMode
 ) : AbstractDeniableEventWithResult<PlayerChangeGameModeEvent.Result>(), PlayerChangeGameModeEvent

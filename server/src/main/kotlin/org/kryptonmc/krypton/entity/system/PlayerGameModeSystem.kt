@@ -77,13 +77,13 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         }
     }
 
-    fun changeGameMode(mode: GameMode, cause: PlayerChangeGameModeEvent.Cause): PlayerChangeGameModeEvent? {
+    fun changeGameMode(mode: GameMode): PlayerChangeGameModeEvent? {
         if (mode == gameMode) return null
 
-        val event = player.server.eventNode.fire(KryptonPlayerChangeGameModeEvent(player, gameMode, mode, cause))
+        val event = player.server.eventNode.fire(KryptonPlayerChangeGameModeEvent(player, gameMode, mode))
         if (!event.isAllowed()) return event
 
-        setGameMode(mode, event.result?.newGameMode ?: gameMode)
+        setGameMode(event.result?.newGameMode ?: mode, gameMode)
         return event
     }
 

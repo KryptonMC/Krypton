@@ -79,6 +79,7 @@ import java.util.function.Predicate
 
 class PlayerManager(private val server: KryptonServer) {
 
+    private val serializeData = server.config.advanced.serializePlayerData
     private val dataManager = createDataManager(server)
     private val players = CopyOnWriteArrayList<KryptonPlayer>()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
@@ -90,14 +91,14 @@ class PlayerManager(private val server: KryptonServer) {
 
     private fun createDataManager(server: KryptonServer): PlayerDataManager {
         val playerDataFolder = Path.of(server.config.world.name).resolve("playerdata")
-        if (server.config.advanced.serializePlayerData && !Files.exists(playerDataFolder)) {
+        if (serializeData && !Files.exists(playerDataFolder)) {
             try {
                 Files.createDirectories(playerDataFolder)
             } catch (exception: Exception) {
                 LOGGER.error("Unable to create player data directory!", exception)
             }
         }
-        return PlayerDataManager(playerDataFolder, server.config.advanced.serializePlayerData)
+        return PlayerDataManager(playerDataFolder, serializeData)
     }
 
     fun getPlayer(name: String): KryptonPlayer? = playersByName.get(name)
@@ -120,6 +121,14 @@ class PlayerManager(private val server: KryptonServer) {
 
         val world = server.worldManager.worlds.get(dimension) ?: server.worldManager.default
         player.world = world
+
+        if (!serializeData) {
+            // If we aren't serializing data, we need to make sure the player doesn't spawn at (0, 0, 0) every time
+            player.position = world.data.spawnPos().asPosition()
+            // We also would like for the player to have the default game mode if it is forced
+            if (server.config.world.forceDefaultGameMode) player.gameModeSystem.setGameMode(server.config.world.defaultGameMode, null)
+        }
+
         val location = player.position
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at $location")
 
