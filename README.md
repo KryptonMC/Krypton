@@ -15,23 +15,26 @@ Please join our Discord to keep up with the latest changes and chat with the com
 
 ### Usage
 
-We have a Jenkins CI server, where the project is built for distribution. You can find it at https://ci.kryptonmc.org
+We use GitHub Actions to build the project, and the results are deployed to our downloads API. There will soon be a downloads page to download
+the project from, but this does not yet exist.
 
-You can download the latest JAR file from here and run it with `java -jar Krypton-VERSION.jar`. If you have any questions or issues running the JAR,
-feel free to ask in our Discord server.
+To download the latest JAR, you can go to https://api.kryptonmc.org/downloads/v1/krypton/latest/download
+
+Starting the server is as easy as running the JAR, which can be done with `java -jar krypton-VERSION.jar`.
+If you have any questions or issues running the JAR, feel free to ask in our Discord server.
 
 Or, if you prefer, you can clone the repository with `git clone https://github.com/KryptonMC/Krypton.git`
-and build from source with `gradle shadowJar` if you wish to run the server.
+and build from source with `gradle shadowJar` if you wish to run the server. The full artifact will appear in
+`jar/build/libs/Krypton-VERSION.jar`.
 
 **Note**: As it stands, Krypton does not have any world generation. Therefore, you must provide your own world generated
 from vanilla Minecraft, and set the world name in the `config.conf` to the **name** of the **folder** the world is in, else
 Krypton will fail to start. This will not always be the case, however, world generation is a large task that I do not want
 to even think about getting started on yet.
 
-The testing in Krypton is, as it stands, not satisfactory, and things may break at any time, often without clear reason.
-However, we are working towards better testing, and hopefully, this will change in the future.
-
-In addition, Krypton is still in development, and the community testing is nowhere near as vast as other software.
+Krypton is properly tested manually when changes are made, and we do have some level of automated testing, however it is not
+as extensively tested as Paper or other server software, or to the same standard as professional software, as this is not
+professional software.
 
 ### API
 
@@ -40,73 +43,90 @@ KDocs (Kotlin equivalent of JavaDocs) [here](https://docs.kryptonmc.org).
 
 ### Contributing
 
-Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it.
+Krypton is open-source for a reason. Anyone is welcome to contribute, but it may be difficult knowing where to start or being
+able to understand the codebase, as it is rather large, and very under documented. If you do struggle, reach out on Discord and
+one of the core team can help (most likely me, BomBardyGamer).
 
-If you're interested, I highly recommend coming and talking to us on our official Discord server. This is where you can talk to the
-development team, who know the most about the project, and they can offer you advice and information on where to start.
-You should also read the [contribution guide](CONTRIBUTING.md) for some common information, though this is incomplete, and needs more
-information in it.
+It is also highly recommend to read the [contribution guide](CONTRIBUTING.md) before contributing to ensure that you stick to
+the general style guidelines and recommendations of the project.
 
 ### Comparison with other software
-Here, I've tried to compare Krypton with other, existing solutions. I don't expect
-anyone to get convinced to use Krypton after reading this section, but hey, I'm not
-going to shield you from the truth.
 
 #### Paper
+
 Paper is a highly optimised, very well known, very widely used, mature, and
 battle-tested platform and fork of Spigot, itself a fork of the original
 CraftBukkit.
 
-It is developed by a highly skilled and very knowledgeable team of individuals, who
-know an awful lot more than I do about this. Paper is much better for use in
-production envionments, on vanilla servers, and many other tasks.
+It is developed by a highly skilled and very knowledgeable team of individuals.
+Paper is much better for use in production envionments, on vanilla servers, and many other tasks.
+
+However, as Paper is based on vanilla Minecraft, it still has some issues. Mainly, RAM usage on even
+small Minecraft servers on new versions is very high.
+
+In addition, Paper is based on Bukkit, and the Bukkit API is very old, and has a lot of issues
+with lack of support for certain features, and a core design that does not accurately represent modern
+Minecraft versions.
 
 #### Sponge
-Sponge is a very well known, widely used, and mature platform, mostly aimed at
-providing an alternative API to Bukkit, and supporting mod/plugin hybrid
-environments.
 
-It is also developed by a highly skilled and very knowledgeable team of individuals,
-who also know an awful lot more than I do about this. Sponge is also much better
-for use in production environments, on vanilla servers, and also hybrid servers, as
-well as other tasks.
+Sponge is a very well known, widely used, and mature platform, mostly used within the
+modding community as a way to run plugins alongside mods.
+
+It is also developed by a highly skilled and very knowledgeable team of individuals.
+Sponge is also much better for use in production environments, on vanilla servers, and also
+hybrid servers, as well as other tasks.
+
+However, like Paper, it is based on vanilla Minecraft, but it is not as well optimised as Paper,
+as optimisation is not Sponge's focus, and so the RAM usage is also not that good.
 
 #### Minestom
+
 This is where a lot of our community are from, so it's only fair I offer a comparison
 with this. Minestom is a less well known, much less widely used, and much less mature
 platform, with a highly dedicated, skilled, and knowledgeable team of individuals,
 offering Minecraft servers a better way to create games that do not require vanilla
 features.
 
+Some significant parts of Krypton's API and backend are based on Minestom code, like scheduling, events,
+and networking, to name a few.
+
 Minestom is much more suitable for games servers, where it would take more time to
 remove all the vanilla features you do not require than add all the features you do
 require.
 
 #### Conclusion
-For high performance vanilla, use Paper. For mod/plugin hybrids and a better API use
-Sponge. For high performance minigames and other games, use Minestom.
 
-If you're still reading after all this, Krypton is highly experimental, not battle
-tested, not mature, not stable, and not production ready. It has hardly any vanilla
-features, and the performance is worse than vanilla, even with the lack of features.
+Krypton is experimental software. It is not battle-tested. It does not offer the incredible performance
+of Minestom. It does not yet have all vanilla features implemented. It is recommended for those curious
+about vanilla, and who are interested in an alternative, that aims to one day be mostly compatible.
 
-However, it offers a new and modern API, not limited by backwards compatibility
-requirements, or Mojang's server design, and aims to provide a new, and hopefully
-better, experience for developers. The project still has potential to grow, and is
-very open to contribution, and is really striving to have the voices of its community
-heard.
+Current stress tests show that the server can handle at least 500 concurrent bots with no delays, issues with
+joining or pinging, or any other network issues. I have had it run smoothly with 1000 bots before, but this will
+have to be tested again. At 2000 players, it started running out of memory to allocate buffers, at which point
+everything started to grind to a halt, and the server process had to be force closed. I am looking to improve
+networking performance, and hopefully reach 2000 players, but we are not there yet.
+
+In addition, Krypton's API is designed from scratch. It takes inspiration mainly from Sponge and Minestom, with
+parts from Velocity, such as plugin loading, and possibly some parts from Bukkit. It is designed to be simple
+enough to use without reading loads of documentation, but also powerful enough to manipulate a lot of vanilla
+features and mechanics, and build plugins that can change the way parts of the game work.
 
 ### Credits
 
 - The project's [contributors](https://github.com/KryptonMC/Krypton/graphs/contributors), of course, for their amazing work
 helping to make this possible.
-- [The Velocity project](https://velocitypowered.com/), for providing the fast networking and amazing plugin loading and event systems that the Krypton API contains derivatives of.
+- [The Velocity project](https://velocitypowered.com/), for providing the plugin loading and permission systems that the Krypton API contains derivatives of.
 - [Minestom](https://minestom.net), for their support, API, and amazing community of welcoming individuals that have helped this project since it's very beginning.
 - [The Minecraft Coalition](https://wiki.vg), for their hard work and effort documenting the protocol, allowing these projects to exist.
 - [The Minecraft Wiki](https://minecraft.gamepedia.com), for their amazing efforts documenting just about everything
   there is to know about Minecraft, and making it available for everyone to use.
 - The project's dependencies, each and every one helping to make our lives as developers easier.
-- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant us an
-  open-source license for their profiler, helping to ensure that Krypton can perform well in production environments.
-- [Arcmutate](https://www.arcmutate.com/), for being kind enough to grant us an open-source license for their Kotlin extensions to the PIT mutation
-  testing software that we use to ensure that test coverage is at an acceptable level, helping to ensure the stability of Krypton.
+
+### Special Thanks
+
+[![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png)](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
+We would also like to say a special thank you to the team at EJ technologies, for being kind enough to
+provide us with an open-source license for [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html),
+which allows me to profile the software and continue to make improvements to the performance.
