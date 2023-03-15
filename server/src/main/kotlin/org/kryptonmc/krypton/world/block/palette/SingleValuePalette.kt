@@ -17,10 +17,9 @@
  */
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.map.IntBiMap
-import org.kryptonmc.krypton.util.writeVarInt
 
 class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resizer: PaletteResizer<T>, entries: List<T>) : Palette<T> {
 
@@ -46,9 +45,9 @@ class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resiz
         return value!!
     }
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         checkInit()
-        buf.writeVarInt(registry.getId(value!!))
+        writer.writeVarInt(registry.getId(value!!))
     }
 
     override fun calculateSerializedSize(): Int {

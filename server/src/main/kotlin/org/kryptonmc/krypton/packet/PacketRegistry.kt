@@ -17,9 +17,9 @@
  */
 package org.kryptonmc.krypton.packet
 
-import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap
+import org.kryptonmc.krypton.network.buffer.BinaryReader
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
@@ -130,6 +130,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEnabledFeatures
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.packet.out.status.PacketOutPingResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
+import java.nio.ByteBuffer
 
 object PacketRegistry {
 
@@ -138,9 +139,9 @@ object PacketRegistry {
 
     fun getOutboundPacketId(clazz: Class<*>): Int = toId.getInt(clazz)
 
-    fun getInboundPacket(state: PacketState, id: Int, buf: ByteBuf): Packet? {
+    fun getInboundPacket(state: PacketState, id: Int, buffer: ByteBuffer): InboundPacket<*>? {
         val constructor = byEncoded.get(encodeInboundLookupKey(state, id)) ?: return null
-        return constructor.create(buf)
+        return constructor.create(BinaryReader(buffer))
     }
 
     @Suppress("LongMethod", "MagicNumber")
@@ -287,6 +288,6 @@ object PacketRegistry {
         /**
          * This returns InboundPacket rather than just Packet to try and ensure that all our inbound packets implement this interface.
          */
-        fun create(buf: ByteBuf): InboundPacket<*>
+        fun create(reader: BinaryReader): InboundPacket<*>
     }
 }

@@ -17,35 +17,30 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.collection.FixedList
-import org.kryptonmc.krypton.util.readCollection
-import org.kryptonmc.krypton.util.readItem
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSetContainerContent(val id: Int, val stateId: Int, val items: List<KryptonItemStack>, val heldItem: KryptonItemStack) : Packet {
+data class PacketOutSetContainerContent(val id: Byte, val stateId: Int, val items: List<KryptonItemStack>, val heldItem: KryptonItemStack) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readUnsignedByte().toInt(), buf.readVarInt(),
-        buf.readCollection({ FixedList(it, KryptonItemStack.EMPTY) }, ByteBuf::readItem), buf.readItem())
+    constructor(reader: BinaryReader) : this(reader.readByte(), reader.readVarInt(),
+        reader.readCollection({ FixedList(it, KryptonItemStack.EMPTY) }, BinaryReader::readItem), reader.readItem())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(id)
-        buf.writeVarInt(stateId)
-        buf.writeCollection(items, buf::writeItem)
-        buf.writeItem(heldItem)
+    override fun write(writer: BinaryWriter) {
+        writer.writeByte(id)
+        writer.writeVarInt(stateId)
+        writer.writeCollection(items, writer::writeItem)
+        writer.writeItem(heldItem)
     }
 
     companion object {
 
         @JvmStatic
         fun fromPlayerInventory(inventory: KryptonPlayerInventory): PacketOutSetContainerContent =
-            PacketOutSetContainerContent(inventory.id, inventory.incrementStateId(), inventory.items, inventory.mainHand)
+            PacketOutSetContainerContent(inventory.id.toByte(), inventory.incrementStateId(), inventory.items, inventory.mainHand)
     }
 }

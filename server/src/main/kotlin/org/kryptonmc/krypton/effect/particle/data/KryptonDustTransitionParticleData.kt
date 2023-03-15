@@ -17,10 +17,11 @@
  */
 package org.kryptonmc.krypton.effect.particle.data
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.DustTransitionParticleData
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 @JvmRecord
 data class KryptonDustTransitionParticleData(
@@ -29,11 +30,11 @@ data class KryptonDustTransitionParticleData(
     override val toColor: Color
 ) : DustTransitionParticleData, Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readParticleColor(), buf.readFloat(), buf.readParticleColor())
+    constructor(reader: BinaryReader) : this(reader.readParticleColor(), reader.readFloat(), reader.readParticleColor())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeParticleColor(color)
-        buf.writeFloat(scale)
-        buf.writeParticleColor(toColor)
+    override fun write(writer: BinaryWriter) {
+        writer.writeParticleColor(color)
+        writer.writeFloat(scale)
+        writer.writeParticleColor(toColor)
     }
 }

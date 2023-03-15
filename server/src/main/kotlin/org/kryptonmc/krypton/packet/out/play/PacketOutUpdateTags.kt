@@ -17,23 +17,28 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.tags.TagSerializer
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.readMap
-import org.kryptonmc.krypton.util.writeMap
-import org.kryptonmc.krypton.util.writeResourceKey
 
 @JvmRecord
 data class PacketOutUpdateTags(val tags: Map<ResourceKey<out Registry<*>>, TagSerializer.NetworkPayload>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap({ ResourceKey.of(KryptonResourceKeys.PARENT, it.readKey()) }, TagSerializer::NetworkPayload))
+    constructor(reader: BinaryReader) : this(readTags(reader))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeMap(tags, ByteBuf::writeResourceKey) { _, payload -> payload.write(buf) }
+    override fun write(writer: BinaryWriter) {
+        writer.writeMap(tags, BinaryWriter::writeResourceKey) { w, payload -> payload.write(w) }
+    }
+
+    companion object {
+
+        @JvmStatic
+        private fun readTags(reader: BinaryReader): Map<ResourceKey<out Registry<*>>, TagSerializer.NetworkPayload> {
+            return reader.readMap({ ResourceKey.of(KryptonResourceKeys.PARENT, it.readKey()) }, TagSerializer::NetworkPayload)
+        }
     }
 }

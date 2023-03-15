@@ -17,25 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.`in`.login
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.LoginPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readAllAvailableBytes
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
 data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : InboundPacket<LoginPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNullable(ByteBuf::readAllAvailableBytes))
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readNullable(BinaryReader::readAllBytes))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(messageId)
-        buf.writeNullable(data, ByteBuf::writeVarIntByteArray)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(messageId)
+        writer.writeNullable(data, BinaryWriter::writeByteArray)
     }
 
     override fun handle(handler: LoginPacketHandler) {

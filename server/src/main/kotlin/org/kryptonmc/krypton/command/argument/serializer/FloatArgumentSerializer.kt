@@ -18,7 +18,8 @@
 package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.FloatArgumentType
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 /**
  * Float argument types are serialized with flags indicating if the minimum
@@ -33,18 +34,18 @@ import io.netty.buffer.ByteBuf
  */
 object FloatArgumentSerializer : FlaggedArgumentSerializer<FloatArgumentType> {
 
-    override fun read(buf: ByteBuf, flags: Int): FloatArgumentType {
+    override fun read(reader: BinaryReader, flags: Int): FloatArgumentType {
         if (flags == 0) return FloatArgumentType.floatArg() // No flags, so both min and max are absent
-        val minimum = if (flags and 1 != 0) buf.readFloat() else -Float.MAX_VALUE
-        val maximum = if (flags and 2 != 0) buf.readFloat() else Float.MAX_VALUE
+        val minimum = if (flags and 1 != 0) reader.readFloat() else -Float.MAX_VALUE
+        val maximum = if (flags and 2 != 0) reader.readFloat() else Float.MAX_VALUE
         return FloatArgumentType.floatArg(minimum, maximum)
     }
 
-    override fun write(buf: ByteBuf, value: FloatArgumentType) {
+    override fun write(writer: BinaryWriter, value: FloatArgumentType) {
         val writeMin = value.minimum != -Float.MAX_VALUE
         val writeMax = value.maximum != Float.MAX_VALUE
-        buf.writeByte(createFlags(writeMin, writeMax))
-        if (writeMin) buf.writeFloat(value.minimum)
-        if (writeMax) buf.writeFloat(value.maximum)
+        writer.writeByte(createFlags(writeMin, writeMax))
+        if (writeMin) writer.writeFloat(value.minimum)
+        if (writeMax) writer.writeFloat(value.maximum)
     }
 }

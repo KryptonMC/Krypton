@@ -17,47 +17,43 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.internal.annotations.CataloguedBy
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeId
-import org.kryptonmc.krypton.util.writeNullable
 
 @CataloguedBy(MetadataSerializers::class)
 interface MetadataSerializer<T> {
 
-    fun read(buf: ByteBuf): T
+    fun read(reader: BinaryReader): T
 
-    fun write(buf: ByteBuf, item: T)
+    fun write(writer: BinaryWriter, item: T)
 
-    fun createKey(id: Int): MetadataKey<T> = MetadataKey(id, this)
+    fun createKey(id: Byte): MetadataKey<T> = MetadataKey(id, this)
 
     companion object {
 
         @JvmStatic
-        inline fun <T> simple(crossinline reader: (ByteBuf) -> T,
-                              crossinline writer: (ByteBuf, T) -> Unit): MetadataSerializer<T> = object : MetadataSerializer<T> {
+        inline fun <T> simple(crossinline readerFunction: (BinaryReader) -> T,
+                              crossinline writerFunction: (BinaryWriter, T) -> Unit): MetadataSerializer<T> = object : MetadataSerializer<T> {
 
-            override fun read(buf: ByteBuf): T = reader(buf)
+            override fun read(reader: BinaryReader): T = readerFunction(reader)
 
-            override fun write(buf: ByteBuf, item: T) {
-                writer(buf, item)
+            override fun write(writer: BinaryWriter, item: T) {
+                writerFunction(writer, item)
             }
         }
 
         @JvmStatic
-        inline fun <T> nullable(crossinline reader: (ByteBuf) -> T, crossinline writer: (ByteBuf, T) -> Unit): MetadataSerializer<T?> =
+        inline fun <T> nullable(crossinline reader: (BinaryReader) -> T, crossinline writer: (BinaryWriter, T) -> Unit): MetadataSerializer<T?> =
             simple({ it.readNullable(reader) }, { buf, value -> buf.writeNullable(value, writer) })
 
         @JvmStatic
-        inline fun <reified E : Enum<E>> simpleEnum(): MetadataSerializer<E> = simple(ByteBuf::readEnum, ByteBuf::writeEnum)
+        inline fun <reified E : Enum<E>> simpleEnum(): MetadataSerializer<E> = simple(BinaryReader::readEnum, BinaryWriter::writeEnum)
 
         @JvmStatic
-        fun <T : Any> simpleId(registry: KryptonRegistry<T>): MetadataSerializer<T> =
-            simple({ it.readById(registry)!! }, { buf, value -> buf.writeId(registry, value) })
+        fun <T : Any> simpleId(registry: KryptonRegistry<T>): MetadataSerializer<T> {
+            return simple({ it.readById(registry)!! }, { buf, value -> buf.writeId(registry, value) })
+        }
     }
 }

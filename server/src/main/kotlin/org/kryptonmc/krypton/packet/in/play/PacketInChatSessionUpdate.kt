@@ -17,7 +17,8 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.network.chat.RemoteChatSession
 import org.kryptonmc.krypton.packet.InboundPacket
@@ -25,10 +26,10 @@ import org.kryptonmc.krypton.packet.InboundPacket
 @JvmRecord
 data class PacketInChatSessionUpdate(val chatSession: RemoteChatSession.Data) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(RemoteChatSession.Data.read(buf))
+    constructor(reader: BinaryReader) : this(RemoteChatSession.Data.read(reader))
 
-    override fun write(buf: ByteBuf) {
-        RemoteChatSession.Data.write(buf, chatSession)
+    override fun write(writer: BinaryWriter) {
+        RemoteChatSession.Data.write(writer, chatSession)
     }
 
     override fun handle(handler: PlayPacketHandler) {

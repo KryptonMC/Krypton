@@ -17,22 +17,19 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.item.KryptonItemType
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeId
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSetCooldown(val item: KryptonItemType, val cooldownTicks: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readById(KryptonRegistries.ITEM)!!, buf.readVarInt())
+    constructor(reader: BinaryReader) : this(reader.readById(KryptonRegistries.ITEM)!!, reader.readVarInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeId(KryptonRegistries.ITEM, item)
-        buf.writeVarInt(cooldownTicks)
+    override fun write(writer: BinaryWriter) {
+        writer.writeId(KryptonRegistries.ITEM, item)
+        writer.writeVarInt(cooldownTicks)
     }
 }

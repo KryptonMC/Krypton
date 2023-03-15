@@ -17,32 +17,25 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.bossbar.BossBar.Color
 import net.kyori.adventure.bossbar.BossBar.Overlay
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
 import java.util.UUID
 
 @JvmRecord
 data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readEnum<ActionType>().read(buf))
+    constructor(reader: BinaryReader) : this(reader.readUUID(), reader.readEnum<ActionType>().read(reader))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeUUID(uuid)
-        buf.writeEnum(action.type())
-        action.write(buf)
+    override fun write(writer: BinaryWriter) {
+        writer.writeUUID(uuid)
+        writer.writeEnum(action.type())
+        action.write(writer)
     }
 
     sealed interface Action : Writable {
@@ -51,18 +44,18 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
     }
 
     @JvmRecord
-    data class AddAction(val name: Component, val progress: Float, val color: Color, val overlay: Overlay, val flags: Int) : Action {
+    data class AddAction(val name: Component, val progress: Float, val color: Color, val overlay: Overlay, val flags: Byte) : Action {
 
         constructor(bar: BossBar) : this(bar.name(), bar.progress(), bar.color(), bar.overlay(), encodeFlags(bar))
 
         override fun type(): ActionType = ActionType.ADD
 
-        override fun write(buf: ByteBuf) {
-            buf.writeComponent(name)
-            buf.writeFloat(progress)
-            buf.writeVarInt(color.ordinal)
-            buf.writeVarInt(overlay.ordinal)
-            buf.writeByte(flags)
+        override fun write(writer: BinaryWriter) {
+            writer.writeComponent(name)
+            writer.writeFloat(progress)
+            writer.writeVarInt(color.ordinal)
+            writer.writeVarInt(overlay.ordinal)
+            writer.writeByte(flags)
         }
     }
 
@@ -70,7 +63,7 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
 
         override fun type(): ActionType = ActionType.REMOVE
 
-        override fun write(buf: ByteBuf) {
+        override fun write(writer: BinaryWriter) {
             // Nothing
         }
     }
@@ -80,8 +73,8 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
 
         override fun type(): ActionType = ActionType.UPDATE_PROGRESS
 
-        override fun write(buf: ByteBuf) {
-            buf.writeFloat(progress)
+        override fun write(writer: BinaryWriter) {
+            writer.writeFloat(progress)
         }
     }
 
@@ -90,8 +83,8 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
 
         override fun type(): ActionType = ActionType.UPDATE_NAME
 
-        override fun write(buf: ByteBuf) {
-            buf.writeComponent(name)
+        override fun write(writer: BinaryWriter) {
+            writer.writeComponent(name)
         }
     }
 
@@ -100,38 +93,38 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
 
         override fun type(): ActionType = ActionType.UPDATE_STYLE
 
-        override fun write(buf: ByteBuf) {
-            buf.writeEnum(color)
-            buf.writeEnum(overlay)
+        override fun write(writer: BinaryWriter) {
+            writer.writeEnum(color)
+            writer.writeEnum(overlay)
         }
     }
 
     @JvmRecord
-    data class UpdateFlagsAction(val flags: Int) : Action {
+    data class UpdateFlagsAction(val flags: Byte) : Action {
 
-        constructor(flags: Set<BossBar.Flag>) : this(flags.fold(0) { acc, flag -> acc or flag.ordinal })
+        constructor(flags: Set<BossBar.Flag>) : this(flags.fold(0) { acc, flag -> acc or flag.ordinal }.toByte())
 
         override fun type(): ActionType = ActionType.UPDATE_FLAGS
 
-        override fun write(buf: ByteBuf) {
-            buf.writeByte(flags)
+        override fun write(writer: BinaryWriter) {
+            writer.writeByte(flags)
         }
     }
 
     enum class ActionType(private val reader: Reader) {
 
-        ADD({ AddAction(it.readComponent(), it.readFloat(), readColor(it), readOverlay(it), it.readByte().toInt()) }),
+        ADD({ AddAction(it.readComponent(), it.readFloat(), readColor(it), readOverlay(it), it.readByte()) }),
         REMOVE({ RemoveAction }),
         UPDATE_PROGRESS({ UpdateProgressAction(it.readFloat()) }),
         UPDATE_NAME({ UpdateNameAction(it.readComponent()) }),
         UPDATE_STYLE({ UpdateStyleAction(readColor(it), readOverlay(it)) }),
-        UPDATE_FLAGS({ UpdateFlagsAction(it.readByte().toInt()) });
+        UPDATE_FLAGS({ UpdateFlagsAction(it.readByte()) });
 
-        fun read(buf: ByteBuf): Action = reader.read(buf)
+        fun read(reader: BinaryReader): Action = this.reader.read(reader)
 
         private fun interface Reader {
 
-            fun read(buf: ByteBuf): Action
+            fun read(reader: BinaryReader): Action
         }
     }
 
@@ -141,18 +134,18 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
         private val OVERLAYS = Overlay.values()
 
         @JvmStatic
-        private fun readColor(buf: ByteBuf): Color = COLORS[buf.readVarInt()]
+        private fun readColor(reader: BinaryReader): Color = COLORS[reader.readVarInt()]
 
         @JvmStatic
-        private fun readOverlay(buf: ByteBuf): Overlay = OVERLAYS[buf.readVarInt()]
+        private fun readOverlay(reader: BinaryReader): Overlay = OVERLAYS[reader.readVarInt()]
 
         @JvmStatic
-        private fun encodeFlags(bar: BossBar): Int {
+        private fun encodeFlags(bar: BossBar): Byte {
             var byte = 0
             if (bar.hasFlag(BossBar.Flag.DARKEN_SCREEN)) byte = byte or 1
             if (bar.hasFlag(BossBar.Flag.PLAY_BOSS_MUSIC)) byte = byte or 2
             if (bar.hasFlag(BossBar.Flag.CREATE_WORLD_FOG)) byte = byte or 4
-            return byte
+            return byte.toByte()
         }
     }
 }

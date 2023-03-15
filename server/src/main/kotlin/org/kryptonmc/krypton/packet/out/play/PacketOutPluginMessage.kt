@@ -17,21 +17,19 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readAllAvailableBytes
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
 data class PacketOutPluginMessage(val channel: Key, val content: ByteArray) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readKey(), buf.readAllAvailableBytes())
+    constructor(reader: BinaryReader) : this(reader.readKey(), reader.readAllBytes())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeKey(channel)
-        buf.writeBytes(content)
+    override fun write(writer: BinaryWriter) {
+        writer.writeKey(channel)
+        writer.writeBytes(content)
     }
 }

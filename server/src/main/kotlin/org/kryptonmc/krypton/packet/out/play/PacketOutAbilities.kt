@@ -17,8 +17,9 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.Abilities
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
@@ -31,20 +32,20 @@ data class PacketOutAbilities(
     val walkingSpeed: Float
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readFloat(), buf.readFloat())
+    constructor(reader: BinaryReader) : this(reader.readByte().toInt(), reader.readFloat(), reader.readFloat())
 
     private constructor(flags: Int, flyingSpeed: Float, walkingSpeed: Float) : this(flags and FLAG_INVULNERABLE != 0, flags and FLAG_FLYING != 0,
         flags and FLAG_CAN_FLY != 0, flags and FLAG_CAN_INSTANTLY_BUILD != 0, flyingSpeed, walkingSpeed)
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         var flags = 0
         if (isInvulnerable) flags = flags or FLAG_INVULNERABLE
         if (isFlying) flags = flags or FLAG_FLYING
         if (canFly) flags = flags or FLAG_CAN_FLY
         if (canInstantlyBuild) flags = flags or FLAG_CAN_INSTANTLY_BUILD
-        buf.writeByte(flags)
-        buf.writeFloat(flyingSpeed)
-        buf.writeFloat(walkingSpeed)
+        writer.writeByte(flags.toByte())
+        writer.writeFloat(flyingSpeed)
+        writer.writeFloat(walkingSpeed)
     }
 
     companion object {

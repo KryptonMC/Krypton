@@ -17,20 +17,19 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readVarIntArray
-import org.kryptonmc.krypton.util.writeVarIntArray
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
 data class PacketOutRemoveEntities(val ids: IntArray) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarIntArray())
+    constructor(reader: BinaryReader) : this(reader.readVarIntArray())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarIntArray(ids)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarIntArray(ids)
     }
 
     companion object {

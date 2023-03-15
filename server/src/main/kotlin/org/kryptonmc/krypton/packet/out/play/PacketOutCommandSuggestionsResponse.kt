@@ -20,21 +20,12 @@ package org.kryptonmc.krypton.packet.out.play
 import com.mojang.brigadier.context.StringRange
 import com.mojang.brigadier.suggestion.Suggestion
 import com.mojang.brigadier.suggestion.Suggestions
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.krypton.adventure.KryptonAdventure
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Sent by the server as a response to the
@@ -48,15 +39,15 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutCommandSuggestionsResponse(val id: Int, val suggestions: Suggestions) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), readSuggestions(buf))
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), readSuggestions(reader))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(id)
-        buf.writeVarInt(suggestions.range.start)
-        buf.writeVarInt(suggestions.range.length)
-        buf.writeCollection(suggestions.list) {
-            buf.writeString(it.text)
-            buf.writeNullable(it.tooltip) { buf, tooltip ->
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(id)
+        writer.writeVarInt(suggestions.range.start)
+        writer.writeVarInt(suggestions.range.length)
+        writer.writeCollection(suggestions.list) {
+            writer.writeString(it.text)
+            writer.writeNullable(it.tooltip) { buf, tooltip ->
                 val message = if (tooltip is AdventureMessage) tooltip.asComponent() else Component.text(tooltip.string)
                 buf.writeComponent(message)
             }
@@ -66,11 +57,13 @@ data class PacketOutCommandSuggestionsResponse(val id: Int, val suggestions: Sug
     companion object {
 
         @JvmStatic
-        private fun readSuggestions(buf: ByteBuf): Suggestions {
-            val start = buf.readVarInt()
-            val length = buf.readVarInt()
+        private fun readSuggestions(reader: BinaryReader): Suggestions {
+            val start = reader.readVarInt()
+            val length = reader.readVarInt()
             val range = StringRange.between(start, start + length)
-            val results = buf.readList { Suggestion(range, buf.readString(), buf.readNullable { KryptonAdventure.asMessage(buf.readComponent()) }) }
+            val results = reader.readList {
+                Suggestion(range, reader.readString(), reader.readNullable { KryptonAdventure.asMessage(reader.readComponent()) })
+            }
             return Suggestions(range, results)
         }
     }

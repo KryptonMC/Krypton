@@ -17,20 +17,17 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readCollection
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
 data class PacketOutUpdateEnabledFeatures(val features: Set<Key>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readCollection(::HashSet, ByteBuf::readKey))
+    constructor(reader: BinaryReader) : this(reader.readCollection(::HashSet, BinaryReader::readKey))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeCollection(features, buf::writeKey)
+    override fun write(writer: BinaryWriter) {
+        writer.writeCollection(features, writer::writeKey)
     }
 }

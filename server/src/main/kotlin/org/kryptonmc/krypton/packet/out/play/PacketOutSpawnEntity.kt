@@ -17,7 +17,6 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -25,12 +24,8 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.Positioning
-import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeId
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import java.util.UUID
 
 @JvmRecord
@@ -45,29 +40,29 @@ data class PacketOutSpawnEntity(
     val yaw: Byte,
     val headYaw: Byte,
     val data: Int,
-    val velocityX: Int,
-    val velocityY: Int,
-    val velocityZ: Int
+    val velocityX: Short,
+    val velocityY: Short,
+    val velocityZ: Short
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readById(KryptonRegistries.ENTITY_TYPE)!!, buf.readDouble(),
-        buf.readDouble(), buf.readDouble(), buf.readByte(), buf.readByte(), buf.readByte(), buf.readVarInt(), buf.readShort().toInt(),
-        buf.readShort().toInt(), buf.readShort().toInt())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readUUID(), reader.readById(KryptonRegistries.ENTITY_TYPE)!!,
+        reader.readDouble(), reader.readDouble(), reader.readDouble(), reader.readByte(), reader.readByte(), reader.readByte(), reader.readVarInt(),
+        reader.readShort(), reader.readShort(), reader.readShort())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeUUID(uuid)
-        buf.writeId(KryptonRegistries.ENTITY_TYPE, type)
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
-        buf.writeByte(pitch.toInt())
-        buf.writeByte(yaw.toInt())
-        buf.writeByte(headYaw.toInt())
-        buf.writeVarInt(data)
-        buf.writeShort(velocityX)
-        buf.writeShort(velocityY)
-        buf.writeShort(velocityZ)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeUUID(uuid)
+        writer.writeId(KryptonRegistries.ENTITY_TYPE, type)
+        writer.writeDouble(x)
+        writer.writeDouble(y)
+        writer.writeDouble(z)
+        writer.writeByte(pitch)
+        writer.writeByte(yaw)
+        writer.writeByte(headYaw)
+        writer.writeVarInt(data)
+        writer.writeShort(velocityX)
+        writer.writeShort(velocityY)
+        writer.writeShort(velocityZ)
     }
 
     companion object {

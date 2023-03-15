@@ -17,14 +17,13 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeVarInt
 
 // TODO: Add some recipes here
 object PacketOutUpdateRecipes : Packet {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(0)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(0)
     }
 }

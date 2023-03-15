@@ -17,21 +17,21 @@
  */
 package org.kryptonmc.krypton.packet
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.PacketFraming
 import java.lang.ref.SoftReference
+import java.nio.ByteBuffer
 import java.util.function.Supplier
 
 class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
-    private var packet: SoftReference<CachedFramedPacket>? = null
+    private var packet: SoftReference<FramedPacket>? = null
 
     fun packet(): Packet {
         val cache = updatedCache()
         return cache?.packet ?: supplier.get()
     }
 
-    fun body(): ByteBuf? {
+    fun body(): ByteBuffer? {
         val cache = updatedCache()
         return cache?.body
     }
@@ -40,17 +40,13 @@ class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
         packet = null
     }
 
-    private fun updatedCache(): CachedFramedPacket? {
+    private fun updatedCache(): FramedPacket? {
         val ref = packet
-        var cached: CachedFramedPacket? = null
+        var cached: FramedPacket? = null
         if (ref == null || ref.get().also { cached = it } == null) {
-            val updatedPacket = supplier.get()
-            cached = CachedFramedPacket(updatedPacket, PacketFraming.frame(updatedPacket))
+            cached = PacketFraming.frame(supplier.get())
             packet = SoftReference(cached)
         }
         return cached
     }
-
-    @JvmRecord
-    private data class CachedFramedPacket(val packet: Packet, val body: ByteBuf)
 }

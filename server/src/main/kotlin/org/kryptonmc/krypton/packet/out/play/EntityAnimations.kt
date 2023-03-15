@@ -25,10 +25,10 @@ package org.kryptonmc.krypton.packet.out.play
  */
 object EntityAnimations {
 
-    const val SWING_MAIN_ARM: Int = 0
-    const val TAKE_DAMAGE: Int = 1
-    const val LEAVE_BED: Int = 2
-    const val SWING_OFFHAND: Int = 3
-    const val CRITICAL_EFFECT: Int = 4
-    const val MAGIC_CRITICAL_EFFECT: Int = 5
+    const val SWING_MAIN_ARM: Byte = 0
+    const val TAKE_DAMAGE: Byte = 1
+    const val LEAVE_BED: Byte = 2
+    const val SWING_OFFHAND: Byte = 3
+    const val CRITICAL_EFFECT: Byte = 4
+    const val MAGIC_CRITICAL_EFFECT: Byte = 5
 }

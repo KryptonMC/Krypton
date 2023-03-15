@@ -17,21 +17,22 @@
  */
 package org.kryptonmc.krypton.effect.particle.data
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.VibrationParticleData
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 @JvmRecord
 data class KryptonVibrationParticleData(override val destination: Vec3d, override val ticks: Int) : VibrationParticleData, Writable {
 
-    constructor(buf: ByteBuf) : this(Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble()), buf.readInt())
+    constructor(reader: BinaryReader) : this(Vec3d(reader.readDouble(), reader.readDouble(), reader.readDouble()), reader.readInt())
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         // TODO: Sort this out when we have a new position source mechanism
-        buf.writeDouble(destination.x)
-        buf.writeDouble(destination.y)
-        buf.writeDouble(destination.z)
-        buf.writeInt(ticks)
+        writer.writeDouble(destination.x)
+        writer.writeDouble(destination.y)
+        writer.writeDouble(destination.z)
+        writer.writeInt(ticks)
     }
 }

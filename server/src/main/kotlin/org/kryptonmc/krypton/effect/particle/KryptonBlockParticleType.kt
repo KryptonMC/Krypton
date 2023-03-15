@@ -17,14 +17,13 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.BlockParticleType
 import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.builder.KryptonBlockParticleEffectBuilder
 import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
-import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.network.buffer.BinaryReader
 import org.kryptonmc.krypton.world.block.KryptonBlock
 
 @JvmRecord
@@ -34,5 +33,5 @@ data class KryptonBlockParticleType(private val key: Key) : KryptonParticleType,
 
     override fun builder(): BlockParticleEffectBuilder = KryptonBlockParticleEffectBuilder(this)
 
-    override fun createData(buf: ByteBuf): ParticleData = KryptonBlockParticleData(KryptonBlock.stateFromId(buf.readVarInt()))
+    override fun createData(reader: BinaryReader): ParticleData = KryptonBlockParticleData(KryptonBlock.stateFromId(reader.readVarInt()))
 }

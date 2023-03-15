@@ -15,22 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kryptonmc.krypton.network.netty
+package org.kryptonmc.krypton.network.buffer
 
-import io.netty.buffer.ByteBuf
-import io.netty.channel.ChannelHandler
-import io.netty.channel.ChannelHandlerContext
-import io.netty.handler.codec.MessageToByteEncoder
-import org.kryptonmc.krypton.packet.FramedPacket
+import java.io.InputStream
+import java.nio.ByteBuffer
+import kotlin.math.min
 
-@ChannelHandler.Sharable
-object GroupedPacketHandler : MessageToByteEncoder<FramedPacket>() {
+/**
+ * A simple input stream backed by a byte buffer.
+ *
+ * Source: https://stackoverflow.com/questions/4332264/wrapping-a-bytebuffer-with-an-inputstream/6603018#6603018
+ */
+class ByteBufferInputStream(private val buffer: ByteBuffer) : InputStream() {
 
-    const val NETTY_NAME = "grouped_packet_handler"
-
-    override fun encode(ctx: ChannelHandlerContext?, msg: FramedPacket?, out: ByteBuf?) {
-        // we just want to skip the pipeline and write the message directly
+    override fun read(): Int {
+        if (!buffer.hasRemaining()) return -1
+        return buffer.get().toInt() and 0xFF
     }
 
-    override fun allocateBuffer(ctx: ChannelHandlerContext?, msg: FramedPacket, preferDirect: Boolean): ByteBuf = msg.body.retainedSlice()
+    override fun read(b: ByteArray, off: Int, len: Int): Int {
+        if (!buffer.hasRemaining()) return -1
+        val length = min(len, buffer.remaining())
+        buffer.get(b, off, length)
+        return length
+    }
 }

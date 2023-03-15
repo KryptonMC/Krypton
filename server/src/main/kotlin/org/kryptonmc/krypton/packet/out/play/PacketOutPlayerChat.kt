@@ -17,21 +17,14 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.chat.FilterMask
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.SignedMessageBody
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
 import java.util.UUID
 
 @JvmRecord
@@ -45,16 +38,16 @@ data class PacketOutPlayerChat(
     val chatType: RichChatType.BoundNetwork
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readVarInt(), buf.readNullable(MessageSignature::read), SignedMessageBody.Packed(buf),
-        buf.readNullable(ByteBuf::readComponent), FilterMask.read(buf), RichChatType.BoundNetwork(buf))
+    constructor(reader: BinaryReader) : this(reader.readUUID(), reader.readVarInt(), reader.readNullable(MessageSignature::read),
+        SignedMessageBody.Packed(reader), reader.readNullable { it.readComponent() }, FilterMask.read(reader), RichChatType.BoundNetwork(reader))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeUUID(sender)
-        buf.writeVarInt(index)
-        buf.writeNullable(signature, MessageSignature::write)
-        body.write(buf)
-        buf.writeNullable(unsignedContent, ByteBuf::writeComponent)
-        FilterMask.write(buf, filterMask)
-        chatType.write(buf)
+    override fun write(writer: BinaryWriter) {
+        writer.writeUUID(sender)
+        writer.writeVarInt(index)
+        writer.writeNullable(signature, MessageSignature::write)
+        body.write(writer)
+        writer.writeNullable(unsignedContent, BinaryWriter::writeComponent)
+        FilterMask.write(writer, filterMask)
+        chatType.write(writer)
     }
 }

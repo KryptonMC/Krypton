@@ -17,23 +17,24 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 
 @JvmRecord
 data class PacketInPlayerInput(val sideways: Float, val forward: Float, val flags: Byte) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readFloat(), buf.readByte())
+    constructor(reader: BinaryReader) : this(reader.readFloat(), reader.readFloat(), reader.readByte())
 
     fun isJumping(): Boolean = flags.toInt() and 1 > 0
 
     fun isSneaking(): Boolean = flags.toInt() and 2 > 0
 
-    override fun write(buf: ByteBuf) {
-        buf.writeFloat(sideways)
-        buf.writeFloat(forward)
-        buf.writeByte(flags.toInt())
+    override fun write(writer: BinaryWriter) {
+        writer.writeFloat(sideways)
+        writer.writeFloat(forward)
+        writer.writeByte(flags)
     }
 
     override fun handle(handler: PlayPacketHandler) {

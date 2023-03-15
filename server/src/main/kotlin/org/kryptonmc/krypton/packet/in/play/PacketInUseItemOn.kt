@@ -17,27 +17,22 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.hit.BlockHitResult
-import org.kryptonmc.krypton.util.readBlockHitResult
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeBlockHitResult
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketInUseItemOn(val hand: Hand, val hitResult: BlockHitResult, val sequence: Int) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Hand>(), buf.readBlockHitResult(), buf.readVarInt())
+    constructor(reader: BinaryReader) : this(reader.readEnum<Hand>(), reader.readBlockHitResult(), reader.readVarInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(hand)
-        buf.writeBlockHitResult(hitResult)
-        buf.writeVarInt(sequence)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(hand)
+        writer.writeBlockHitResult(hitResult)
+        writer.writeVarInt(sequence)
     }
 
     override fun handle(handler: PlayPacketHandler) {

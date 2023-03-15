@@ -15,24 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kryptonmc.krypton.network.netty
+package org.kryptonmc.krypton.network.buffer
 
-import io.netty.buffer.ByteBuf
-import io.netty.channel.ChannelHandler
-import io.netty.channel.ChannelHandlerContext
-import io.netty.handler.codec.MessageToByteEncoder
-import org.kryptonmc.krypton.util.writeVarInt
+import java.io.OutputStream
+import java.nio.ByteBuffer
 
-/**
- * Writes a packet size in an appropriate VarInt before the data is written.
- */
-@ChannelHandler.Sharable
-object PacketSizeEncoder : MessageToByteEncoder<ByteBuf>() {
+class ByteBufferOutputStream(private val buffer: ByteBuffer) : OutputStream() {
 
-    const val NETTY_NAME: String = "prepender"
+    override fun write(b: Int) {
+        buffer.put(b.toByte())
+    }
 
-    override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
-        out.writeVarInt(msg.readableBytes())
-        out.writeBytes(msg)
+    override fun write(b: ByteArray, off: Int, len: Int) {
+        buffer.put(b, off, len)
     }
 }

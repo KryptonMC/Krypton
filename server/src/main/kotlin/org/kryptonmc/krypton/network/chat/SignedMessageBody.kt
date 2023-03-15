@@ -19,13 +19,10 @@ package org.kryptonmc.krypton.network.chat
 
 import com.google.common.primitives.Ints
 import com.google.common.primitives.Longs
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.crypto.SignatureUpdater
-import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writeString
 import java.time.Instant
 
 @JvmRecord
@@ -45,13 +42,17 @@ data class SignedMessageBody(val content: String, val timestamp: Instant, val sa
     @JvmRecord
     data class Packed(val content: String, val timestamp: Instant, val salt: Long, val lastSeen: LastSeenMessages.Packed) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readString(MAX_MESSAGE_LENGTH), buf.readInstant(), buf.readLong(), LastSeenMessages.Packed(buf))
+        init {
+            require(content.length <= MAX_MESSAGE_LENGTH) { "Message content too long! Max: $MAX_MESSAGE_LENGTH" }
+        }
 
-        override fun write(buf: ByteBuf) {
-            buf.writeString(content, MAX_MESSAGE_LENGTH)
-            buf.writeInstant(timestamp)
-            buf.writeLong(salt)
-            lastSeen.write(buf)
+        constructor(reader: BinaryReader) : this(reader.readString(), reader.readInstant(), reader.readLong(), LastSeenMessages.Packed(reader))
+
+        override fun write(writer: BinaryWriter) {
+            writer.writeString(content)
+            writer.writeInstant(timestamp)
+            writer.writeLong(salt)
+            lastSeen.write(writer)
         }
     }
 

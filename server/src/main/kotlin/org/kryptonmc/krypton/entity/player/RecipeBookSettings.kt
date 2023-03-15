@@ -17,8 +17,9 @@
  */
 package org.kryptonmc.krypton.entity.player
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.nbt.CompoundTag
 import java.util.EnumMap
 
@@ -46,11 +47,11 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
         }
     }
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         VALUES.forEach {
             val settings = settings.getOrDefault(it, TypeSettings.ALL_FALSE)
-            buf.writeBoolean(settings.open)
-            buf.writeBoolean(settings.filtered)
+            writer.writeBoolean(settings.open)
+            writer.writeBoolean(settings.filtered)
         }
     }
 
@@ -92,9 +93,9 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
         }
 
         @JvmStatic
-        fun read(buf: ByteBuf): RecipeBookSettings {
+        fun read(reader: BinaryReader): RecipeBookSettings {
             val map = EnumMap<_, TypeSettings>(RecipeBookType::class.java)
-            VALUES.forEach { map.put(it, TypeSettings(buf.readBoolean(), buf.readBoolean())) }
+            VALUES.forEach { map.put(it, TypeSettings(reader.readBoolean(), reader.readBoolean())) }
             return RecipeBookSettings(map)
         }
     }

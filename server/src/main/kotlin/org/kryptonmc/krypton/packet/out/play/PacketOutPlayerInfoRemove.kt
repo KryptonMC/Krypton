@@ -17,14 +17,11 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.ImmutableLists
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
 
 @JvmRecord
@@ -32,9 +29,9 @@ data class PacketOutPlayerInfoRemove(val profileIds: List<UUID>) : Packet {
 
     constructor(player: KryptonPlayer) : this(ImmutableLists.of(player.uuid))
 
-    constructor(buf: ByteBuf) : this(buf.readList(ByteBuf::readUUID))
+    constructor(reader: BinaryReader) : this(reader.readList { it.readUUID() })
 
-    override fun write(buf: ByteBuf) {
-        buf.writeCollection(profileIds, buf::writeUUID)
+    override fun write(writer: BinaryWriter) {
+        writer.writeCollection(profileIds, writer::writeUUID)
     }
 }

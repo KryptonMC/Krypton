@@ -17,22 +17,15 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Tells the client to perform an action to a team on their current scoreboard.
@@ -45,18 +38,23 @@ data class PacketOutUpdateTeams(
     val members: Collection<Component>
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), Action.fromId(buf.readByte().toInt())!!)
+    init {
+        require(name.length <= MAX_NAME_LENGTH) { "Team name too long! Max: $MAX_NAME_LENGTH" }
+    }
 
-    private constructor(buf: ByteBuf, name: String, action: Action) : this(name, action, readParameters(buf, action), readMembers(buf, action))
+    constructor(reader: BinaryReader) : this(reader, reader.readString(), Action.fromId(reader.readByte().toInt())!!)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(name, MAX_NAME_LENGTH)
-        buf.writeByte(action.ordinal)
+    private constructor(reader: BinaryReader, name: String, action: Action) : this(name, action, readParameters(reader, action),
+        readMembers(reader, action))
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(name)
+        writer.writeByte(action.ordinal.toByte())
         if (action == Action.CREATE || action == Action.UPDATE_INFO) {
-            requireNotNull(parameters) { "Parameters must be present if action is CREATE or UPDATE_INFO!" }.write(buf)
+            requireNotNull(parameters) { "Parameters must be present if action is CREATE or UPDATE_INFO!" }.write(writer)
         }
         if (action == Action.CREATE || action == Action.ADD_MEMBERS || action == Action.REMOVE_MEMBERS) {
-            buf.writeCollection(members) { buf.writeString(LegacyComponentSerializer.legacySection().serialize(it)) }
+            writer.writeCollection(members) { writer.writeString(LegacyComponentSerializer.legacySection().serialize(it)) }
         }
     }
 
@@ -80,7 +78,7 @@ data class PacketOutUpdateTeams(
     @JvmRecord
     data class Parameters(
         val displayName: Component,
-        val options: Int,
+        val options: Byte,
         val nameTagVisibility: String,
         val collisionRule: String,
         val color: NamedTextColor,
@@ -88,20 +86,25 @@ data class PacketOutUpdateTeams(
         val suffix: Component
     ) : Writable {
 
+        init {
+            require(nameTagVisibility.length <= MAX_VISIBILITY_LENGTH) { "Name tag visibility too long! Max: $MAX_VISIBILITY_LENGTH" }
+            require(collisionRule.length <= MAX_VISIBILITY_LENGTH) { "Collision rule too long! Max: $MAX_VISIBILITY_LENGTH" }
+        }
+
         constructor(team: Team) : this(team.displayName, encodeOptions(team), team.nameTagVisibility.name.lowercase(),
             team.collisionRule.name.lowercase(), team.color, team.prefix, team.suffix)
 
-        constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readByte().toInt(), buf.readString(MAX_VISIBILITY_LENGTH),
-            buf.readString(MAX_VISIBILITY_LENGTH), KryptonAdventure.getColorFromId(buf.readVarInt()), buf.readComponent(), buf.readComponent())
+        constructor(reader: BinaryReader) : this(reader.readComponent(), reader.readByte(), reader.readString(), reader.readString(),
+            KryptonAdventure.getColorFromId(reader.readVarInt()), reader.readComponent(), reader.readComponent())
 
-        override fun write(buf: ByteBuf) {
-            buf.writeComponent(displayName)
-            buf.writeByte(options)
-            buf.writeString(nameTagVisibility, MAX_VISIBILITY_LENGTH)
-            buf.writeString(collisionRule, MAX_VISIBILITY_LENGTH)
-            buf.writeVarInt(KryptonAdventure.getColorId(color))
-            buf.writeComponent(prefix)
-            buf.writeComponent(suffix)
+        override fun write(writer: BinaryWriter) {
+            writer.writeComponent(displayName)
+            writer.writeByte(options)
+            writer.writeString(nameTagVisibility)
+            writer.writeString(collisionRule)
+            writer.writeVarInt(KryptonAdventure.getColorId(color))
+            writer.writeComponent(prefix)
+            writer.writeComponent(suffix)
         }
     }
 
@@ -129,25 +132,27 @@ data class PacketOutUpdateTeams(
         fun remove(team: Team): PacketOutUpdateTeams = PacketOutUpdateTeams(team.name, Action.REMOVE, null, emptySet())
 
         @JvmStatic
-        fun addOrRemoveMember(team: Team, member: Component, add: Boolean): PacketOutUpdateTeams =
-            PacketOutUpdateTeams(team.name, if (add) Action.ADD_MEMBERS else Action.REMOVE_MEMBERS, null, listOf(member))
-
-        @JvmStatic
-        private fun encodeOptions(team: Team): Int {
-            var options = 0
-            if (team.allowFriendlyFire) options = options or FLAG_FRIENDLY_FIRE
-            if (team.canSeeInvisibleMembers) options = options or FLAG_SEE_INVISIBLES
-            return options
+        fun addOrRemoveMember(team: Team, member: Component, add: Boolean): PacketOutUpdateTeams {
+            return PacketOutUpdateTeams(team.name, if (add) Action.ADD_MEMBERS else Action.REMOVE_MEMBERS, null, listOf(member))
         }
 
         @JvmStatic
-        private fun readParameters(buf: ByteBuf, action: Action): Parameters? =
-            if (action == Action.CREATE || action == Action.UPDATE_INFO) Parameters(buf) else null
+        private fun encodeOptions(team: Team): Byte {
+            var options = 0
+            if (team.allowFriendlyFire) options = options or FLAG_FRIENDLY_FIRE
+            if (team.canSeeInvisibleMembers) options = options or FLAG_SEE_INVISIBLES
+            return options.toByte()
+        }
 
         @JvmStatic
-        private fun readMembers(buf: ByteBuf, action: Action): Collection<Component> {
+        private fun readParameters(reader: BinaryReader, action: Action): Parameters? {
+            return if (action == Action.CREATE || action == Action.UPDATE_INFO) Parameters(reader) else null
+        }
+
+        @JvmStatic
+        private fun readMembers(reader: BinaryReader, action: Action): Collection<Component> {
             if (action == Action.REMOVE || action == Action.UPDATE_INFO) return emptyList()
-            return buf.readList { LegacyComponentSerializer.legacySection().deserialize(it.readString()) }
+            return reader.readList { LegacyComponentSerializer.legacySection().deserialize(it.readString()) }
         }
     }
 }

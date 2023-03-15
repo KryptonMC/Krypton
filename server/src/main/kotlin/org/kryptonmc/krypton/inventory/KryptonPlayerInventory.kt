@@ -17,7 +17,6 @@
  */
 package org.kryptonmc.krypton.inventory
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.ArmorSlot
@@ -28,10 +27,9 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.util.collection.FixedList
-import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
@@ -98,23 +96,23 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             in INVENTORY_SIZE until OFFHAND_SLOT -> items.set(index - INVENTORY_SIZE, item)
             OFFHAND_SLOT -> offHand = item
         }
-        owner.connection.send(PacketOutSetContainerSlot(id, incrementStateId(), index, item))
+        owner.connection.send(PacketOutSetContainerSlot(id.toByte(), incrementStateId(), index.toShort(), item))
     }
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(SIZE)
-        buf.writeItem(crafting.get(CRAFTING_SIZE - 1))
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(SIZE)
+        writer.writeItem(crafting.get(CRAFTING_SIZE - 1))
         for (i in 0 until CRAFTING_GRID_SIZE) {
-            buf.writeItem(crafting.get(i))
+            writer.writeItem(crafting.get(i))
         }
-        armor.forEach(buf::writeItem)
+        armor.forEach(writer::writeItem)
         for (i in 0 until MAIN_SIZE) {
-            buf.writeItem(items.get(i + HOTBAR_SIZE))
+            writer.writeItem(items.get(i + HOTBAR_SIZE))
         }
         for (i in 0 until HOTBAR_SIZE) {
-            buf.writeItem(items.get(i))
+            writer.writeItem(items.get(i))
         }
-        buf.writeItem(offHand)
+        writer.writeItem(offHand)
     }
 
     fun getDestroySpeed(state: KryptonBlockState): Float {

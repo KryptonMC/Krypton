@@ -17,21 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Vec3i
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readBlockPos
-import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
 data class PacketOutWorldEvent(val event: Int, val position: Vec3i, val data: Int, val isGlobal: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readBlockPos(), buf.readInt(), buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readInt(), reader.readBlockPos(), reader.readInt(), reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(event)
-        buf.writeBlockPos(position)
-        buf.writeInt(data)
-        buf.writeBoolean(isGlobal)
+    override fun write(writer: BinaryWriter) {
+        writer.writeInt(event)
+        writer.writeBlockPos(position)
+        writer.writeInt(data)
+        writer.writeBoolean(isGlobal)
     }
 }

@@ -17,21 +17,18 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readNBT
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeNBT
-import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
 
 @JvmRecord
 data class PacketOutTagQueryResponse(val transactionId: Int, val nbt: CompoundTag) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNBT())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readNBT())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(transactionId)
-        buf.writeNBT(nbt)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(transactionId)
+        writer.writeNBT(nbt)
     }
 }

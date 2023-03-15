@@ -17,17 +17,12 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.chat.LastSeenMessages
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeString
 import java.time.Instant
 
 @JvmRecord
@@ -39,15 +34,19 @@ data class PacketInChat(
     val lastSeenMessages: LastSeenMessages.Update
 ) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readString(MAX_MESSAGE_LENGTH), buf.readInstant(), buf.readLong(),
-        buf.readNullable(MessageSignature::read), LastSeenMessages.Update(buf))
+    init {
+        require(message.length <= MAX_MESSAGE_LENGTH) { "Message too long! Max: $MAX_MESSAGE_LENGTH" }
+    }
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(message, MAX_MESSAGE_LENGTH)
-        buf.writeInstant(timestamp)
-        buf.writeLong(salt)
-        buf.writeNullable(signature, MessageSignature::write)
-        lastSeenMessages.write(buf)
+    constructor(reader: BinaryReader) : this(reader.readString(), reader.readInstant(), reader.readLong(),
+        reader.readNullable(MessageSignature::read), LastSeenMessages.Update(reader))
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(message)
+        writer.writeInstant(timestamp)
+        writer.writeLong(salt)
+        writer.writeNullable(signature, MessageSignature::write)
+        lastSeenMessages.write(writer)
     }
 
     override fun handle(handler: PlayPacketHandler) {

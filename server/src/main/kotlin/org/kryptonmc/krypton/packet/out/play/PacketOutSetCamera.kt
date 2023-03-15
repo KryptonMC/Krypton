@@ -17,17 +17,16 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSetCamera(override val entityId: Int) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt())
+    constructor(reader: BinaryReader) : this(reader.readVarInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
     }
 }

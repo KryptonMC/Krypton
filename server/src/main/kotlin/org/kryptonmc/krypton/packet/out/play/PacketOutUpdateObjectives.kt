@@ -17,52 +17,52 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.scoreboard.Objective
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Tells the client to perform an action to an objective for a scoreboard.
  */
 @JvmRecord
-data class PacketOutUpdateObjectives(val name: String, val action: Int, val displayName: Component, val renderType: Int) : Packet {
+data class PacketOutUpdateObjectives(val name: String, val action: Byte, val displayName: Component, val renderType: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readString(), buf.readByte().toInt())
+    init {
+        require(name.length <= 16) { "Objective name too long! Max: 16" }
+    }
 
-    private constructor(buf: ByteBuf, name: String, action: Int) : this(
+    constructor(reader: BinaryReader) : this(reader, reader.readString(), reader.readByte())
+
+    private constructor(reader: BinaryReader, name: String, action: Byte) : this(
         name,
         action,
-        if (action != Actions.REMOVE) buf.readComponent() else Component.empty(),
-        if (action != Actions.REMOVE) buf.readVarInt() else 0
+        if (action != Actions.REMOVE) reader.readComponent() else Component.empty(),
+        if (action != Actions.REMOVE) reader.readVarInt() else 0
     )
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(name, 16)
-        buf.writeByte(action)
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(name)
+        writer.writeByte(action)
         if (action != Actions.REMOVE) {
-            buf.writeComponent(displayName)
-            buf.writeVarInt(renderType)
+            writer.writeComponent(displayName)
+            writer.writeVarInt(renderType)
         }
     }
 
     object Actions {
 
-        const val CREATE: Int = 0
-        const val REMOVE: Int = 1
-        const val UPDATE_TEXT: Int = 2
+        const val CREATE: Byte = 0
+        const val REMOVE: Byte = 1
+        const val UPDATE_TEXT: Byte = 2
     }
 
     companion object {
 
         @JvmStatic
-        fun updateText(objective: Objective): PacketOutUpdateObjectives =
-            PacketOutUpdateObjectives(objective.name, Actions.UPDATE_TEXT, objective.displayName, objective.renderType.ordinal)
+        fun updateText(objective: Objective): PacketOutUpdateObjectives {
+            return PacketOutUpdateObjectives(objective.name, Actions.UPDATE_TEXT, objective.displayName, objective.renderType.ordinal)
+        }
     }
 }

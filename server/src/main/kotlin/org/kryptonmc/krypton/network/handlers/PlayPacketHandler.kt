@@ -47,7 +47,6 @@ import org.kryptonmc.krypton.event.player.KryptonPlayerResourcePackStatusEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
-import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.chat.ChatUtil
 import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.network.chat.LastSeenMessages
@@ -109,6 +108,8 @@ import org.kryptonmc.krypton.event.player.interact.KryptonPlayerInteractAtEntity
 import org.kryptonmc.krypton.event.player.interact.KryptonPlayerInteractWithEntityEvent
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
+import org.kryptonmc.krypton.network.NioConnection
+import org.kryptonmc.krypton.network.PacketGrouping
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
@@ -125,7 +126,7 @@ import java.util.concurrent.atomic.AtomicReference
  */
 class PlayPacketHandler(
     private val server: KryptonServer,
-    override val connection: NettyConnection,
+    override val connection: NioConnection,
     private val player: KryptonPlayer
 ) : TickablePacketHandler {
 
@@ -158,14 +159,16 @@ class PlayPacketHandler(
     }
 
     fun disconnect(reason: Component) {
-        connection.writeAndDisconnect(PacketOutDisconnect(reason), reason)
-        connection.setReadOnly()
+        connection.send(PacketOutDisconnect(reason))
+        connection.disconnect(reason)
     }
 
-    override fun onDisconnect(message: Component) {
+    override fun onDisconnect(message: Component?) {
         chatMessageChain.close()
-        val translated = MinecraftTranslationManager.render(message)
-        LOGGER.info("${player.name} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
+        if (message != null) {
+            val translated = MinecraftTranslationManager.render(message)
+            LOGGER.info("${player.name} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
+        }
         player.disconnect()
         server.playerManager.removePlayer(player)
     }
@@ -175,7 +178,7 @@ class PlayPacketHandler(
             Hand.MAIN -> EntityAnimations.SWING_MAIN_ARM
             Hand.OFF -> EntityAnimations.SWING_OFFHAND
         }
-        server.connectionManager.sendGroupedPacket(PacketOutAnimation(player.id, animation)) { it !== player }
+        PacketGrouping.sendGroupedPacket(server, PacketOutAnimation(player.id, animation)) { it !== player }
     }
 
     fun handleChatCommand(packet: PacketInChatCommand) {
@@ -322,7 +325,7 @@ class PlayPacketHandler(
         signedMessageDecoder = session.createMessageDecoder(player.uuid)
         chatMessageChain.append {
             player.setChatSession(session)
-            server.connectionManager.sendGroupedPacket(PacketOutPlayerInfoUpdate(PacketOutPlayerInfoUpdate.Action.INITIALIZE_CHAT, player))
+            PacketGrouping.sendGroupedPacket(server, PacketOutPlayerInfoUpdate(PacketOutPlayerInfoUpdate.Action.INITIALIZE_CHAT, player))
             CompletableFuture.completedFuture(null)
         }
     }
@@ -330,7 +333,7 @@ class PlayPacketHandler(
     fun handleClientInformation(packet: PacketInClientInformation) {
         player.settings = KryptonPlayerSettings(
             Translator.parseLocale(packet.locale),
-            packet.viewDistance,
+            packet.viewDistance.toInt(),
             packet.chatVisibility,
             packet.chatColors,
             KryptonSkinParts(packet.skinSettings.toInt()),
@@ -343,9 +346,10 @@ class PlayPacketHandler(
     fun handleSetCreativeModeSlot(packet: PacketInSetCreativeModeSlot) {
         if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
-        val inValidRange = packet.slot >= 1 && packet.slot < KryptonPlayerInventory.SIZE
+        val slot = packet.slot.toInt()
+        val inValidRange = slot >= 1 && slot < KryptonPlayerInventory.SIZE
         val isValid = item.isEmpty() || item.meta.damage >= 0 && item.amount <= 64 && !item.isEmpty()
-        if (inValidRange && isValid) player.inventory.setItem(packet.slot, packet.clickedItem)
+        if (inValidRange && isValid) player.inventory.setItem(slot, packet.clickedItem)
     }
 
     fun handlePlayerCommand(packet: PacketInPlayerCommand) {
@@ -374,18 +378,19 @@ class PlayPacketHandler(
     }
 
     fun handleSetHeldItem(packet: PacketInSetHeldItem) {
-        if (packet.slot < 0 || packet.slot > 8) {
+        val slot = packet.slot.toInt()
+        if (slot < 0 || slot > 8) {
             LOGGER.warn("${player.profile.name} tried to change their held item slot to an invalid value!")
             return
         }
-        player.inventory.heldSlot = packet.slot
+        player.inventory.heldSlot = slot
     }
 
     fun handleKeepAlive(packet: PacketInKeepAlive) {
         if (pendingKeepAlive && packet.id == keepAliveChallenge) {
             connection.updateLatency(lastKeepAlive)
             pendingKeepAlive = false
-            server.connectionManager.sendGroupedPacket(PacketOutPlayerInfoUpdate(PacketOutPlayerInfoUpdate.Action.UPDATE_LATENCY, player))
+            PacketGrouping.sendGroupedPacket(server, PacketOutPlayerInfoUpdate(PacketOutPlayerInfoUpdate.Action.UPDATE_LATENCY, player))
             return
         }
         disconnect(DisconnectMessages.TIMEOUT)
@@ -499,7 +504,7 @@ class PlayPacketHandler(
         if (reader.canRead() && reader.peek() == '/') reader.skip()
         val parseResults = server.commandManager.parse(player.createCommandSourceStack(), reader)
         server.commandManager.suggest(parseResults)
-            .thenAcceptAsync({ connection.send(PacketOutCommandSuggestionsResponse(packet.id, it)) }, connection.executor())
+            .thenAcceptAsync { connection.send(PacketOutCommandSuggestionsResponse(packet.id, it)) }
     }
 
     fun handleClientCommand(packet: PacketInClientCommand) {

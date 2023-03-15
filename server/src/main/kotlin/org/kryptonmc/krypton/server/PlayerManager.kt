@@ -54,6 +54,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.locale.DisconnectMessages
+import org.kryptonmc.krypton.network.PacketGrouping
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
@@ -165,7 +167,7 @@ class PlayerManager(private val server: KryptonServer) {
         player.statisticsTracker.invalidate()
         player.connection.send(PacketOutUpdateRecipeBook(PacketOutUpdateRecipeBook.Action.INIT, emptyList(), emptyList(), RecipeBookSettings()))
         updateScoreboard(world.scoreboard, player)
-        server.connectionManager.invalidateStatus()
+        server.statusManager.invalidateStatus()
 
         // Add the player to the list and cache maps
         players.add(player)
@@ -177,6 +179,7 @@ class PlayerManager(private val server: KryptonServer) {
         if (!joinEvent.isAllowed()) {
             // Use default reason if denied without specified reason
             val reason = joinEvent.result?.message ?: DisconnectMessages.KICKED
+            player.connection.send(PacketOutDisconnect(reason))
             player.connection.disconnect(reason)
             return
         }
@@ -214,13 +217,13 @@ class PlayerManager(private val server: KryptonServer) {
         playersByUUID.remove(player.uuid)
 
         // Send info and quit message
-        server.connectionManager.invalidateStatus()
+        server.statusManager.invalidateStatus()
 //        server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
         event.quitMessage?.let { server.sendMessage(it) }
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
-        server.connectionManager.sendGroupedPacket(packet) {
+        PacketGrouping.sendGroupedPacket(server, packet) {
             if (it === except || it.world !== world) return@sendGroupedPacket false
             val dx = x - it.position.x
             val dy = y - it.position.y
@@ -235,7 +238,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     private fun broadcastSystemMessage(message: Component, overlay: Boolean) {
         server.console.sendSystemMessage(message)
-        server.connectionManager.sendGroupedPacket(PacketOutSystemChat(message, overlay)) { it.acceptsSystemMessages(overlay) }
+        PacketGrouping.sendGroupedPacket(server, PacketOutSystemChat(message, overlay)) { it.acceptsSystemMessages(overlay) }
     }
 
     fun broadcastChatMessage(message: PlayerChatMessage, source: KryptonPlayer, type: RichChatType.Bound) {
@@ -302,9 +305,9 @@ class PlayerManager(private val server: KryptonServer) {
         private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)
         private val CHAT_FILTERED_FULL = Component.translatable("chat.filtered_full")
 
-        private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
-        private const val DISABLE_REDUCED_DEBUG_SCREEN = 23
-        private const val OP_PERMISSION_LEVEL_4 = 28
+        private const val ENABLE_REDUCED_DEBUG_SCREEN: Byte = 22
+        private const val DISABLE_REDUCED_DEBUG_SCREEN: Byte = 23
+        private const val OP_PERMISSION_LEVEL_4: Byte = 28
 
         @JvmStatic
         private fun getDefaultJoinMessage(player: KryptonPlayer, joinedBefore: Boolean): Component {

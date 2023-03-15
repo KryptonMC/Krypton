@@ -17,7 +17,8 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
@@ -25,18 +26,19 @@ import org.kryptonmc.krypton.world.rule.GameRuleKeys
 @JvmRecord
 data class PacketOutUpdateTime(val time: Long, val dayTime: Long) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readLong())
+    constructor(reader: BinaryReader) : this(reader.readLong(), reader.readLong())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(time)
-        buf.writeLong(dayTime)
+    override fun write(writer: BinaryWriter) {
+        writer.writeLong(time)
+        writer.writeLong(dayTime)
     }
 
     companion object {
 
         @JvmStatic
-        fun create(data: WorldData): PacketOutUpdateTime =
-            PacketOutUpdateTime(data.time, calculateDayTime(data.dayTime, data.gameRules.getBoolean(GameRuleKeys.DO_DAYLIGHT_CYCLE)))
+        fun create(data: WorldData): PacketOutUpdateTime {
+            return PacketOutUpdateTime(data.time, calculateDayTime(data.dayTime, data.gameRules.getBoolean(GameRuleKeys.DO_DAYLIGHT_CYCLE)))
+        }
 
         @JvmStatic
         private fun calculateDayTime(dayTime: Long, doDaylightCycle: Boolean): Long {

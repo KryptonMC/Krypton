@@ -17,20 +17,19 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourcePack.Status
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.writeEnum
 
 @JvmRecord
 data class PacketInResourcePack(val status: Status) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Status>())
+    constructor(reader: BinaryReader) : this(reader.readEnum<Status>())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(status)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(status)
     }
 
     override fun handle(handler: PlayPacketHandler) {

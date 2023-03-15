@@ -17,9 +17,7 @@
  */
 package org.kryptonmc.krypton
 
-import io.netty.channel.epoll.Epoll
-import io.netty.channel.kqueue.KQueue
-import io.netty.channel.unix.DomainSocketAddress
+import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.scheduling.ExecutionType
@@ -35,8 +33,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonGlobalEventNode
 import org.kryptonmc.krypton.event.server.KryptonServerStartEvent
 import org.kryptonmc.krypton.event.server.KryptonServerStopEvent
-import org.kryptonmc.krypton.network.ConnectionManager
-import org.kryptonmc.krypton.network.ConnectionInitializer
+import org.kryptonmc.krypton.server.StatusManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
@@ -44,6 +41,7 @@ import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.network.PacketFraming
+import org.kryptonmc.krypton.network.socket.NetworkServer
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
 import org.kryptonmc.krypton.ticking.TickDispatcher
 import org.kryptonmc.krypton.ticking.TickThreadProvider
@@ -56,6 +54,7 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.UnixDomainSocketAddress
 import java.nio.file.Path
 import java.util.Locale
 import kotlin.math.abs
@@ -71,9 +70,10 @@ class KryptonServer(
     worldFolder: Path
 ) : BaseServer {
 
+    private val networkServer = NetworkServer(this)
     // TODO: Use a better registry access that is dynamically populated from data packs.
     override val playerManager: PlayerManager = PlayerManager(this)
-    override val connectionManager: ConnectionManager = ConnectionManager(playerManager, config.status.motd, config.status.maxPlayers)
+    val statusManager: StatusManager = StatusManager(playerManager, config.status.motd, config.status.maxPlayers)
 
     override val console: KryptonConsole = KryptonConsole(this)
     override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
@@ -153,8 +153,8 @@ class KryptonServer(
 
         // Determine the correct bind address (UNIX domain socket or standard internet socket).
         val bindAddress = if (config.server.ip.startsWith("unix:")) {
-            if (!Epoll.isAvailable() && !KQueue.isAvailable()) {
-                LOGGER.error("UNIX domain sockets are not supported on this operating system!")
+            if (!SystemUtils.IS_OS_UNIX) {
+                LOGGER.error("UNIX domain sockets are only supported on UNIX-like systems!")
                 return false
             }
             if (config.proxy.mode == ProxyCategory.Mode.NONE) {
@@ -162,19 +162,20 @@ class KryptonServer(
                 return false
             }
             LOGGER.info("Using UNIX domain socket ${config.server.ip}")
-            DomainSocketAddress(config.server.ip.substring("unix:".length))
+            UnixDomainSocketAddress.of(config.server.ip)
         } else {
             InetSocketAddress(InetAddress.getByName(config.server.ip), config.server.port)
         }
 
-        // Start accepting connections
-        LOGGER.debug("Starting Netty...")
+        // Try binding to the port and start accepting connections
+        LOGGER.debug("Starting Network Server...")
         try {
-            ConnectionInitializer.run(this, bindAddress)
+            networkServer.initialize(bindAddress)
         } catch (exception: IOException) {
             LOGGER.error("FAILED TO BIND TO PORT ${config.server.port}!", exception)
             return false
         }
+        networkServer.start()
 
         setupAutosaveTasks()
 
@@ -228,7 +229,7 @@ class KryptonServer(
 
     fun tick(startTime: Long) {
         scheduler.process()
-        connectionManager.tick(startTime)
+        statusManager.tick(startTime)
 
         worldManager.worlds.values.forEach { it.tick() }
         tickDispatcher.updateAndAwait(startTime)
@@ -256,7 +257,7 @@ class KryptonServer(
         // Stop server and shut down session manager (disconnecting all players)
         LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
         running = false
-        ConnectionInitializer.shutdown()
+        networkServer.stop()
         tickDispatcher.shutdown()
 
         // Save data

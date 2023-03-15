@@ -17,17 +17,12 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3i
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readBlockPos
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
 data class PacketInPlayerAction(
@@ -37,13 +32,13 @@ data class PacketInPlayerAction(
     val sequence: Int
 ) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Action>(), buf.readBlockPos(), buf.readEnum(), buf.readVarInt())
+    constructor(reader: BinaryReader) : this(reader.readEnum<Action>(), reader.readBlockPos(), reader.readEnum(), reader.readVarInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(action)
-        buf.writeBlockPos(position)
-        buf.writeEnum(direction)
-        buf.writeVarInt(sequence)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(action)
+        writer.writeBlockPos(position)
+        writer.writeEnum(direction)
+        writer.writeVarInt(sequence)
     }
 
     override fun handle(handler: PlayPacketHandler) {

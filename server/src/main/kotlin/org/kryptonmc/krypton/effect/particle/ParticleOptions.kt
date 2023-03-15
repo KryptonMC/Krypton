@@ -17,21 +17,21 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.readById
 
 @JvmRecord
 data class ParticleOptions(val type: ParticleType, val data: ParticleData?) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readById(KryptonRegistries.PARTICLE_TYPE)!!)
+    constructor(reader: BinaryReader) : this(reader, reader.readById(KryptonRegistries.PARTICLE_TYPE)!!)
 
-    private constructor(buf: ByteBuf, type: ParticleType) : this(type, type.downcast().createData(buf))
+    private constructor(reader: BinaryReader, type: ParticleType) : this(type, type.downcast().createData(reader))
 
-    override fun write(buf: ByteBuf) {
-        if (data != null && data is Writable) data.write(buf)
+    override fun write(writer: BinaryWriter) {
+        if (data != null && data is Writable) data.write(writer)
     }
 }

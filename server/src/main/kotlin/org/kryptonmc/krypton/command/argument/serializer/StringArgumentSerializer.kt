@@ -18,9 +18,8 @@
 package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.StringArgumentType
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 /**
  * String argument types only serialize the type of string argument they are.
@@ -39,14 +38,14 @@ object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
     private const val QUOTABLE_PHRASE_TYPE = 1
     private const val GREEDY_PHRASE_TYPE = 2
 
-    override fun read(buf: ByteBuf): StringArgumentType = when (val type = buf.readVarInt()) {
+    override fun read(reader: BinaryReader): StringArgumentType = when (val type = reader.readVarInt()) {
         SINGLE_WORD_TYPE -> StringArgumentType.word()
         QUOTABLE_PHRASE_TYPE -> StringArgumentType.string()
         GREEDY_PHRASE_TYPE -> StringArgumentType.greedyString()
         else -> throw IllegalArgumentException("Cannot get type with ID $type!")
     }
 
-    override fun write(buf: ByteBuf, value: StringArgumentType) {
-        buf.writeEnum(value.type)
+    override fun write(writer: BinaryWriter, value: StringArgumentType) {
+        writer.writeEnum(value.type)
     }
 }

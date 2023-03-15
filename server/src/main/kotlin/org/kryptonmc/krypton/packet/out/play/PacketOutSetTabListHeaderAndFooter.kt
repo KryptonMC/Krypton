@@ -17,11 +17,10 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.writeComponent
 
 /**
  * This only exists in the protocol for use in modded servers. It is never used by the official vanilla
@@ -33,10 +32,10 @@ import org.kryptonmc.krypton.util.writeComponent
 @JvmRecord
 data class PacketOutSetTabListHeaderAndFooter(val header: Component, val footer: Component) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readComponent())
+    constructor(reader: BinaryReader) : this(reader.readComponent(), reader.readComponent())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeComponent(header)
-        buf.writeComponent(footer)
+    override fun write(writer: BinaryWriter) {
+        writer.writeComponent(header)
+        writer.writeComponent(footer)
     }
 }

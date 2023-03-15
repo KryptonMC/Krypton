@@ -17,10 +17,9 @@
  */
 package org.kryptonmc.krypton.packet.out.login
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Instructs the client to set a threshold for packet compression. Any packets
@@ -29,9 +28,9 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutSetCompression(val threshold: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt())
+    constructor(reader: BinaryReader) : this(reader.readVarInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(threshold)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(threshold)
     }
 }

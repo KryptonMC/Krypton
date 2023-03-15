@@ -17,12 +17,11 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.crypto.SignatureUpdater
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 import java.nio.ByteBuffer
 import java.util.Base64
 
@@ -55,9 +54,9 @@ data class MessageSignature(val bytes: ByteArray) {
 
         constructor(id: Int) : this(id, null)
 
-        override fun write(buf: ByteBuf) {
-            buf.writeVarInt(id + 1)
-            fullSignature?.let { write(buf, it) }
+        override fun write(writer: BinaryWriter) {
+            writer.writeVarInt(id + 1)
+            fullSignature?.let { write(writer, it) }
         }
 
         companion object {
@@ -65,9 +64,9 @@ data class MessageSignature(val bytes: ByteArray) {
             const val FULL_SIGNATURE_ID: Int = -1
 
             @JvmStatic
-            fun read(buf: ByteBuf): Packed {
-                val id = buf.readVarInt() - 1
-                return if (id == FULL_SIGNATURE_ID) Packed(MessageSignature.read(buf)) else Packed(id)
+            fun read(reader: BinaryReader): Packed {
+                val id = reader.readVarInt() - 1
+                return if (id == FULL_SIGNATURE_ID) Packed(MessageSignature.read(reader)) else Packed(id)
             }
         }
     }
@@ -77,15 +76,11 @@ data class MessageSignature(val bytes: ByteArray) {
         private const val BYTES = 256
 
         @JvmStatic
-        fun read(buf: ByteBuf): MessageSignature {
-            val bytes = ByteArray(BYTES)
-            buf.readBytes(bytes)
-            return MessageSignature(bytes)
-        }
+        fun read(reader: BinaryReader): MessageSignature = MessageSignature(reader.readBytes(BYTES))
 
         @JvmStatic
-        fun write(buf: ByteBuf, signature: MessageSignature) {
-            buf.writeBytes(signature.bytes)
+        fun write(writer: BinaryWriter, signature: MessageSignature) {
+            writer.writeBytes(signature.bytes)
         }
     }
 }

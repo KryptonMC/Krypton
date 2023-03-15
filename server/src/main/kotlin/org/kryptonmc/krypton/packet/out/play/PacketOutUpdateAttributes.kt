@@ -17,50 +17,43 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeKey
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
 import java.util.Collections
 
 @JvmRecord
 data class PacketOutUpdateAttributes(override val entityId: Int, val attributes: Collection<AttributeSnapshot>) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList { _ ->
-        val type = buf.readKey().let { requireNotNull(KryptonRegistries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }
-        val base = buf.readDouble()
-        val modifiers = buf.readList {
-            val uuid = buf.readUUID()
-            val amount = buf.readDouble()
-            val operation = KryptonAttributeModifier.getOperationById(buf.readByte().toInt())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readList { _ ->
+        val type = reader.readKey().let { requireNotNull(KryptonRegistries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }
+        val base = reader.readDouble()
+        val modifiers = reader.readList {
+            val uuid = it.readUUID()
+            val amount = it.readDouble()
+            val operation = KryptonAttributeModifier.getOperationById(it.readByte().toInt())
             KryptonAttributeModifier(uuid, "Unknown read attribute", amount, operation)
         }
         AttributeSnapshot(type, base, modifiers)
     })
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(KryptonRegistries.ATTRIBUTE.getKey(attribute.type)!!)
-            buf.writeDouble(attribute.base)
-            buf.writeCollection(attribute.modifiers) inner@{
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeCollection(attributes) { attribute ->
+            writer.writeKey(KryptonRegistries.ATTRIBUTE.getKey(attribute.type)!!)
+            writer.writeDouble(attribute.base)
+            writer.writeCollection(attribute.modifiers) inner@{
                 val operation = it.operation
                 if (operation !is BasicModifierOperation) return@inner
-                buf.writeUUID(it.uuid)
-                buf.writeDouble(it.amount)
-                buf.writeByte(operation.ordinal)
+                writer.writeUUID(it.uuid)
+                writer.writeDouble(it.amount)
+                writer.writeByte(operation.ordinal.toByte())
             }
         }
     }

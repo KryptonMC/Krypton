@@ -17,23 +17,18 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class PacketOutChatSuggestions(val action: Action, val entries: List<String>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum(), buf.readList(ByteBuf::readString))
+    constructor(reader: BinaryReader) : this(reader.readEnum(), reader.readList { it.readString() })
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(action)
-        buf.writeCollection(entries, buf::writeString)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(action)
+        writer.writeCollection(entries, writer::writeString)
     }
 
     enum class Action {

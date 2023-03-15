@@ -17,7 +17,8 @@
  */
 package org.kryptonmc.krypton.packet.`in`.status
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.StatusPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 
@@ -27,10 +28,10 @@ import org.kryptonmc.krypton.packet.InboundPacket
 @JvmRecord
 data class PacketInPingRequest(val payload: Long) : InboundPacket<StatusPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readLong())
+    constructor(reader: BinaryReader) : this(reader.readLong())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(payload)
+    override fun write(writer: BinaryWriter) {
+        writer.writeLong(payload)
     }
 
     override fun handle(handler: StatusPacketHandler) {

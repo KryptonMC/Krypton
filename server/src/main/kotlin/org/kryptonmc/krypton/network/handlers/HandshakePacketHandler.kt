@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.locale.DisconnectMessages
-import org.kryptonmc.krypton.network.NettyConnection
+import org.kryptonmc.krypton.network.NioConnection
 import org.kryptonmc.krypton.network.forwarding.LegacyForwardedData
 import org.kryptonmc.krypton.network.forwarding.TCPShieldForwardedData
 import org.kryptonmc.krypton.packet.PacketState
@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state.
  */
-class HandshakePacketHandler(private val server: KryptonServer, override val connection: NettyConnection) : PacketHandler {
+class HandshakePacketHandler(private val server: KryptonServer, override val connection: NioConnection) : PacketHandler {
 
     fun handleHandshake(packet: PacketInHandshake) {
         when (packet.nextState) {
@@ -123,7 +123,8 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
     }
 
     private fun disconnect(reason: Component) {
-        connection.writeAndDisconnect(PacketOutLoginDisconnect(reason), reason)
+        connection.send(PacketOutLoginDisconnect(reason))
+        connection.disconnect(reason)
     }
 
     private fun handleStatusState() {

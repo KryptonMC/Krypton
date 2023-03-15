@@ -18,13 +18,14 @@
 package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.ArgumentType
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 class SingletonArgumentSerializer<T : ArgumentType<*>>(val value: T) : ArgumentSerializer<T> {
 
-    override fun read(buf: ByteBuf): T = value
+    override fun read(reader: BinaryReader): T = value
 
-    override fun write(buf: ByteBuf, value: T) {
+    override fun write(writer: BinaryWriter, value: T) {
         // Nothing to write since there are no special properties for these types of arguments
     }
 }

@@ -17,44 +17,39 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readMap
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeId
-import org.kryptonmc.krypton.util.writeMap
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, ::readStatistic, ByteBuf::readVarInt))
+    constructor(reader: BinaryReader) : this(reader.readMap(::Object2IntOpenHashMap, ::readStatistic, BinaryReader::readVarInt))
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         // The second argument can't be a method reference because of type inference.
-        buf.writeMap(statistics, { buffer, key -> writeStatistic(buffer, key) }, ByteBuf::writeVarInt)
+        writer.writeMap(statistics, { buf, key -> writeStatistic(buf, key) }, BinaryWriter::writeVarInt)
     }
 
     companion object {
 
         @JvmStatic
-        private fun readStatistic(buf: ByteBuf): Statistic<*> = readStatistic(buf, buf.readById(KryptonRegistries.STATISTIC_TYPE)!!)
+        private fun readStatistic(reader: BinaryReader): Statistic<*> = readStatistic(reader, reader.readById(KryptonRegistries.STATISTIC_TYPE)!!)
 
         @JvmStatic
-        private fun <T> readStatistic(buf: ByteBuf, type: StatisticType<T>): Statistic<T> =
-            type.getStatistic(buf.readById(type.registry as KryptonRegistry<T>)!!)
+        private fun <T> readStatistic(reader: BinaryReader, type: StatisticType<T>): Statistic<T> =
+            type.getStatistic(reader.readById(type.registry as KryptonRegistry<T>)!!)
 
         @JvmStatic
-        private fun <T> writeStatistic(buf: ByteBuf, statistic: Statistic<T>) {
-            buf.writeId(KryptonRegistries.STATISTIC_TYPE, statistic.type)
-            buf.writeId(statistic.type.registry as KryptonRegistry<T>, statistic.value)
+        private fun <T> writeStatistic(writer: BinaryWriter, statistic: Statistic<T>) {
+            writer.writeId(KryptonRegistries.STATISTIC_TYPE, statistic.type)
+            writer.writeId(statistic.type.registry as KryptonRegistry<T>, statistic.value)
         }
     }
 }

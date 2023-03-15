@@ -17,44 +17,41 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
 data class PacketOutStopSound(val source: Sound.Source?, val sound: Key?) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readByte().toInt())
+    constructor(reader: BinaryReader) : this(reader, reader.readByte().toInt())
 
-    private constructor(buf: ByteBuf, flags: Int) : this(
-        if (flags and 1 > 0) buf.readEnum<Sound.Source>() else null,
-        if (flags and 2 > 0) buf.readKey() else null
+    private constructor(reader: BinaryReader, flags: Int) : this(
+        if (flags and 1 > 0) reader.readEnum<Sound.Source>() else null,
+        if (flags and 2 > 0) reader.readKey() else null
     )
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         if (source != null) {
             if (sound != null) {
-                buf.writeByte(3)
-                buf.writeEnum(source)
-                buf.writeKey(sound)
+                writer.writeByte(3)
+                writer.writeEnum(source)
+                writer.writeKey(sound)
                 return
             }
-            buf.writeByte(1)
-            buf.writeEnum(source)
+            writer.writeByte(1)
+            writer.writeEnum(source)
             return
         }
         if (sound != null) {
-            buf.writeByte(2)
-            buf.writeKey(sound)
+            writer.writeByte(2)
+            writer.writeKey(sound)
             return
         }
-        buf.writeByte(0)
+        writer.writeByte(0)
     }
 
     companion object {

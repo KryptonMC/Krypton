@@ -17,13 +17,10 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.readBitSet
-import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.writeBitSet
-import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.serialization.Codec
 import java.util.BitSet
 import java.util.function.Supplier
@@ -54,9 +51,9 @@ class FilterMask private constructor(private val mask: BitSet, private val type:
 
     fun isFullyFiltered(): Boolean = type == Type.FULLY_FILTERED
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(type)
-        if (type == Type.PARTIALLY_FILTERED) buf.writeBitSet(mask)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(type)
+        if (type == Type.PARTIALLY_FILTERED) writer.writeBitSet(mask)
     }
 
     override fun equals(other: Any?): Boolean = this === other || other is FilterMask && mask == other.mask && type == other.type
@@ -86,16 +83,16 @@ class FilterMask private constructor(private val mask: BitSet, private val type:
         private val PARTIALLY_FILTERED_CODEC = Codecs.BIT_SET.xmap({ FilterMask(it, Type.PARTIALLY_FILTERED) }, { it.mask })
 
         @JvmStatic
-        fun read(buf: ByteBuf): FilterMask = when (val type = buf.readEnum<Type>()) {
+        fun read(reader: BinaryReader): FilterMask = when (val type = reader.readEnum<Type>()) {
             Type.PASS_THROUGH -> PASS_THROUGH
             Type.FULLY_FILTERED -> FULLY_FILTERED
-            Type.PARTIALLY_FILTERED -> FilterMask(buf.readBitSet(), type)
+            Type.PARTIALLY_FILTERED -> FilterMask(reader.readBitSet(), type)
         }
 
         @JvmStatic
-        fun write(buf: ByteBuf, mask: FilterMask) {
-            buf.writeEnum(mask.type)
-            if (mask.type == Type.PARTIALLY_FILTERED) buf.writeBitSet(mask.mask)
+        fun write(writer: BinaryWriter, mask: FilterMask) {
+            writer.writeEnum(mask.type)
+            if (mask.type == Type.PARTIALLY_FILTERED) writer.writeBitSet(mask.mask)
         }
     }
 }

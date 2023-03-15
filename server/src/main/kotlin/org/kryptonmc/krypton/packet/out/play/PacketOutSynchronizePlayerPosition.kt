@@ -17,12 +17,11 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.random.RandomSource
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 import java.util.EnumSet
 
 @JvmRecord
@@ -37,18 +36,18 @@ data class PacketOutSynchronizePlayerPosition(
     val shouldDismount: Boolean = false
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(),
-        RelativeArgument.unpack(buf.readUnsignedByte().toInt()), buf.readVarInt(), buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readDouble(), reader.readDouble(), reader.readDouble(), reader.readFloat(), reader.readFloat(),
+        RelativeArgument.unpack(reader.readByte().toInt()), reader.readVarInt(), reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
-        buf.writeFloat(yaw)
-        buf.writeFloat(pitch)
-        buf.writeByte(RelativeArgument.pack(relativeArguments))
-        buf.writeVarInt(teleportId)
-        buf.writeBoolean(shouldDismount)
+    override fun write(writer: BinaryWriter) {
+        writer.writeDouble(x)
+        writer.writeDouble(y)
+        writer.writeDouble(z)
+        writer.writeFloat(yaw)
+        writer.writeFloat(pitch)
+        writer.writeByte(RelativeArgument.pack(relativeArguments).toByte())
+        writer.writeVarInt(teleportId)
+        writer.writeBoolean(shouldDismount)
     }
 
     enum class RelativeArgument(private val bit: Int) {

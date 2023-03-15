@@ -39,9 +39,9 @@ object Positioning {
      * units, measured in 1/8000 of a block per server tick.
      */
     @JvmStatic
-    fun encodeVelocity(velocity: Double): Int {
+    fun encodeVelocity(velocity: Double): Short {
         val clamped = Maths.clamp(velocity, -3.9, 3.9)
-        return (clamped * 8000.0).toInt()
+        return (clamped * 8000.0).toInt().toShort()
     }
 
     @JvmStatic

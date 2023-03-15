@@ -17,15 +17,16 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
 data class PacketOutClearTitles(val reset: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeBoolean(reset)
+    override fun write(writer: BinaryWriter) {
+        writer.writeBoolean(reset)
     }
 }

@@ -17,20 +17,19 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.data.LightPacketData
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUpdateLight(val x: Int, val z: Int, val lightData: LightPacketData) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarInt(), LightPacketData(buf))
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readVarInt(), LightPacketData(reader))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(x)
-        buf.writeVarInt(z)
-        lightData.write(buf)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(x)
+        writer.writeVarInt(z)
+        lightData.write(writer)
     }
 }

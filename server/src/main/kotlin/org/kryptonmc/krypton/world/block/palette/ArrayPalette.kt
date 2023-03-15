@@ -17,10 +17,9 @@
  */
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.map.IntBiMap
-import org.kryptonmc.krypton.util.writeVarInt
 
 @Suppress("UNCHECKED_CAST")
 class ArrayPalette<T> private constructor(
@@ -59,10 +58,10 @@ class ArrayPalette<T> private constructor(
 
     override fun get(id: Int): T = values.getOrNull(id) ?: throw MissingPaletteEntryException(id)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(size)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(size)
         for (i in 0 until size) {
-            buf.writeVarInt(registry.getId(values[i]!!))
+            writer.writeVarInt(registry.getId(values[i]!!))
         }
     }
 

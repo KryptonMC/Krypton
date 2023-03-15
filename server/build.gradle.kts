@@ -9,22 +9,6 @@ dependencies {
     api(projects.api)
     implementation(projects.annotationProcessor)
 
-    // Networking
-    api(libs.netty.buffer)
-    api(libs.netty.handler)
-    api(libs.netty.transport)
-    implementation(libs.netty.transport.native.epoll) {
-        artifact {
-            classifier = "linux-x86_64"
-        }
-    }
-    implementation(libs.netty.transport.native.kqueue) {
-        artifact {
-            classifier = "osx-x86_64"
-        }
-    }
-    implementation(libs.velocity.native)
-
     // Events
     implementation(libs.lmbda)
 

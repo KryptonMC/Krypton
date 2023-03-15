@@ -17,23 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readItem
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSetContainerSlot(val id: Int, val stateId: Int, val slot: Int, val item: KryptonItemStack) : Packet {
+data class PacketOutSetContainerSlot(val id: Byte, val stateId: Int, val slot: Short, val item: KryptonItemStack) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readShort().toInt(), buf.readItem())
+    constructor(reader: BinaryReader) : this(reader.readByte(), reader.readVarInt(), reader.readShort(), reader.readItem())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(id)
-        buf.writeVarInt(stateId)
-        buf.writeShort(slot)
-        buf.writeItem(item)
+    override fun write(writer: BinaryWriter) {
+        writer.writeByte(id)
+        writer.writeVarInt(stateId)
+        writer.writeShort(slot)
+        writer.writeItem(item)
     }
 }

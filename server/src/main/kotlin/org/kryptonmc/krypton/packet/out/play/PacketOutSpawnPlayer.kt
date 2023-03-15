@@ -17,15 +17,12 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
 import java.util.UUID
 
 /**
@@ -42,17 +39,17 @@ data class PacketOutSpawnPlayer(
     val pitch: Byte
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
-        buf.readByte(), buf.readByte())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readUUID(), reader.readDouble(), reader.readDouble(), reader.readDouble(),
+        reader.readByte(), reader.readByte())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeUUID(uuid)
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
-        buf.writeByte(yaw.toInt())
-        buf.writeByte(pitch.toInt())
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeUUID(uuid)
+        writer.writeDouble(x)
+        writer.writeDouble(y)
+        writer.writeDouble(z)
+        writer.writeByte(yaw)
+        writer.writeByte(pitch)
     }
 
     companion object {

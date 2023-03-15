@@ -17,14 +17,13 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutTeleportEntity(
@@ -37,17 +36,17 @@ data class PacketOutTeleportEntity(
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readByte(), buf.readByte(),
-        buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readDouble(), reader.readDouble(), reader.readDouble(), reader.readByte(),
+        reader.readByte(), reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
-        buf.writeByte(yaw.toInt())
-        buf.writeByte(pitch.toInt())
-        buf.writeBoolean(onGround)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeDouble(x)
+        writer.writeDouble(y)
+        writer.writeDouble(z)
+        writer.writeByte(yaw)
+        writer.writeByte(pitch)
+        writer.writeBoolean(onGround)
     }
 
     companion object {

@@ -17,18 +17,19 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutGameEvent(val event: Int, val value: Float) : Packet {
+data class PacketOutGameEvent(val event: Byte, val value: Float) : Packet {
 
-    constructor(event: Int) : this(event, 0F)
+    constructor(event: Byte) : this(event, 0F)
 
-    constructor(buf: ByteBuf) : this(buf.readUnsignedByte().toInt(), buf.readFloat())
+    constructor(reader: BinaryReader) : this(reader.readByte(), reader.readFloat())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(event)
-        buf.writeFloat(value)
+    override fun write(writer: BinaryWriter) {
+        writer.writeByte(event)
+        writer.writeFloat(value)
     }
 }

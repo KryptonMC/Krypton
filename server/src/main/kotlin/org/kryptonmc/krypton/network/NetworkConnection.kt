@@ -27,7 +27,9 @@ interface NetworkConnection {
 
     fun latency(): Int
 
-    fun send(packet: Packet)
+    fun send(packet: Packet) {
+        write(packet)
+    }
 
     fun write(packet: GenericPacket)
 }

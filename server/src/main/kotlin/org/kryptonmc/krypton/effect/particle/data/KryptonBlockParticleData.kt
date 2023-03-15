@@ -17,17 +17,16 @@
  */
 package org.kryptonmc.krypton.effect.particle.data
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.BlockParticleData
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 @JvmRecord
 data class KryptonBlockParticleData(override val block: KryptonBlockState) : BlockParticleData, Writable {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(KryptonBlock.idOf(block))
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(KryptonBlock.idOf(block))
     }
 }

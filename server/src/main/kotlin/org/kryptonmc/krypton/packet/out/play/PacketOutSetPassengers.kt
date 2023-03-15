@@ -17,31 +17,29 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVarIntArray
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarIntArray
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
 data class PacketOutSetPassengers(override val entityId: Int, val passengers: IntArray) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarIntArray())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readVarIntArray())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeVarIntArray(passengers)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeVarIntArray(passengers)
     }
 
     companion object {
 
         @JvmStatic
-        fun fromEntity(entity: KryptonEntity, passengers: List<Entity>): PacketOutSetPassengers =
-            PacketOutSetPassengers(entity.id, toIdArray(passengers))
+        fun fromEntity(entity: KryptonEntity, passengers: List<Entity>): PacketOutSetPassengers {
+            return PacketOutSetPassengers(entity.id, toIdArray(passengers))
+        }
 
         @JvmStatic
         private fun toIdArray(entities: List<Entity>): IntArray = IntArray(entities.size) { entities.get(it).id }

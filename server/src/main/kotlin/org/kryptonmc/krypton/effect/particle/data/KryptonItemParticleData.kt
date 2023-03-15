@@ -17,16 +17,15 @@
  */
 package org.kryptonmc.krypton.effect.particle.data
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.ItemParticleData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.writeItem
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 @JvmRecord
 data class KryptonItemParticleData(override val item: KryptonItemStack) : ItemParticleData, Writable {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeItem(item)
+    override fun write(writer: BinaryWriter) {
+        writer.writeItem(item)
     }
 }

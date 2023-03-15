@@ -18,7 +18,8 @@
 package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.ArgumentType
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 /**
  * A serializer used to write extra data about [T] argument types.
@@ -26,12 +27,12 @@ import io.netty.buffer.ByteBuf
 interface ArgumentSerializer<T : ArgumentType<*>> {
 
     /**
-     * Reads the given [buf] and returns the argument type.
+     * Reads the given [reader] and returns the argument type.
      */
-    fun read(buf: ByteBuf): T
+    fun read(reader: BinaryReader): T
 
     /**
-     * Writes the given [value] to the given [buf].
+     * Writes the given [value] to the given [writer].
      */
-    fun write(buf: ByteBuf, value: T)
+    fun write(writer: BinaryWriter, value: T)
 }

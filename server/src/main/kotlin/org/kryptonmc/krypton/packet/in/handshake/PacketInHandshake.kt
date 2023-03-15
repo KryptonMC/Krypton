@@ -17,16 +17,11 @@
  */
 package org.kryptonmc.krypton.packet.`in`.handshake
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.HandshakePacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.packet.PacketState
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketInHandshake(
@@ -36,13 +31,13 @@ data class PacketInHandshake(
     val nextState: PacketState
 ) : InboundPacket<HandshakePacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(), buf.readUnsignedShort(), buf.readEnum())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readString(), reader.readUnsignedShort(), reader.readEnum())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(protocol)
-        buf.writeString(address)
-        buf.writeShort(port)
-        buf.writeEnum(nextState)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(protocol)
+        writer.writeString(address)
+        writer.writeShort(port.toShort())
+        writer.writeEnum(nextState)
     }
 
     override fun handle(handler: HandshakePacketHandler) {

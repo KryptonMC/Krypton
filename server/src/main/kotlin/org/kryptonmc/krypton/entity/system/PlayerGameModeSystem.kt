@@ -24,6 +24,7 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonPlayerChangeGameModeEvent
 import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
@@ -91,7 +92,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         gameMode = mode
         GameModes.updatePlayerAbilities(mode, player.abilities)
         player.onAbilitiesUpdate()
-        player.server.connectionManager.sendGroupedPacket(PacketOutPlayerInfoUpdate(Action.UPDATE_GAME_MODE, player))
+        PacketGrouping.sendGroupedPacket(player.server, PacketOutPlayerInfoUpdate(Action.UPDATE_GAME_MODE, player))
     }
 
     fun handleBlockBreak(packet: PacketInPlayerAction) {

@@ -33,7 +33,7 @@ class FloatArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure float writes no min or max when values are float min and float max`() {
         val buffer = writeArgumentAndSkipId(FloatArgumentType.floatArg())
         skipFlags(buffer)
-        assertNotReadable(buffer)
+        assertExhausted(buffer)
     }
 
     @Test
@@ -46,7 +46,7 @@ class FloatArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure float writes min and no max when max is float max and min is not`() {
         val buffer = writeArgumentAndSkipId(FloatArgumentType.floatArg(-1F))
         skipFlags(buffer)
-        assertEquals(-1F, buffer.readFloat())
+        assertEquals(-1F, buffer.float)
     }
 
     @Test
@@ -59,7 +59,7 @@ class FloatArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure float writes max and no min when min is float min and max is not`() {
         val buffer = writeArgumentAndSkipId(FloatArgumentType.floatArg(-Float.MAX_VALUE, 1F))
         skipFlags(buffer)
-        assertEquals(1F, buffer.readFloat())
+        assertEquals(1F, buffer.float)
     }
 
     @Test
@@ -72,14 +72,14 @@ class FloatArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure float writes min first when min and max are not float min and max`() {
         val buffer = writeArgumentAndSkipId(FloatArgumentType.floatArg(-1F, 1F))
         skipFlags(buffer)
-        assertEquals(-1F, buffer.readFloat())
+        assertEquals(-1F, buffer.float)
     }
 
     @Test
     fun `ensure float writes max after min when min and max are not float min and max`() {
         val buffer = writeArgumentAndSkipId(FloatArgumentType.floatArg(-1F, 1F))
         skipFlags(buffer)
-        buffer.skipBytes(Float.SIZE_BYTES) // minimum
-        assertEquals(1F, buffer.readFloat())
+        buffer.position(buffer.position() + Float.SIZE_BYTES) // minimum
+        assertEquals(1F, buffer.float)
     }
 }

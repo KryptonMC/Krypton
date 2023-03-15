@@ -17,8 +17,9 @@
  */
 package org.kryptonmc.krypton.command.argument.serializer
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 /**
  * Entity argument types are serialized with flags indicating if the selector
@@ -28,9 +29,9 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
  */
 object EntityArgumentSerializer : FlaggedArgumentSerializer<EntityArgumentType> {
 
-    override fun read(buf: ByteBuf, flags: Int): EntityArgumentType = EntityArgumentType.from(flags and 1 != 0, flags and 2 != 0)
+    override fun read(reader: BinaryReader, flags: Int): EntityArgumentType = EntityArgumentType.from(flags and 1 != 0, flags and 2 != 0)
 
-    override fun write(buf: ByteBuf, value: EntityArgumentType) {
-        buf.writeByte(createFlags(value.singleTarget, value.onlyPlayers))
+    override fun write(writer: BinaryWriter, value: EntityArgumentType) {
+        writer.writeByte(createFlags(value.singleTarget, value.onlyPlayers))
     }
 }

@@ -17,12 +17,12 @@
  */
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.bits.BitStorage
 import org.kryptonmc.krypton.util.ByteBufExtras
@@ -30,7 +30,6 @@ import org.kryptonmc.krypton.util.map.IntBiMap
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.bits.SimpleBitStorage
 import org.kryptonmc.krypton.util.bits.ZeroBitStorage
-import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -80,8 +79,8 @@ class PaletteHolder<T> : PaletteResizer<T> {
     }
 
     @Synchronized
-    fun write(buf: ByteBuf) {
-        data.write(buf)
+    fun write(writer: BinaryWriter) {
+        data.write(writer)
     }
 
     @Synchronized
@@ -146,10 +145,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
             }
         }
 
-        fun write(buf: ByteBuf) {
-            buf.writeByte(storage.bits)
-            palette.write(buf)
-            buf.writeLongArray(storage.data)
+        fun write(writer: BinaryWriter) {
+            writer.writeByte(storage.bits.toByte())
+            palette.write(writer)
+            writer.writeLongArray(storage.data)
         }
 
         fun calculateSerializedSize(): Int {

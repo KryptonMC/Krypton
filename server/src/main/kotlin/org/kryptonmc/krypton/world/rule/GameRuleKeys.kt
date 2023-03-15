@@ -18,6 +18,7 @@
 package org.kryptonmc.krypton.world.rule
 
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
@@ -56,7 +57,8 @@ object GameRuleKeys {
     val DO_INSOMNIA: Key<BooleanValue> = register("doInsomnia", Category.SPAWNING, BooleanValue.create(true))
     @JvmField
     val DO_IMMEDIATE_RESPAWN: Key<BooleanValue> = register("doImmediateRespawn", Category.PLAYER, BooleanValue.create(false) { server, value ->
-        server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.ENABLE_RESPAWN_SCREEN, if (value.get()) 1F else 0F))
+        val setting = if (value.get()) 1F else 0F
+        PacketGrouping.sendGroupedPacket(server, PacketOutGameEvent(GameEventTypes.ENABLE_RESPAWN_SCREEN, setting))
     })
     @JvmField
     val DO_LIMITED_CRAFTING: Key<BooleanValue> = register("doLimitedCrafting", Category.PLAYER, BooleanValue.create(false))
@@ -106,7 +108,7 @@ object GameRuleKeys {
     val RANDOM_TICK_SPEED: Key<IntegerValue> = register("randomTickSpeed", Category.UPDATES, IntegerValue.create(3))
     @JvmField
     val REDUCED_DEBUG_INFO: Key<BooleanValue> = register("reducedDebugInfo", Category.MISC, BooleanValue.create(false) { server, value ->
-        val event = if (value.get()) 22 else 23
+        val event: Byte = if (value.get()) 22 else 23
         server.playerManager.players().forEach { it.connection.send(PacketOutEntityEvent(it.id, event)) }
     })
     @JvmField

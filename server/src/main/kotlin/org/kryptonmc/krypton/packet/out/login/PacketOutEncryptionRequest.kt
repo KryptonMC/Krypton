@@ -17,12 +17,9 @@
  */
 package org.kryptonmc.krypton.packet.out.login
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 /**
  * Sent to instruct the client that we wish to encrypt this connection. The
@@ -34,17 +31,21 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 @Suppress("ArrayInDataClass")
 data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteArray, val verifyToken: ByteArray) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(MAXIMUM_SERVER_ID_LENGTH), buf.readVarIntByteArray(), buf.readVarIntByteArray())
+    init {
+        require(serverId.length <= MAX_SERVER_ID_LENGTH) { "Server ID too long! Max: $MAX_SERVER_ID_LENGTH" }
+    }
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(serverId, MAXIMUM_SERVER_ID_LENGTH)
-        buf.writeVarIntByteArray(publicKey)
-        buf.writeVarIntByteArray(verifyToken)
+    constructor(reader: BinaryReader) : this(reader.readString(), reader.readByteArray(), reader.readByteArray())
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(serverId)
+        writer.writeByteArray(publicKey)
+        writer.writeByteArray(verifyToken)
     }
 
     companion object {
 
-        private const val MAXIMUM_SERVER_ID_LENGTH = 20
+        private const val MAX_SERVER_ID_LENGTH = 20
 
         @JvmStatic
         fun create(publicKey: ByteArray, verifyToken: ByteArray): PacketOutEncryptionRequest = PacketOutEncryptionRequest("", publicKey, verifyToken)

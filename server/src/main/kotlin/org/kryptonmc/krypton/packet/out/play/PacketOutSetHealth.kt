@@ -17,19 +17,18 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSetHealth(val health: Float, val food: Int, val foodSaturation: Float) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readVarInt(), buf.readFloat())
+    constructor(reader: BinaryReader) : this(reader.readFloat(), reader.readVarInt(), reader.readFloat())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeFloat(health)
-        buf.writeVarInt(food)
-        buf.writeFloat(foodSaturation)
+    override fun write(writer: BinaryWriter) {
+        writer.writeFloat(health)
+        writer.writeVarInt(food)
+        writer.writeFloat(foodSaturation)
     }
 }

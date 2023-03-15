@@ -33,7 +33,7 @@ class DoubleArgumentSerializerTests : AbstractArgumentSerializerTest() {
     fun `ensure double writes no min or max when values are double min and max`() {
         val buffer = writeArgumentAndSkipId(DoubleArgumentType.doubleArg())
         skipFlags(buffer)
-        assertNotReadable(buffer)
+        assertExhausted(buffer)
     }
 
     @Test
@@ -46,7 +46,7 @@ class DoubleArgumentSerializerTests : AbstractArgumentSerializerTest() {
     fun `ensure double writes min and no max when max is double max and min is not`() {
         val buffer = writeArgumentAndSkipId(DoubleArgumentType.doubleArg(-1.0))
         skipFlags(buffer)
-        assertEquals(-1.0, buffer.readDouble())
+        assertEquals(-1.0, buffer.double)
     }
 
     @Test
@@ -59,7 +59,7 @@ class DoubleArgumentSerializerTests : AbstractArgumentSerializerTest() {
     fun `ensure double writes max and no min when min is double min and max is not`() {
         val buffer = writeArgumentAndSkipId(DoubleArgumentType.doubleArg(-Double.MAX_VALUE, 1.0))
         skipFlags(buffer)
-        assertEquals(1.0, buffer.readDouble())
+        assertEquals(1.0, buffer.double)
     }
 
     @Test
@@ -72,14 +72,14 @@ class DoubleArgumentSerializerTests : AbstractArgumentSerializerTest() {
     fun `ensure double writes min first when min and max are not double min and max`() {
         val buffer = writeArgumentAndSkipId(DoubleArgumentType.doubleArg(-1.0, 1.0))
         skipFlags(buffer)
-        assertEquals(-1.0, buffer.readDouble())
+        assertEquals(-1.0, buffer.double)
     }
 
     @Test
     fun `ensure double writes max after min when min and max are not double min and max`() {
         val buffer = writeArgumentAndSkipId(DoubleArgumentType.doubleArg(-1.0, 1.0))
         skipFlags(buffer)
-        buffer.skipBytes(Double.SIZE_BYTES) // minimum
-        assertEquals(1.0, buffer.readDouble())
+        buffer.position(buffer.position() + Double.SIZE_BYTES) // minimum
+        assertEquals(1.0, buffer.double)
     }
 }

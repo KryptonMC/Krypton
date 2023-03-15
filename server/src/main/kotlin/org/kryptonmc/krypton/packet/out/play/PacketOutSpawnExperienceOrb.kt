@@ -17,29 +17,30 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSpawnExperienceOrb(override val entityId: Int, val x: Double, val y: Double, val z: Double, val count: Int) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readShort().toInt())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readDouble(), reader.readDouble(), reader.readDouble(),
+        reader.readShort().toInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
-        buf.writeShort(count)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeDouble(x)
+        writer.writeDouble(y)
+        writer.writeDouble(z)
+        writer.writeShort(count.toShort())
     }
 
     companion object {
 
         @JvmStatic
-        fun create(orb: KryptonExperienceOrb): PacketOutSpawnExperienceOrb =
-            PacketOutSpawnExperienceOrb(orb.id, orb.position.x, orb.position.y, orb.position.z, orb.count)
+        fun create(orb: KryptonExperienceOrb): PacketOutSpawnExperienceOrb {
+            return PacketOutSpawnExperienceOrb(orb.id, orb.position.x, orb.position.y, orb.position.z, orb.count)
+        }
     }
 }

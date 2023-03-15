@@ -17,23 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Vec3i
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readBlockPos
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeBlockPos
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 @JvmRecord
 data class PacketOutBlockUpdate(val position: Vec3i, val block: KryptonBlockState) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readBlockPos(), KryptonBlock.stateFromId(buf.readVarInt()))
+    constructor(reader: BinaryReader) : this(reader.readBlockPos(), KryptonBlock.stateFromId(reader.readVarInt()))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeBlockPos(position)
-        buf.writeVarInt(KryptonBlock.idOf(block))
+    override fun write(writer: BinaryWriter) {
+        writer.writeBlockPos(position)
+        writer.writeVarInt(KryptonBlock.idOf(block))
     }
 }

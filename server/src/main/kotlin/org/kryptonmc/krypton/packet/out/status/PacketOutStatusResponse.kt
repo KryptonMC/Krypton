@@ -17,11 +17,10 @@
  */
 package org.kryptonmc.krypton.packet.out.status
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeString
 
 /**
  * Response to the client's earlier [status request][org.kryptonmc.krypton.packet.in.status.PacketInStatusRequest] packet.
@@ -29,10 +28,10 @@ import org.kryptonmc.krypton.util.writeString
 @JvmRecord
 data class PacketOutStatusResponse(val response: String) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString())
+    constructor(reader: BinaryReader) : this(reader.readString())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(response)
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(response)
     }
 
     companion object {

@@ -17,28 +17,25 @@
  */
 package org.kryptonmc.krypton.coordinate
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.readBlockPos
-import org.kryptonmc.krypton.util.readKey
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.writeBlockPos
-import org.kryptonmc.krypton.util.writeResourceKey
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class GlobalPos(val dimension: ResourceKey<World>, val position: Vec3i) : Writable {
 
-    constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readBlockPos())
+    constructor(reader: BinaryReader) : this(ResourceKey.of(ResourceKeys.DIMENSION, reader.readKey()), reader.readBlockPos())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeResourceKey(dimension)
-        buf.writeBlockPos(position)
+    override fun write(writer: BinaryWriter) {
+        writer.writeResourceKey(dimension)
+        writer.writeBlockPos(position)
     }
 
     companion object {

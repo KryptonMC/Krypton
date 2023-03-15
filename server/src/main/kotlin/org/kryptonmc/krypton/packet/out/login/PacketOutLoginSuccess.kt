@@ -17,18 +17,11 @@
  */
 package org.kryptonmc.krypton.packet.out.login
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readProfileProperty
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeProfileProperty
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
 
 /**
@@ -40,12 +33,12 @@ import java.util.UUID
 @JvmRecord
 data class PacketOutLoginSuccess(val uuid: UUID, val username: String, val properties: List<ProfileProperty>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readString(), buf.readList { it.readProfileProperty() })
+    constructor(reader: BinaryReader) : this(reader.readUUID(), reader.readString(), reader.readProfileProperties())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeUUID(uuid)
-        buf.writeString(username)
-        buf.writeCollection(properties, buf::writeProfileProperty)
+    override fun write(writer: BinaryWriter) {
+        writer.writeUUID(uuid)
+        writer.writeString(username)
+        writer.writeProfileProperties(properties)
     }
 
     companion object {

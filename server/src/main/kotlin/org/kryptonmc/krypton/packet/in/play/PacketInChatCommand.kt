@@ -17,15 +17,12 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.command.argument.ArgumentSignatures
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.network.chat.LastSeenMessages
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writeString
 import java.time.Instant
 
 @JvmRecord
@@ -37,15 +34,19 @@ data class PacketInChatCommand(
     val lastSeenMessages: LastSeenMessages.Update
 ) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readString(MAX_COMMAND_LENGTH), buf.readInstant(), buf.readLong(), ArgumentSignatures(buf),
-        LastSeenMessages.Update(buf))
+    init {
+        require(command.length <= MAX_COMMAND_LENGTH) { "Command is too long! Max: $MAX_COMMAND_LENGTH" }
+    }
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(command, MAX_COMMAND_LENGTH)
-        buf.writeInstant(timestamp)
-        buf.writeLong(salt)
-        argumentSignatures.write(buf)
-        lastSeenMessages.write(buf)
+    constructor(reader: BinaryReader) : this(reader.readString(), reader.readInstant(), reader.readLong(), ArgumentSignatures(reader),
+        LastSeenMessages.Update(reader))
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(command)
+        writer.writeInstant(timestamp)
+        writer.writeLong(salt)
+        argumentSignatures.write(writer)
+        lastSeenMessages.write(writer)
     }
 
     override fun handle(handler: PlayPacketHandler) {

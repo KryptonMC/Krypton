@@ -228,8 +228,8 @@ class KryptonWorld(
     fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
 
     fun broadcastBlockDestroyProgress(sourceId: Int, position: Vec3i, state: Int) {
-        val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
-        server.connectionManager.sendGroupedPacket(packet) {
+        val packet = PacketOutSetBlockDestroyStage(sourceId, position, state.toByte())
+        PacketGrouping.sendGroupedPacket(server, packet) {
             if (it.world !== this || it.id == sourceId) return@sendGroupedPacket false
             val dx = position.x - it.position.x
             val dy = position.y - it.position.y
@@ -396,16 +396,16 @@ class KryptonWorld(
         }
 
         if (oldRainLevel != rainLevel) {
-            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            PacketGrouping.sendGroupedPacket(server, PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
         }
         if (oldThunderLevel != thunderLevel) {
-            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            PacketGrouping.sendGroupedPacket(server, PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
         if (wasRaining != isRaining()) {
             val newRainState = if (wasRaining) GameEventTypes.END_RAINING else GameEventTypes.BEGIN_RAINING
-            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(newRainState)) { it.world === this }
-            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
-            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            PacketGrouping.sendGroupedPacket(server, PacketOutGameEvent(newRainState)) { it.world === this }
+            PacketGrouping.sendGroupedPacket(server, PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            PacketGrouping.sendGroupedPacket(server, PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
     }
 

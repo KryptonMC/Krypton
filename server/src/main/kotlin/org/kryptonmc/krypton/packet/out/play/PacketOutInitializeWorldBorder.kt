@@ -17,12 +17,9 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVarLong
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 
 @JvmRecord
@@ -37,18 +34,18 @@ data class PacketOutInitializeWorldBorder(
     val warningTime: Int
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readVarLong(), buf.readVarInt(),
-        buf.readVarInt(), buf.readVarInt())
+    constructor(reader: BinaryReader) : this(reader.readDouble(), reader.readDouble(), reader.readDouble(), reader.readDouble(),
+        reader.readVarLong(), reader.readVarInt(), reader.readVarInt(), reader.readVarInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeDouble(centerX)
-        buf.writeDouble(centerZ)
-        buf.writeDouble(oldSize)
-        buf.writeDouble(newSize)
-        buf.writeVarLong(speed)
-        buf.writeVarInt(teleportBoundary)
-        buf.writeVarInt(warningBlocks)
-        buf.writeVarInt(warningTime)
+    override fun write(writer: BinaryWriter) {
+        writer.writeDouble(centerX)
+        writer.writeDouble(centerZ)
+        writer.writeDouble(oldSize)
+        writer.writeDouble(newSize)
+        writer.writeVarLong(speed)
+        writer.writeVarInt(teleportBoundary)
+        writer.writeVarInt(warningBlocks)
+        writer.writeVarInt(warningTime)
     }
 
     companion object {

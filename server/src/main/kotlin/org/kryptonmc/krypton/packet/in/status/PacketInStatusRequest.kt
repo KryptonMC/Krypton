@@ -17,7 +17,7 @@
  */
 package org.kryptonmc.krypton.packet.`in`.status
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.StatusPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 
@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.packet.InboundPacket
  */
 object PacketInStatusRequest : InboundPacket<StatusPacketHandler> {
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         // there is nothing to write here, and nothing is read for this either
     }
 

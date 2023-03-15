@@ -17,32 +17,32 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.coordinate.Positioning
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 @JvmRecord
-data class PacketOutSetEntityVelocity(override val entityId: Int, val x: Int, val y: Int, val z: Int) : EntityPacket {
+data class PacketOutSetEntityVelocity(override val entityId: Int, val x: Short, val y: Short, val z: Short) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort().toInt(), buf.readShort().toInt(), buf.readShort().toInt())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readShort(), reader.readShort(), reader.readShort())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeShort(x)
-        buf.writeShort(y)
-        buf.writeShort(z)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeShort(x)
+        writer.writeShort(y)
+        writer.writeShort(z)
     }
 
     companion object {
 
         @JvmStatic
-        fun fromEntity(entity: KryptonEntity): PacketOutSetEntityVelocity =
-            PacketOutSetEntityVelocity(entity.id, encode(entity.velocity.x), encode(entity.velocity.y), encode(entity.velocity.z))
+        fun fromEntity(entity: KryptonEntity): PacketOutSetEntityVelocity {
+            return PacketOutSetEntityVelocity(entity.id, encode(entity.velocity.x), encode(entity.velocity.y), encode(entity.velocity.z))
+        }
 
         @JvmStatic
-        private fun encode(value: Double): Int = Positioning.encodeVelocity(value)
+        private fun encode(value: Double): Short = Positioning.encodeVelocity(value)
     }
 }

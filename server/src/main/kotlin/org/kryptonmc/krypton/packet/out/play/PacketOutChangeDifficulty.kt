@@ -17,19 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.enumhelper.Difficulties
 
 @JvmRecord
 data class PacketOutChangeDifficulty(val difficulty: Difficulty, val isLocked: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(Difficulties.fromId(buf.readByte().toInt())!!, buf.readBoolean())
+    constructor(reader: BinaryReader) : this(Difficulties.fromId(reader.readByte().toInt())!!, reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(difficulty.ordinal)
-        buf.writeBoolean(isLocked)
+    override fun write(writer: BinaryWriter) {
+        writer.writeByte(difficulty.ordinal.toByte())
+        writer.writeBoolean(isLocked)
     }
 
     companion object {

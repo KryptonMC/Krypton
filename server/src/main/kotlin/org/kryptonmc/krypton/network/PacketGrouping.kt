@@ -17,8 +17,9 @@
  */
 package org.kryptonmc.krypton.network
 
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.FramedPacket
+import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import java.util.function.Predicate
 
@@ -32,6 +33,16 @@ import java.util.function.Predicate
 object PacketGrouping {
 
     @JvmStatic
+    fun sendGroupedPacket(server: KryptonServer, packet: Packet) {
+        sendGroupedPacket(server.playerManager.players(), packet, null)
+    }
+
+    @JvmStatic
+    fun sendGroupedPacket(server: KryptonServer, packet: Packet, predicate: Predicate<KryptonPlayer>) {
+        sendGroupedPacket(server.playerManager.players(), packet, predicate)
+    }
+
+    @JvmStatic
     fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
         sendGroupedPacket(players, packet, null)
     }
@@ -43,12 +54,10 @@ object PacketGrouping {
             return
         }
 
-        val finalBuffer = PacketFraming.frame(packet)
-        val framedPacket = FramedPacket(finalBuffer)
-        players.forEach {
-            if (!it.isOnline()) return@forEach
-            if (predicate == null || predicate.test(it)) it.connection.write(framedPacket)
+        val cachedPacket = CachedPacket { packet }
+        players.forEach { player ->
+            if (!player.isOnline()) return@forEach
+            if (predicate == null || predicate.test(player)) player.connection.write(cachedPacket)
         }
-        finalBuffer.release()
     }
 }

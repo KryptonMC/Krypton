@@ -17,7 +17,8 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.packet.MovementPacket
@@ -30,13 +31,13 @@ data class PacketInSetPlayerPosition(
     override val onGround: Boolean
 ) : MovementPacket, InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readDouble(), reader.readDouble(), reader.readDouble(), reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
-        buf.writeBoolean(onGround)
+    override fun write(writer: BinaryWriter) {
+        writer.writeDouble(x)
+        writer.writeDouble(y)
+        writer.writeDouble(z)
+        writer.writeBoolean(onGround)
     }
 
     override fun handle(handler: PlayPacketHandler) {

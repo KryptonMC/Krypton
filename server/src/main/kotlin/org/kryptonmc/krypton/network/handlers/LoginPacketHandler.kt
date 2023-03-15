@@ -18,7 +18,6 @@
 package org.kryptonmc.krypton.network.handlers
 
 import com.google.common.primitives.Ints
-import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
@@ -34,7 +33,8 @@ import org.kryptonmc.krypton.event.player.KryptonPlayerLoginEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
-import org.kryptonmc.krypton.network.NettyConnection
+import org.kryptonmc.krypton.network.NioConnection
+import org.kryptonmc.krypton.network.buffer.BinaryReader
 import org.kryptonmc.krypton.network.forwarding.ProxyForwardedData
 import org.kryptonmc.krypton.network.forwarding.VelocityProxy
 import org.kryptonmc.krypton.packet.PacketState
@@ -50,6 +50,7 @@ import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
+import java.nio.ByteBuffer
 import javax.crypto.spec.SecretKeySpec
 
 /**
@@ -64,7 +65,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 class LoginPacketHandler(
     private val server: KryptonServer,
-    override val connection: NettyConnection,
+    override val connection: NioConnection,
     private val proxyForwardedData: ProxyForwardedData?
 ) : PacketHandler {
 
@@ -82,7 +83,7 @@ class LoginPacketHandler(
         if (!server.config.isOnline || server.config.proxy.mode.authenticatesUsers) {
             if (server.config.proxy.mode == ProxyCategory.Mode.MODERN) {
                 // Try to establish Velocity connection.
-                connection.writeNow(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
+                connection.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
             } else {
                 processOfflineLogin(packet.name)
             }
@@ -90,7 +91,7 @@ class LoginPacketHandler(
         }
 
         // The server isn't offline and the client wasn't forwarded, enable encryption.
-        connection.writeNow(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
+        connection.send(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
     }
 
     private fun processOfflineLogin(name: String) {
@@ -155,8 +156,9 @@ class LoginPacketHandler(
         }
 
         // Verify integrity
-        val buffer = Unpooled.copiedBuffer(packet.data)
-        if (!VelocityProxy.verifyIntegrity(buffer, forwardingSecret)) {
+        val buffer = ByteBuffer.wrap(packet.data)
+        val reader = BinaryReader(buffer)
+        if (!VelocityProxy.verifyIntegrity(reader, forwardingSecret)) {
             disconnect(Component.text("Response received from Velocity could not be verified!"))
             return
         }
@@ -166,7 +168,7 @@ class LoginPacketHandler(
             "Unsupported forwarding version $version! Supported up to: ${VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION}, version: $version"
         }
 
-        val data = VelocityProxy.readData(buffer)
+        val data = VelocityProxy.readData(reader)
         val address = connection.connectAddress() as InetSocketAddress
 
         // All good to go, let's construct our stuff
@@ -182,7 +184,7 @@ class LoginPacketHandler(
 
     private fun finishLogin(player: KryptonPlayer) {
         connection.enableCompression()
-        connection.writeNow(PacketOutLoginSuccess.create(player.profile))
+        connection.send(PacketOutLoginSuccess.create(player.profile))
         connection.setState(PacketState.PLAY)
         connection.setHandler(PlayPacketHandler(server, connection, player))
 
@@ -214,12 +216,12 @@ class LoginPacketHandler(
     }
 
     private fun disconnect(reason: Component) {
-        val translated = MinecraftTranslationManager.render(reason)
-        LOGGER.info("Disconnecting ${formatName()}: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
-        connection.writeAndDisconnect(PacketOutLoginDisconnect(reason), reason)
+        connection.send(PacketOutLoginDisconnect(reason))
+        connection.disconnect(reason)
     }
 
-    override fun onDisconnect(message: Component) {
+    override fun onDisconnect(message: Component?) {
+        if (message == null) return
         val translated = MinecraftTranslationManager.render(message)
         LOGGER.info("${formatName()} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
     }

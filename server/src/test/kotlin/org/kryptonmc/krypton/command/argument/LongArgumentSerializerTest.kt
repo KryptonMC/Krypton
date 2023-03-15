@@ -33,7 +33,7 @@ class LongArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure long writes no min or max when values are long min and max`() {
         val buffer = writeArgumentAndSkipId(LongArgumentType.longArg())
         skipFlags(buffer)
-        assertNotReadable(buffer)
+        assertExhausted(buffer)
     }
 
     @Test
@@ -46,7 +46,7 @@ class LongArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure long writes min and no max when max is long max and min is not`() {
         val buffer = writeArgumentAndSkipId(LongArgumentType.longArg(-1))
         skipFlags(buffer)
-        assertEquals(-1, buffer.readLong())
+        assertEquals(-1, buffer.long)
     }
 
     @Test
@@ -59,7 +59,7 @@ class LongArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure long writes max and no min when min is long min and max is not`() {
         val buffer = writeArgumentAndSkipId(LongArgumentType.longArg(Long.MIN_VALUE, 1))
         skipFlags(buffer)
-        assertEquals(1, buffer.readLong())
+        assertEquals(1, buffer.long)
     }
 
     @Test
@@ -72,14 +72,14 @@ class LongArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure long writes min first when min and max are not long min and max`() {
         val buffer = writeArgumentAndSkipId(LongArgumentType.longArg(-1, 1))
         skipFlags(buffer)
-        assertEquals(-1, buffer.readLong())
+        assertEquals(-1, buffer.long)
     }
 
     @Test
     fun `ensure long writes max after min when min and max are not long min and max`() {
         val buffer = writeArgumentAndSkipId(LongArgumentType.longArg(-1, 1))
         skipFlags(buffer)
-        buffer.skipBytes(Long.SIZE_BYTES) // minimum
-        assertEquals(1, buffer.readLong())
+        buffer.position(buffer.position() + Long.SIZE_BYTES) // minimum
+        assertEquals(1, buffer.long)
     }
 }

@@ -17,30 +17,26 @@
  */
 package org.kryptonmc.krypton.packet.out.play.data
 
-import io.netty.buffer.ByteBuf
-import io.netty.buffer.Unpooled
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.readNBT
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeNBT
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarIntByteArray
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
+import java.nio.ByteBuffer
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
 data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readNBT(), buf.readVarIntByteArray())
+    constructor(reader: BinaryReader) : this(reader.readNBT(), reader.readByteArray())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeNBT(heightmaps) // Heightmaps
-        buf.writeVarIntByteArray(data) // Actual chunk data
+    override fun write(writer: BinaryWriter) {
+        writer.writeNBT(heightmaps) // Heightmaps
+        writer.writeByteArray(data) // Actual chunk data
 
         // TODO: When block entities are added, make use of this here
-        buf.writeVarInt(0) // Number of block entities
+        writer.writeVarInt(0) // Number of block entities
     }
 
     companion object {
@@ -59,8 +55,8 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
         @JvmStatic
         private fun extractData(chunk: KryptonChunk): ByteArray {
             val result = ByteArray(chunk.sections().sumOf { it.calculateSerializedSize() })
-            val buffer = Unpooled.wrappedBuffer(result).writerIndex(0)
-            chunk.sections().forEach { it.write(buffer) }
+            val writer = BinaryWriter(ByteBuffer.wrap(result))
+            chunk.sections().forEach { it.write(writer) }
             return result
         }
     }

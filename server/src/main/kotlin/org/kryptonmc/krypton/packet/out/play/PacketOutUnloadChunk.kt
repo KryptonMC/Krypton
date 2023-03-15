@@ -17,16 +17,17 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
 data class PacketOutUnloadChunk(val x: Int, val z: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt())
+    constructor(reader: BinaryReader) : this(reader.readInt(), reader.readInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(x)
-        buf.writeInt(z)
+    override fun write(writer: BinaryWriter) {
+        writer.writeInt(x)
+        writer.writeInt(z)
     }
 }

@@ -17,21 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.DisplaySlot
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class PacketOutDisplayObjective(val slot: Int, val name: String) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readString())
+    constructor(reader: BinaryReader) : this(reader.readByte().toInt(), reader.readString())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(slot)
-        buf.writeString(name)
+    override fun write(writer: BinaryWriter) {
+        writer.writeByte(slot.toByte())
+        writer.writeString(name)
     }
 
     companion object {

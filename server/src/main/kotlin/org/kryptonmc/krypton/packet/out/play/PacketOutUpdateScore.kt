@@ -17,29 +17,33 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Score
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUpdateScore(val name: String, val action: Int, val objectiveName: String?, val score: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), buf.readVarInt(), buf.readString().ifEmpty { null })
+    init {
+        require(name.length <= MAX_NAME_LENGTH) { "Name too long! Max: $MAX_NAME_LENGTH" }
+        require(objectiveName == null || objectiveName.length <= MAX_OBJECTIVE_NAME_LENGTH) {
+            "Objective name too long! Max: $MAX_OBJECTIVE_NAME_LENGTH"
+        }
+    }
 
-    private constructor(buf: ByteBuf, name: String, action: Int, objectiveName: String?) : this(name, action, objectiveName,
-        if (action != Actions.REMOVE) buf.readVarInt() else 0)
+    constructor(reader: BinaryReader) : this(reader, reader.readString(), reader.readVarInt(), reader.readString().ifEmpty { null })
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(name, MAX_NAME_LENGTH)
-        buf.writeVarInt(action)
-        buf.writeString(objectiveName ?: "", MAX_OBJECTIVE_NAME_LENGTH)
-        if (action != Actions.REMOVE) buf.writeVarInt(score)
+    private constructor(reader: BinaryReader, name: String, action: Int, objectiveName: String?) : this(name, action, objectiveName,
+        if (action != Actions.REMOVE) reader.readVarInt() else 0)
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(name)
+        writer.writeVarInt(action)
+        writer.writeString(objectiveName ?: "")
+        if (action != Actions.REMOVE) writer.writeVarInt(score)
     }
 
     object Actions {

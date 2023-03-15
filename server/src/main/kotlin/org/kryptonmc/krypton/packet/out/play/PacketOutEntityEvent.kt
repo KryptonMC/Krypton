@@ -17,19 +17,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
 
 /**
  * Sent to indicate a status for an entity.
  */
 @JvmRecord
-data class PacketOutEntityEvent(override val entityId: Int, val event: Int) : EntityPacket {
+data class PacketOutEntityEvent(override val entityId: Int, val event: Byte) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readByte().toInt())
+    constructor(reader: BinaryReader) : this(reader.readInt(), reader.readByte())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(entityId)
-        buf.writeByte(event)
+    override fun write(writer: BinaryWriter) {
+        writer.writeInt(entityId)
+        writer.writeByte(event)
     }
 }

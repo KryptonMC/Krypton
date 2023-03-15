@@ -17,13 +17,13 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.DustParticleType
 import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.builder.KryptonDustParticleEffectBuilder
 import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
+import org.kryptonmc.krypton.network.buffer.BinaryReader
 
 @JvmRecord
 data class KryptonDustParticleType(private val key: Key) : KryptonParticleType, DustParticleType {
@@ -32,5 +32,5 @@ data class KryptonDustParticleType(private val key: Key) : KryptonParticleType, 
 
     override fun builder(): DustParticleEffectBuilder = KryptonDustParticleEffectBuilder(this)
 
-    override fun createData(buf: ByteBuf): ParticleData = KryptonDustParticleData(buf)
+    override fun createData(reader: BinaryReader): ParticleData = KryptonDustParticleData(reader)
 }

@@ -17,40 +17,41 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.player.ChatVisibility
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class PacketInClientInformation(
     val locale: String,
-    val viewDistance: Int,
+    val viewDistance: Byte,
     val chatVisibility: ChatVisibility,
     val chatColors: Boolean,
-    val skinSettings: Short,
+    val skinSettings: Byte,
     val mainHand: MainHand,
     val filterText: Boolean,
     val allowsListing: Boolean
 ) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readString(16), buf.readByte().toInt(), buf.readEnum(), buf.readBoolean(), buf.readUnsignedByte(),
-        buf.readEnum(), buf.readBoolean(), buf.readBoolean())
+    init {
+        require(locale.length <= 16) { "Locale too long! Max: 16" }
+    }
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(locale, 16)
-        buf.writeByte(viewDistance)
-        buf.writeEnum(chatVisibility)
-        buf.writeBoolean(chatColors)
-        buf.writeByte(skinSettings.toInt())
-        buf.writeEnum(mainHand)
-        buf.writeBoolean(filterText)
-        buf.writeBoolean(allowsListing)
+    constructor(reader: BinaryReader) : this(reader.readString(), reader.readByte(), reader.readEnum(), reader.readBoolean(),
+        reader.readByte(), reader.readEnum(), reader.readBoolean(), reader.readBoolean())
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(locale)
+        writer.writeByte(viewDistance)
+        writer.writeEnum(chatVisibility)
+        writer.writeBoolean(chatColors)
+        writer.writeByte(skinSettings)
+        writer.writeEnum(mainHand)
+        writer.writeBoolean(filterText)
+        writer.writeBoolean(allowsListing)
     }
 
     override fun handle(handler: PlayPacketHandler) {

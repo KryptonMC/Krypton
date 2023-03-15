@@ -17,16 +17,11 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
 data class PacketOutUpdateRecipeBook(
@@ -36,16 +31,16 @@ data class PacketOutUpdateRecipeBook(
     val settings: RecipeBookSettings
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readEnum(), RecipeBookSettings.read(buf))
+    constructor(reader: BinaryReader) : this(reader, reader.readEnum(), RecipeBookSettings.read(reader))
 
-    private constructor(buf: ByteBuf, action: Action, settings: RecipeBookSettings) : this(action, buf.readList(ByteBuf::readKey),
-        if (action == Action.INIT) buf.readList(ByteBuf::readKey) else emptyList(), settings)
+    private constructor(reader: BinaryReader, action: Action, settings: RecipeBookSettings) : this(action, reader.readList(BinaryReader::readKey),
+        if (action == Action.INIT) reader.readList(BinaryReader::readKey) else emptyList(), settings)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(action)
-        settings.write(buf)
-        buf.writeCollection(recipes, buf::writeKey)
-        if (action == Action.INIT) buf.writeCollection(toHighlight, buf::writeKey)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(action)
+        settings.write(writer)
+        writer.writeCollection(recipes, writer::writeKey)
+        if (action == Action.INIT) writer.writeCollection(toHighlight, writer::writeKey)
     }
 
     enum class Action {

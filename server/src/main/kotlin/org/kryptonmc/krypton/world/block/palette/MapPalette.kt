@@ -17,11 +17,10 @@
  */
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.map.IntBiMap
 import org.kryptonmc.krypton.util.map.IntIdentityHashBiMap
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class MapPalette<T>(
@@ -53,11 +52,11 @@ data class MapPalette<T>(
 
     override fun get(id: Int): T = values.get(id) ?: throw MissingPaletteEntryException(id)
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         val size = size()
-        buf.writeVarInt(size)
+        writer.writeVarInt(size)
         for (i in 0 until size) {
-            buf.writeVarInt(registry.getId(values.get(i)!!))
+            writer.writeVarInt(registry.getId(values.get(i)!!))
         }
     }
 

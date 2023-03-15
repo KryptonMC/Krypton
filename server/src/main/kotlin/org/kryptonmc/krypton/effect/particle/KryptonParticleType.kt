@@ -17,10 +17,10 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.krypton.network.buffer.BinaryReader
 
 interface KryptonParticleType {
 
-    fun createData(buf: ByteBuf): ParticleData? = null
+    fun createData(reader: BinaryReader): ParticleData? = null
 }

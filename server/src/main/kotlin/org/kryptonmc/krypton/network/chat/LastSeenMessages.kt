@@ -18,16 +18,11 @@
 package org.kryptonmc.krypton.network.chat
 
 import com.google.common.primitives.Ints
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.crypto.SignatureUpdater
-import org.kryptonmc.krypton.util.readCollection
-import org.kryptonmc.krypton.util.readFixedBitSet
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeFixedBitSet
-import org.kryptonmc.krypton.util.writeVarInt
 import java.util.BitSet
 
 @JvmRecord
@@ -43,10 +38,10 @@ data class LastSeenMessages(val entries: List<MessageSignature>) {
     @JvmRecord
     data class Packed(val entries: List<MessageSignature.Packed>) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readCollection(ByteBufExtras.limitValue(::ArrayList, 20), MessageSignature.Packed::read))
+        constructor(reader: BinaryReader) : this(reader.readCollection(ByteBufExtras.limitValue(::ArrayList, 20), MessageSignature.Packed::read))
 
-        override fun write(buf: ByteBuf) {
-            buf.writeCollection(entries) { it.write(buf) }
+        override fun write(writer: BinaryWriter) {
+            writer.writeCollection(entries) { it.write(writer) }
         }
 
         companion object {
@@ -59,11 +54,11 @@ data class LastSeenMessages(val entries: List<MessageSignature>) {
     @JvmRecord
     data class Update(val offset: Int, val acknowledged: BitSet) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readFixedBitSet(LAST_SEEN_MESSAGE_MAX_LENGTH))
+        constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readFixedBitSet(LAST_SEEN_MESSAGE_MAX_LENGTH))
 
-        override fun write(buf: ByteBuf) {
-            buf.writeVarInt(offset)
-            buf.writeFixedBitSet(acknowledged, LAST_SEEN_MESSAGE_MAX_LENGTH)
+        override fun write(writer: BinaryWriter) {
+            writer.writeVarInt(offset)
+            writer.writeFixedBitSet(acknowledged, LAST_SEEN_MESSAGE_MAX_LENGTH)
         }
     }
 

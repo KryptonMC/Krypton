@@ -17,13 +17,14 @@
  */
 package org.kryptonmc.krypton.packet
 
-import io.netty.buffer.ByteBuf
 import org.junit.jupiter.api.DynamicContainer.dynamicContainer
 import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.testutil.ReflectionsFactory
@@ -37,7 +38,7 @@ class PacketReadWriteTest {
     fun `ensure all packets have read constructors`(): DynamicNode =
         dynamicContainer("packets", allPackets { !it.isInterface && !IGNORED_PACKETS.contains(it) }.map {
             dynamicTest(it.simpleName) {
-                assertDoesNotThrow { it.getDeclaredConstructor(ByteBuf::class.java) }
+                assertDoesNotThrow { it.getDeclaredConstructor(BinaryReader::class.java) }
             }
         })
 
@@ -46,7 +47,7 @@ class PacketReadWriteTest {
         dynamicContainer("packets", allPackets { !it.isInterface }.map {
             dynamicTest(it.simpleName) {
                 assertTrue(Writable::class.java.isAssignableFrom(it), "Does not implement Writable!")
-                assertDoesNotThrow { it.getDeclaredMethod("write", ByteBuf::class.java) }
+                assertDoesNotThrow { it.getDeclaredMethod("write", BinaryWriter::class.java) }
             }
         })
 

@@ -17,7 +17,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import io.netty.handler.codec.DecoderException
 import kotlin.math.ceil
 
 object ByteBufExtras {
@@ -28,7 +27,7 @@ object ByteBufExtras {
 
     @JvmStatic
     inline fun <T> limitValue(crossinline function: (Int) -> T, limit: Int): (Int) -> T = {
-        if (it > limit) throw DecoderException("Value $it is larger than limit $limit!")
+        if (it > limit) error("Value $it is larger than limit $limit!")
         function(it)
     }
 }

@@ -17,15 +17,14 @@
  */
 package org.kryptonmc.krypton.effect.sound
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.network.RegistryFileCodec
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import java.util.Optional
@@ -61,19 +60,19 @@ data class KryptonSoundEvent(private val key: Key, override val range: Float, pr
         fun createVariableRange(key: Key): KryptonSoundEvent = KryptonSoundEvent(key, DEFAULT_RANGE, false)
 
         @JvmStatic
-        fun read(buf: ByteBuf): KryptonSoundEvent {
-            val key = buf.readKey()
-            val newSystem = buf.readBoolean()
-            val range = if (newSystem) buf.readFloat() else DEFAULT_RANGE
+        fun read(reader: BinaryReader): KryptonSoundEvent {
+            val key = reader.readKey()
+            val newSystem = reader.readBoolean()
+            val range = if (newSystem) reader.readFloat() else DEFAULT_RANGE
             return KryptonSoundEvent(key, range, newSystem)
         }
 
         @JvmStatic
-        fun write(buf: ByteBuf, inputEvent: SoundEvent) {
+        fun write(writer: BinaryWriter, inputEvent: SoundEvent) {
             val event = inputEvent.downcast()
-            buf.writeKey(event.key)
-            buf.writeBoolean(event.newSystem)
-            if (event.newSystem) buf.writeFloat(event.range)
+            writer.writeKey(event.key)
+            writer.writeBoolean(event.newSystem)
+            if (event.newSystem) writer.writeFloat(event.range)
         }
     }
 }

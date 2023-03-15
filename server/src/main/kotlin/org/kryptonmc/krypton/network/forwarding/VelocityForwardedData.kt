@@ -17,7 +17,6 @@
  */
 package org.kryptonmc.krypton.network.forwarding
 
-import kotlinx.collections.immutable.PersistentList
 import org.kryptonmc.api.auth.ProfileProperty
 import java.net.InetAddress
 import java.util.UUID
@@ -27,5 +26,5 @@ data class VelocityForwardedData(
     val remoteAddress: InetAddress,
     val uuid: UUID,
     val username: String,
-    val properties: PersistentList<ProfileProperty>
+    val properties: List<ProfileProperty>
 )

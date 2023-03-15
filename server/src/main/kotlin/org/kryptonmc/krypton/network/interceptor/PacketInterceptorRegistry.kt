@@ -15,19 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kryptonmc.krypton.network.netty
+package org.kryptonmc.krypton.network.interceptor
 
-import io.netty.channel.Channel
+object PacketInterceptorRegistry {
 
-/**
- * A listener that will be invoked when a channel is initialised.
- *
- * While this technically is not public API, as it is part of the server, and
- * it may be removed without warning, there is a very low chance that this will
- * be removed, as it was added specifically for plugins that depend on the
- * server and need to add handlers to the pipeline.
- */
-fun interface ChannelInitializeListener {
+    private val interceptors = ArrayList<PacketInterceptor>()
 
-    fun onInitialize(channel: Channel)
+    fun register(interceptor: PacketInterceptor) {
+        interceptors.add(interceptor)
+    }
+
+    fun unregister(interceptor: PacketInterceptor) {
+        interceptors.remove(interceptor)
+    }
+
+    fun all(): List<PacketInterceptor> = interceptors
 }

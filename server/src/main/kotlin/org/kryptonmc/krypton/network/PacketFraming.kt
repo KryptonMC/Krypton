@@ -17,63 +17,75 @@
  */
 package org.kryptonmc.krypton.network
 
-import com.velocitypowered.natives.compression.VelocityCompressor
-import com.velocitypowered.natives.util.Natives
-import io.netty.buffer.ByteBuf
-import io.netty.buffer.Unpooled
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
+import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketRegistry
-import org.kryptonmc.krypton.util.write3ByteVarInt
-import org.kryptonmc.krypton.util.write3EmptyBytes
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.ObjectPool
+import org.kryptonmc.krypton.util.writeEmptyVarIntHeader
+import org.kryptonmc.krypton.util.writeVarIntHeader
+import java.nio.ByteBuffer
+import java.util.zip.Deflater
 
 object PacketFraming {
 
-    private val COMPRESSOR: ThreadLocal<VelocityCompressor> = ThreadLocal.withInitial { Natives.compress.get().create(4) }
+    private val COMPRESSOR: ThreadLocal<Deflater> = ThreadLocal.withInitial { Deflater() }
     @Volatile
     private var compressionThreshold = 0
 
     @JvmStatic
-    fun frame(packet: Packet): ByteBuf {
-        val buffer = Unpooled.directBuffer()
-        writeFramedPacket(buffer, packet)
-        return buffer
-    }
-
-    @JvmStatic
-    fun writeFramedPacket(buf: ByteBuf, packet: Packet) {
-        val packetLengthIndex = buf.write3EmptyBytes()
-        val startIndex = buf.writerIndex()
-        if (compressionThreshold > 0) {
-            writeCompressed(buf, packet)
-        } else {
-            writePacket(buf, packet)
-        }
-        val totalPacketLength = buf.writerIndex() - startIndex
-        buf.write3ByteVarInt(packetLengthIndex, totalPacketLength)
-    }
-
-    @JvmStatic
-    private fun writeCompressed(buf: ByteBuf, packet: Packet) {
-        val dataLengthIndex = buf.write3EmptyBytes()
-        val contentIndex = buf.writerIndex()
-        writePacket(buf, packet)
-        val packetSize = buf.writerIndex() - contentIndex
-
-        val uncompressedLength = if (packetSize >= compressionThreshold) packetSize else 0
-        buf.write3ByteVarInt(dataLengthIndex, uncompressedLength)
-        if (uncompressedLength > 0) {
-            val uncompressedCopy = buf.copy(contentIndex, packetSize)
-            buf.writerIndex(contentIndex)
-            COMPRESSOR.get().deflate(uncompressedCopy, buf)
-            uncompressedCopy.release()
+    fun frame(packet: Packet): FramedPacket {
+        ObjectPool.PACKET_POOL.hold().use { holder ->
+            val temp = writeFramedPacket(holder.get(), packet)
+            val size = temp.remaining()
+            val buffer = ByteBuffer.allocateDirect(size).put(0, temp, 0, size)
+            return FramedPacket(packet, buffer)
         }
     }
 
     @JvmStatic
-    private fun writePacket(buf: ByteBuf, packet: Packet) {
-        buf.writeVarInt(PacketRegistry.getOutboundPacketId(packet.javaClass))
-        packet.write(buf)
+    fun writeFramedPacket(buffer: ByteBuffer, packet: Packet): ByteBuffer = writeFramedPacket(buffer, packet, compressionThreshold > 0)
+
+    @JvmStatic
+    fun writeFramedPacket(buffer: ByteBuffer, packet: Packet, compressed: Boolean): ByteBuffer {
+        val threshold = if (compressed) compressionThreshold else 0
+        writeFramedPacket(buffer, PacketRegistry.getOutboundPacketId(packet.javaClass), packet, threshold)
+        return buffer.flip()
+    }
+
+    @JvmStatic
+    private fun writeFramedPacket(buffer: ByteBuffer, id: Int, writable: Writable, compressionThreshold: Int) {
+        val writer = BinaryWriter(buffer)
+        if (compressionThreshold <= 0) {
+            val lengthIndex = buffer.writeEmptyVarIntHeader()
+            writer.writeVarInt(id)
+            writable.write(writer)
+            val finalSize = buffer.position() - (lengthIndex + 3)
+            buffer.writeVarIntHeader(lengthIndex, finalSize)
+            return
+        }
+        val compressedIndex = buffer.writeEmptyVarIntHeader()
+        val uncompressedIndex = buffer.writeEmptyVarIntHeader()
+
+        val contentStart = buffer.position()
+        writer.writeVarInt(id)
+        writable.write(writer)
+
+        val packetSize = buffer.position() - contentStart
+        val compressed = packetSize >= compressionThreshold
+        if (compressed) {
+            ObjectPool.PACKET_POOL.hold().use { holder ->
+                val input = holder.get().put(0, buffer, contentStart, packetSize)
+                val compressor = COMPRESSOR.get()
+                compressor.setInput(input.limit(packetSize))
+                compressor.finish()
+                compressor.deflate(buffer.position(contentStart))
+                compressor.reset()
+            }
+        }
+
+        buffer.writeVarIntHeader(compressedIndex, buffer.position() - uncompressedIndex)
+        buffer.writeVarIntHeader(uncompressedIndex, if (compressed) packetSize else 0)
     }
 
     @JvmStatic

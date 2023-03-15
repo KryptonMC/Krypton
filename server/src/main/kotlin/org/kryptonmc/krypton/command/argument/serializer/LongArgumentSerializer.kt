@@ -18,7 +18,8 @@
 package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.LongArgumentType
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 
 /**
  * Long argument types are serialized with flags indicating if the minimum
@@ -33,18 +34,18 @@ import io.netty.buffer.ByteBuf
  */
 object LongArgumentSerializer : FlaggedArgumentSerializer<LongArgumentType> {
 
-    override fun read(buf: ByteBuf, flags: Int): LongArgumentType {
+    override fun read(reader: BinaryReader, flags: Int): LongArgumentType {
         if (flags == 0) return LongArgumentType.longArg()
-        val minimum = if (flags and 1 != 0) buf.readLong() else Long.MIN_VALUE
-        val maximum = if (flags and 2 != 0) buf.readLong() else Long.MAX_VALUE
+        val minimum = if (flags and 1 != 0) reader.readLong() else Long.MIN_VALUE
+        val maximum = if (flags and 2 != 0) reader.readLong() else Long.MAX_VALUE
         return LongArgumentType.longArg(minimum, maximum)
     }
 
-    override fun write(buf: ByteBuf, value: LongArgumentType) {
+    override fun write(writer: BinaryWriter, value: LongArgumentType) {
         val writeMin = value.minimum != Long.MIN_VALUE
         val writeMax = value.maximum != Long.MAX_VALUE
-        buf.writeByte(createFlags(writeMin, writeMax))
-        if (writeMin) buf.writeLong(value.minimum)
-        if (writeMax) buf.writeLong(value.maximum)
+        writer.writeByte(createFlags(writeMin, writeMax))
+        if (writeMin) writer.writeLong(value.minimum)
+        if (writeMax) writer.writeLong(value.maximum)
     }
 }

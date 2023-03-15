@@ -17,14 +17,9 @@
  */
 package org.kryptonmc.krypton.packet.out.play.data
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.readBitSet
-import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeBitSet
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeVarIntByteArray
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import java.util.BitSet
 
@@ -39,26 +34,26 @@ data class LightPacketData(
     val blockLights: List<ByteArray>
 ) : Writable {
 
-    constructor(buf: ByteBuf) : this(
-        buf.readBoolean(),
-        buf.readBitSet(),
-        buf.readBitSet(),
-        buf.readBitSet(),
-        buf.readBitSet(),
-        buf.readList(ByteBuf::readVarIntByteArray),
-        buf.readList(ByteBuf::readVarIntByteArray)
+    constructor(reader: BinaryReader) : this(
+        reader.readBoolean(),
+        reader.readBitSet(),
+        reader.readBitSet(),
+        reader.readBitSet(),
+        reader.readBitSet(),
+        reader.readList { it.readByteArray() },
+        reader.readList { it.readByteArray() }
     )
 
-    override fun write(buf: ByteBuf) {
-        buf.writeBoolean(trustEdges)
+    override fun write(writer: BinaryWriter) {
+        writer.writeBoolean(trustEdges)
 
-        buf.writeBitSet(skyMask)
-        buf.writeBitSet(blockMask)
-        buf.writeBitSet(emptySkyMask)
-        buf.writeBitSet(emptyBlockMask)
+        writer.writeBitSet(skyMask)
+        writer.writeBitSet(blockMask)
+        writer.writeBitSet(emptySkyMask)
+        writer.writeBitSet(emptyBlockMask)
 
-        buf.writeCollection(skyLights, buf::writeVarIntByteArray)
-        buf.writeCollection(blockLights, buf::writeVarIntByteArray)
+        writer.writeCollection(skyLights, writer::writeByteArray)
+        writer.writeCollection(blockLights, writer::writeByteArray)
     }
 
     companion object {

@@ -17,20 +17,21 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.title.Title
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import java.time.Duration
 
 @JvmRecord
 data class PacketOutSetTitleAnimationTimes(val fadeInTicks: Int, val stayTicks: Int, val fadeOutTicks: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt(), buf.readInt())
+    constructor(reader: BinaryReader) : this(reader.readInt(), reader.readInt(), reader.readInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(fadeInTicks)
-        buf.writeInt(stayTicks)
-        buf.writeInt(fadeOutTicks)
+    override fun write(writer: BinaryWriter) {
+        writer.writeInt(fadeInTicks)
+        writer.writeInt(stayTicks)
+        writer.writeInt(fadeOutTicks)
     }
 
     companion object {

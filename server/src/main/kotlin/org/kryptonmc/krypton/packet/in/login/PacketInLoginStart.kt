@@ -17,25 +17,24 @@
  */
 package org.kryptonmc.krypton.packet.`in`.login
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.LoginPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
 
 @JvmRecord
 data class PacketInLoginStart(val name: String, val profileId: UUID?) : InboundPacket<LoginPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readString(16), buf.readNullable(ByteBuf::readUUID))
+    init {
+        require(name.length <= 16) { "Name must be 16 characters or less!" }
+    }
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(name, 16)
-        buf.writeNullable(profileId, ByteBuf::writeUUID)
+    constructor(reader: BinaryReader) : this(reader.readString(), reader.readNullable(BinaryReader::readUUID))
+
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(name)
+        writer.writeNullable(profileId, BinaryWriter::writeUUID)
     }
 
     override fun handle(handler: LoginPacketHandler) {

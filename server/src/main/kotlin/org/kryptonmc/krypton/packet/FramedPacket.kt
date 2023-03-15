@@ -17,7 +17,9 @@
  */
 package org.kryptonmc.krypton.packet
 
-import io.netty.buffer.ByteBuf
+import java.nio.ByteBuffer
 
-@JvmRecord
-data class FramedPacket(val body: ByteBuf) : GenericPacket
+class FramedPacket(val packet: Packet, body: ByteBuffer) : GenericPacket {
+
+    val body: ByteBuffer = body.position(0).asReadOnlyBuffer()
+}

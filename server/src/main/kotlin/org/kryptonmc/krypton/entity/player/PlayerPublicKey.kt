@@ -17,18 +17,13 @@
  */
 package org.kryptonmc.krypton.entity.player
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.ComponentException
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
-import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readPublicKey
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writePublicKey
-import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.PublicKey
@@ -45,12 +40,16 @@ data class PlayerPublicKey(val data: Data) {
     @Suppress("ArrayInDataClass", "EqualsOrHashCode") // We want to keep the record-generated hash code.
     data class Data(val expiryTime: Instant, val key: PublicKey, val keySignature: ByteArray) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readPublicKey(), buf.readVarIntByteArray(MAX_KEY_SIGNATURE_SIZE))
+        init {
+            require(keySignature.size <= MAX_KEY_SIGNATURE_SIZE) { "Key signature too large! Max: $MAX_KEY_SIGNATURE_SIZE" }
+        }
 
-        override fun write(buf: ByteBuf) {
-            buf.writeInstant(expiryTime)
-            buf.writePublicKey(key)
-            buf.writeVarIntByteArray(keySignature)
+        constructor(reader: BinaryReader) : this(reader.readInstant(), reader.readPublicKey(), reader.readByteArray())
+
+        override fun write(writer: BinaryWriter) {
+            writer.writeInstant(expiryTime)
+            writer.writePublicKey(key)
+            writer.writeByteArray(keySignature)
         }
 
         fun validateSignature(validator: SignatureValidator, sessionId: UUID): Boolean = validator.validate(signedPayload(sessionId), keySignature)

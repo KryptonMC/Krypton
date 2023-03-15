@@ -15,22 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kryptonmc.krypton.network
+package org.kryptonmc.krypton.server
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
-import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.random.RandomSource
-import java.util.concurrent.ConcurrentHashMap
-import java.util.function.Predicate
 import kotlin.math.min
 
-class ConnectionManager(private val playerManager: PlayerManager, motd: Component, maxPlayers: Int) {
-
-    private val connections = ConcurrentHashMap.newKeySet<NettyConnection>()
+class StatusManager(private val playerManager: PlayerManager, motd: Component, maxPlayers: Int) {
 
     private val random = RandomSource.create()
     private val status = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players().size), null)
@@ -40,27 +33,10 @@ class ConnectionManager(private val playerManager: PlayerManager, motd: Componen
 
     fun status(): ServerStatus = status
 
-    fun register(connection: NettyConnection) {
-        connections.add(connection)
-    }
-
-    fun unregister(connection: NettyConnection) {
-        connections.remove(connection)
-    }
-
-    fun sendGroupedPacket(packet: Packet) {
-        sendGroupedPacket(packet, null)
-    }
-
-    fun sendGroupedPacket(packet: Packet, predicate: Predicate<KryptonPlayer>?) {
-        PacketGrouping.sendGroupedPacket(playerManager.players(), packet, predicate)
-    }
-
     fun tick(time: Long) {
         if (statusInvalidated && time - statusInvalidatedTime > WAIT_AFTER_INVALID_STATUS_TIME || time - lastStatus >= UPDATE_STATUS_INTERVAL) {
             updateStatus(time)
         }
-        connections.forEach { it.tick() }
     }
 
     private fun updateStatus(time: Long) {

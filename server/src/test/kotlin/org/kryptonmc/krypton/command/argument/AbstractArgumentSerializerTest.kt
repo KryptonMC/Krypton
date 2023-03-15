@@ -18,10 +18,10 @@
 package org.kryptonmc.krypton.command.argument
 
 import com.mojang.brigadier.arguments.ArgumentType
-import io.netty.buffer.ByteBuf
-import io.netty.buffer.Unpooled
 import org.junit.jupiter.api.BeforeAll
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.readVarInt
+import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -30,26 +30,28 @@ import kotlin.test.assertFalse
 @Suppress("UnnecessaryAbstractClass") // This class is designed to be extended only.
 abstract class AbstractArgumentSerializerTest {
 
-    protected fun writeArgumentAndSkipId(argumentType: ArgumentType<*>): ByteBuf {
-        val buffer = Unpooled.buffer()
-        ArgumentSerializers.write(buffer, argumentType)
+    protected fun writeArgumentAndSkipId(argumentType: ArgumentType<*>): ByteBuffer {
+        val buffer = ByteBuffer.allocate(128)
+        val writer = BinaryWriter(buffer)
+        ArgumentSerializers.write(writer, argumentType)
+        buffer.flip()
         buffer.readVarInt() // Skip the ID, we don't want to test this for the tests that use this
         return buffer
     }
 
-    protected fun skipFlags(buffer: ByteBuf) {
-        buffer.skipBytes(1) // Flags are always 1 byte
+    protected fun skipFlags(buffer: ByteBuffer) {
+        buffer.position(buffer.position() + 1) // Flags are always 1 byte
     }
 
-    protected fun assertFlags(buf: ByteBuf, minFlag: Boolean, maxFlag: Boolean) {
+    protected fun assertFlags(buffer: ByteBuffer, minFlag: Boolean, maxFlag: Boolean) {
         var flags = 0
         if (minFlag) flags = flags or 0x01
         if (maxFlag) flags = flags or 0x02
-        assertEquals(flags.toByte(), buf.readByte())
+        assertEquals(flags.toByte(), buffer.get())
     }
 
-    protected fun assertNotReadable(buf: ByteBuf) {
-        assertFalse(buf.isReadable)
+    protected fun assertExhausted(buffer: ByteBuffer) {
+        assertFalse(buffer.hasRemaining())
     }
 
     companion object {

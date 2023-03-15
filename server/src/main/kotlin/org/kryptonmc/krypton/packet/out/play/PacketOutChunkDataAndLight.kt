@@ -17,7 +17,8 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.data.ChunkPacketData
 import org.kryptonmc.krypton.packet.out.play.data.LightPacketData
@@ -26,13 +27,13 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 @JvmRecord
 data class PacketOutChunkDataAndLight(val x: Int, val z: Int, val chunkData: ChunkPacketData, val lightData: LightPacketData) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt(), ChunkPacketData(buf), LightPacketData(buf))
+    constructor(reader: BinaryReader) : this(reader.readInt(), reader.readInt(), ChunkPacketData(reader), LightPacketData(reader))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(x)
-        buf.writeInt(z)
-        chunkData.write(buf)
-        lightData.write(buf)
+    override fun write(writer: BinaryWriter) {
+        writer.writeInt(x)
+        writer.writeInt(z)
+        chunkData.write(writer)
+        lightData.write(writer)
     }
 
     companion object {

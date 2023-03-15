@@ -17,12 +17,11 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.writeUUID
 import java.time.Duration
 import java.util.UUID
 
@@ -44,12 +43,12 @@ data class RemoteChatSession(val sessionId: UUID, val publicKey: PlayerPublicKey
         companion object {
 
             @JvmStatic
-            fun read(buf: ByteBuf): Data = Data(buf.readUUID(), PlayerPublicKey.Data(buf))
+            fun read(reader: BinaryReader): Data = Data(reader.readUUID(), PlayerPublicKey.Data(reader))
 
             @JvmStatic
-            fun write(buf: ByteBuf, session: Data) {
-                buf.writeUUID(session.sessionId)
-                session.publicKey.write(buf)
+            fun write(writer: BinaryWriter, session: Data) {
+                writer.writeUUID(session.sessionId)
+                session.publicKey.write(writer)
             }
         }
     }

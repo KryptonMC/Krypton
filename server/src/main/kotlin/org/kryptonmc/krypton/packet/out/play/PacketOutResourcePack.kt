@@ -17,25 +17,21 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class PacketOutResourcePack(val uri: String, val hash: String, val forced: Boolean, val prompt: Component?) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readString(), buf.readBoolean(), buf.readNullable(ByteBuf::readComponent))
+    constructor(reader: BinaryReader) : this(reader.readString(), reader.readString(), reader.readBoolean(),
+        reader.readNullable(BinaryReader::readComponent))
 
-    override fun write(buf: ByteBuf) {
-        buf.writeString(uri)
-        buf.writeString(hash)
-        buf.writeBoolean(forced)
-        buf.writeNullable(prompt, ByteBuf::writeComponent)
+    override fun write(writer: BinaryWriter) {
+        writer.writeString(uri)
+        writer.writeString(hash)
+        writer.writeBoolean(forced)
+        writer.writeNullable(prompt, BinaryWriter::writeComponent)
     }
 }

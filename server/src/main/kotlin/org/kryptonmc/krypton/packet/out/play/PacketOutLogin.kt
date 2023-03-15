@@ -18,7 +18,6 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import com.google.common.collect.Sets
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
@@ -28,17 +27,9 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.coordinate.GlobalPos
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
-import org.kryptonmc.krypton.util.decode
-import org.kryptonmc.krypton.util.encode
-import org.kryptonmc.krypton.util.readCollection
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeResourceKey
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutLogin(
@@ -61,43 +52,44 @@ data class PacketOutLogin(
     val deathLocation: GlobalPos?
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(
-        buf.readInt(),
-        buf.readBoolean(),
-        GameModes.fromId(buf.readByte().toInt())!!,
-        GameModes.fromId(buf.readByte().toInt())!!,
-        buf.readCollection({ Sets.newHashSetWithExpectedSize(it) }) { ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()) },
-        buf.decode(RegistrySerialization.NETWORK_CODEC),
-        ResourceKey.of(ResourceKeys.DIMENSION_TYPE, buf.readKey()),
-        ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()),
-        buf.readLong(),
-        buf.readVarInt(),
-        buf.readVarInt(),
-        buf.readVarInt(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readNullable { GlobalPos(it) }
+    constructor(reader: BinaryReader) : this(
+        reader.readInt(),
+        reader.readBoolean(),
+        GameModes.fromId(reader.readByte().toInt())!!,
+        GameModes.fromId(reader.readByte().toInt())!!,
+        reader.readCollection({ Sets.newHashSetWithExpectedSize(it) }) { ResourceKey.of(ResourceKeys.DIMENSION, reader.readKey()) },
+        reader.decode(RegistrySerialization.NETWORK_CODEC),
+        ResourceKey.of(ResourceKeys.DIMENSION_TYPE, reader.readKey()),
+        ResourceKey.of(ResourceKeys.DIMENSION, reader.readKey()),
+        reader.readLong(),
+        reader.readVarInt(),
+        reader.readVarInt(),
+        reader.readVarInt(),
+        reader.readBoolean(),
+        reader.readBoolean(),
+        reader.readBoolean(),
+        reader.readBoolean(),
+        reader.readNullable { GlobalPos(it) }
     )
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(entityId)
-        buf.writeBoolean(isHardcore)
-        buf.writeByte(gameMode.ordinal)
-        buf.writeByte(oldGameMode?.ordinal ?: -1)
-        buf.writeCollection(dimensions, buf::writeResourceKey)
-        buf.encode(RegistrySerialization.NETWORK_CODEC, registryHolder)
-        buf.writeResourceKey(dimensionType)
-        buf.writeResourceKey(dimension)
-        buf.writeLong(seed)
-        buf.writeVarInt(maxPlayers)
-        buf.writeVarInt(viewDistance)
-        buf.writeVarInt(simulationDistance)
-        buf.writeBoolean(reducedDebugInfo)
-        buf.writeBoolean(enableRespawnScreen)
-        buf.writeBoolean(isDebug)
-        buf.writeBoolean(isFlat)
-        buf.writeNullable(deathLocation) { _, pos -> pos.write(buf) }
+    override fun write(writer: BinaryWriter) {
+        writer.writeInt(entityId)
+        writer.writeBoolean(isHardcore)
+        writer.writeByte(gameMode.ordinal.toByte())
+        val oldGameModeId = oldGameMode?.ordinal ?: -1
+        writer.writeByte(oldGameModeId.toByte())
+        writer.writeCollection(dimensions, writer::writeResourceKey)
+        writer.encode(RegistrySerialization.NETWORK_CODEC, registryHolder)
+        writer.writeResourceKey(dimensionType)
+        writer.writeResourceKey(dimension)
+        writer.writeLong(seed)
+        writer.writeVarInt(maxPlayers)
+        writer.writeVarInt(viewDistance)
+        writer.writeVarInt(simulationDistance)
+        writer.writeBoolean(reducedDebugInfo)
+        writer.writeBoolean(enableRespawnScreen)
+        writer.writeBoolean(isDebug)
+        writer.writeBoolean(isFlat)
+        writer.writeNullable(deathLocation) { _, pos -> pos.write(writer) }
     }
 }

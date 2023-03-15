@@ -22,7 +22,8 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPingRequest
 import org.kryptonmc.krypton.packet.out.status.PacketOutPingResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
-import org.kryptonmc.krypton.network.NettyConnection
+import org.kryptonmc.krypton.network.NioConnection
+import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 
 /**
  * Handles all inbound packets in the
@@ -34,21 +35,27 @@ import org.kryptonmc.krypton.network.NettyConnection
  * - [Ping][org.kryptonmc.krypton.packet. in.status.PacketInPing] -
  *   pings the server (to calculate latency on its end)
  */
-class StatusPacketHandler(private val server: KryptonServer, override val connection: NettyConnection) : PacketHandler {
+class StatusPacketHandler(private val server: KryptonServer, override val connection: NioConnection) : PacketHandler {
 
     private var requestedStatus = false
 
     fun handleStatusRequest() {
         if (requestedStatus) {
-            connection.disconnect(REQUEST_HANDLED)
+            disconnect()
             return
         }
         requestedStatus = true
-        connection.writeNow(PacketOutStatusResponse.create(server.connectionManager.status()))
+        connection.send(PacketOutStatusResponse.create(server.statusManager.status()))
     }
 
     fun handlePing(packet: PacketInPingRequest) {
-        connection.writeAndDisconnect(PacketOutPingResponse(packet.payload), REQUEST_HANDLED)
+        connection.send(PacketOutPingResponse(packet.payload))
+        disconnect()
+    }
+
+    private fun disconnect() {
+        connection.send(PacketOutLoginDisconnect(REQUEST_HANDLED))
+        connection.disconnect(REQUEST_HANDLED)
     }
 
     companion object {

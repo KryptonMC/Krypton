@@ -17,9 +17,9 @@
  */
 package org.kryptonmc.krypton.world.chunk.data
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.coordinate.SectionPos
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
@@ -76,10 +76,10 @@ class ChunkSection(
         }
     }
 
-    fun write(buf: ByteBuf) {
-        buf.writeShort(nonEmptyBlockCount)
-        blocks.write(buf)
-        biomes.write(buf)
+    fun write(writer: BinaryWriter) {
+        writer.writeShort(nonEmptyBlockCount.toShort())
+        blocks.write(writer)
+        biomes.write(writer)
     }
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biomes.get(x, y, z)

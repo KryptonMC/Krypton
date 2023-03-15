@@ -17,7 +17,8 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
 
 /**
@@ -28,9 +29,9 @@ import org.kryptonmc.krypton.packet.Packet
 @JvmRecord
 data class PacketOutSetHeldItem(val slot: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt())
+    constructor(reader: BinaryReader) : this(reader.readByte().toInt())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(slot)
+    override fun write(writer: BinaryWriter) {
+        writer.writeByte(slot.toByte())
     }
 }

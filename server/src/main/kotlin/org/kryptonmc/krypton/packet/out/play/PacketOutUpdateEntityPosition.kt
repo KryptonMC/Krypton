@@ -17,13 +17,12 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.coordinate.Positioning
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUpdateEntityPosition(
@@ -34,14 +33,14 @@ data class PacketOutUpdateEntityPosition(
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort(), buf.readShort(), buf.readShort(), buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readShort(), reader.readShort(), reader.readShort(), reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeShort(deltaX.toInt())
-        buf.writeShort(deltaY.toInt())
-        buf.writeShort(deltaZ.toInt())
-        buf.writeBoolean(onGround)
+    override fun write(writer: BinaryWriter) {
+        writer.writeVarInt(entityId)
+        writer.writeShort(deltaX)
+        writer.writeShort(deltaY)
+        writer.writeShort(deltaZ)
+        writer.writeBoolean(onGround)
     }
 
     companion object {

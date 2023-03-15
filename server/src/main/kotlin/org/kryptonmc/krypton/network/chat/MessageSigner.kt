@@ -17,26 +17,23 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.crypto.Crypto
-import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.uuid.UUIDUtil
-import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writeUUID
 import java.time.Instant
 import java.util.UUID
 
 @JvmRecord
 data class MessageSigner(val profileId: UUID, val timestamp: Instant, val salt: Long) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readInstant(), buf.readLong())
+    constructor(reader: BinaryReader) : this(reader.readUUID(), reader.readInstant(), reader.readLong())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeUUID(profileId)
-        buf.writeInstant(timestamp)
-        buf.writeLong(salt)
+    override fun write(writer: BinaryWriter) {
+        writer.writeUUID(profileId)
+        writer.writeInstant(timestamp)
+        writer.writeLong(salt)
     }
 
     fun isSystem(): Boolean = profileId == UUIDUtil.NIL_UUID

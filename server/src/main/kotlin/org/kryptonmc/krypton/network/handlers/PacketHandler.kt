@@ -18,7 +18,7 @@
 package org.kryptonmc.krypton.network.handlers
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.network.NettyConnection
+import org.kryptonmc.krypton.network.NioConnection
 
 /**
  * The base interface for packet handlers. This exists primarily to avoid
@@ -27,9 +27,9 @@ import org.kryptonmc.krypton.network.NettyConnection
  */
 sealed interface PacketHandler {
 
-    val connection: NettyConnection
+    val connection: NioConnection
 
-    fun onDisconnect(message: Component) {
+    fun onDisconnect(message: Component?) {
         // Do nothing by default, only the play and login handlers do something for this
     }
 }

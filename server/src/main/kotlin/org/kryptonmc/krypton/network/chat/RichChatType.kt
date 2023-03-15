@@ -17,20 +17,15 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.chat.ChatType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
@@ -68,12 +63,12 @@ data class RichChatType(val chat: ChatTypeDecoration, val narration: ChatTypeDec
     @JvmRecord
     data class BoundNetwork(val chatType: Int, val name: Component, val targetName: Component?) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readComponent(), buf.readNullable(ByteBuf::readComponent))
+        constructor(reader: BinaryReader) : this(reader.readVarInt(), reader.readComponent(), reader.readNullable(BinaryReader::readComponent))
 
-        override fun write(buf: ByteBuf) {
-            buf.writeVarInt(chatType)
-            buf.writeComponent(name)
-            buf.writeNullable(targetName, ByteBuf::writeComponent)
+        override fun write(writer: BinaryWriter) {
+            writer.writeVarInt(chatType)
+            writer.writeComponent(name)
+            writer.writeNullable(targetName, BinaryWriter::writeComponent)
         }
     }
 

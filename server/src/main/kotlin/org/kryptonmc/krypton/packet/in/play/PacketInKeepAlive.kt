@@ -17,17 +17,18 @@
  */
 package org.kryptonmc.krypton.packet.`in`.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 
 @JvmRecord
 data class PacketInKeepAlive(val id: Long) : InboundPacket<PlayPacketHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readLong())
+    constructor(reader: BinaryReader) : this(reader.readLong())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(id)
+    override fun write(writer: BinaryWriter) {
+        writer.writeLong(id)
     }
 
     override fun handle(handler: PlayPacketHandler) {

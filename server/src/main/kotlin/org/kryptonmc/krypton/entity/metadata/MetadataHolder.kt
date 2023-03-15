@@ -29,7 +29,7 @@ class MetadataHolder(private val entity: BaseDataHolder) {
     fun isDirty(): Boolean = dirty
 
     fun <T> define(key: MetadataKey<T>, value: T) {
-        val id = key.id
+        val id = key.id.toInt()
         require(id <= MAX_ID_VALUE) { "Data value id $id is too large! Maximum is $MAX_ID_VALUE!" }
         require(!itemsById.containsKey(id)) { "Duplicate id value for $id!" }
         require(MetadataSerializers.getId(key.serializer) >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
@@ -56,12 +56,12 @@ class MetadataHolder(private val entity: BaseDataHolder) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> entry(key: MetadataKey<T>): MutableEntry<T> = checkNotNull(itemsById.get(key.id) as? MutableEntry<T>) {
+    private fun <T> entry(key: MetadataKey<T>): MutableEntry<T> = checkNotNull(itemsById.get(key.id.toInt()) as? MutableEntry<T>) {
         "Could not find key $key for entity of type ${entity.type}!"
     }
 
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
-        itemsById.put(key.id, MutableEntry(key, value))
+        itemsById.put(key.id.toInt(), MutableEntry(key, value))
     }
 
     fun collectAll(): List<Entry<*>>? {

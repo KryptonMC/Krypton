@@ -24,13 +24,11 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.ConnectionManager
 import org.kryptonmc.krypton.server.PlayerManager
 import java.util.Collections
 
 interface ServerAudience : Server, PacketGroupingAudience {
 
-    val connectionManager: ConnectionManager
     val playerManager: PlayerManager
 
     override val players: Collection<KryptonPlayer>

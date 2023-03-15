@@ -17,18 +17,17 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.writeEnum
 
 @JvmRecord
 data class PacketOutOpenBook(val hand: Hand) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Hand>())
+    constructor(reader: BinaryReader) : this(reader.readEnum<Hand>())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeEnum(hand)
+    override fun write(writer: BinaryWriter) {
+        writer.writeEnum(hand)
     }
 }

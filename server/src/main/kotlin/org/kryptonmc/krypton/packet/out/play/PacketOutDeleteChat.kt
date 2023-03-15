@@ -17,16 +17,17 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
 data class PacketOutDeleteChat(val messageSignature: MessageSignature.Packed) : Packet {
 
-    constructor(buf: ByteBuf) : this(MessageSignature.Packed.read(buf))
+    constructor(reader: BinaryReader) : this(MessageSignature.Packed.read(reader))
 
-    override fun write(buf: ByteBuf) {
-        messageSignature.write(buf)
+    override fun write(writer: BinaryWriter) {
+        messageSignature.write(writer)
     }
 }

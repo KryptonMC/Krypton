@@ -17,7 +17,6 @@
  */
 package org.kryptonmc.krypton.tags
 
-import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
@@ -25,15 +24,11 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryHolder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
-import org.kryptonmc.krypton.util.readIntIdList
-import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.readMap
-import org.kryptonmc.krypton.util.writeIntIdList
-import org.kryptonmc.krypton.util.writeKey
-import org.kryptonmc.krypton.util.writeMap
 
 object TagSerializer {
 
@@ -62,12 +57,12 @@ object TagSerializer {
     @JvmRecord
     data class NetworkPayload(val tags: Map<Key, IntList>) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readMap(ByteBuf::readKey, ByteBuf::readIntIdList))
+        constructor(reader: BinaryReader) : this(reader.readMap(BinaryReader::readKey, BinaryReader::readIntIdList))
 
         fun isEmpty(): Boolean = tags.isEmpty()
 
-        override fun write(buf: ByteBuf) {
-            buf.writeMap(tags, ByteBuf::writeKey, ByteBuf::writeIntIdList)
+        override fun write(writer: BinaryWriter) {
+            writer.writeMap(tags, BinaryWriter::writeKey, BinaryWriter::writeIntIdList)
         }
     }
 }

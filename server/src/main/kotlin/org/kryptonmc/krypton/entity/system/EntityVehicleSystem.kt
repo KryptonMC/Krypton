@@ -21,6 +21,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.util.downcastBase
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import java.util.Collections
 import java.util.stream.Stream
@@ -86,6 +87,6 @@ class EntityVehicleSystem(private val entity: KryptonEntity) {
     private fun getIndirectPassengersStream(): Stream<KryptonEntity> = passengers.stream().flatMap { it.vehicleSystem.getSelfAndPassengers() }
 
     private fun updatePassengers() {
-        entity.server.connectionManager.sendGroupedPacket(PacketOutSetPassengers.fromEntity(entity, passengers))
+        PacketGrouping.sendGroupedPacket(entity.server, PacketOutSetPassengers.fromEntity(entity, passengers))
     }
 }

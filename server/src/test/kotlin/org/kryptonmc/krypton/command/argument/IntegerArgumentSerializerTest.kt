@@ -33,7 +33,7 @@ class IntegerArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure int writes no min or max when values are int min and max`() {
         val buffer = writeArgumentAndSkipId(IntegerArgumentType.integer())
         skipFlags(buffer)
-        assertNotReadable(buffer)
+        assertExhausted(buffer)
     }
 
     @Test
@@ -46,7 +46,7 @@ class IntegerArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure int writes min and no max when max is int max and min is not`() {
         val buffer = writeArgumentAndSkipId(IntegerArgumentType.integer(-1))
         skipFlags(buffer)
-        assertEquals(-1, buffer.readInt())
+        assertEquals(-1, buffer.int)
     }
 
     @Test
@@ -59,7 +59,7 @@ class IntegerArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure int writes max and no min when min is int min and max is not`() {
         val buffer = writeArgumentAndSkipId(IntegerArgumentType.integer(Int.MIN_VALUE, 1))
         skipFlags(buffer)
-        assertEquals(1, buffer.readInt())
+        assertEquals(1, buffer.int)
     }
 
     @Test
@@ -72,14 +72,14 @@ class IntegerArgumentSerializerTest : AbstractArgumentSerializerTest() {
     fun `ensure int writes min first when min and max are not int min and max`() {
         val buffer = writeArgumentAndSkipId(IntegerArgumentType.integer(-1, 1))
         skipFlags(buffer)
-        assertEquals(-1, buffer.readInt())
+        assertEquals(-1, buffer.int)
     }
 
     @Test
     fun `ensure int writes max after min when min and max are not int min and max`() {
         val buffer = writeArgumentAndSkipId(IntegerArgumentType.integer(-1, 1))
         skipFlags(buffer)
-        buffer.skipBytes(Int.SIZE_BYTES) // minimum
-        assertEquals(1, buffer.readInt())
+        buffer.position(buffer.position() + Int.SIZE_BYTES) // minimum
+        assertEquals(1, buffer.int)
     }
 }

@@ -17,20 +17,15 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
-import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeId
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutEntitySoundEffect(
@@ -42,16 +37,16 @@ data class PacketOutEntitySoundEffect(
     val seed: Long
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readById(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), KryptonSoundEvent::read), buf.readEnum(),
-        buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
+    constructor(reader: BinaryReader) : this(reader.readById(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), KryptonSoundEvent::read),
+        reader.readEnum(), reader.readVarInt(), reader.readFloat(), reader.readFloat(), reader.readLong())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeId(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), event, KryptonSoundEvent::write)
-        buf.writeEnum(source)
-        buf.writeVarInt(entityId)
-        buf.writeFloat(volume)
-        buf.writeFloat(pitch)
-        buf.writeLong(seed)
+    override fun write(writer: BinaryWriter) {
+        writer.writeId(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), event, KryptonSoundEvent::write)
+        writer.writeEnum(source)
+        writer.writeVarInt(entityId)
+        writer.writeFloat(volume)
+        writer.writeFloat(pitch)
+        writer.writeLong(seed)
     }
 
     companion object {

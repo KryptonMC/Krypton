@@ -17,7 +17,7 @@
  */
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.map.IntBiMap
 
@@ -32,7 +32,7 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     override fun get(id: Int): T = registry.get(id) ?: throw MissingPaletteEntryException(id)
 
-    override fun write(buf: ByteBuf) {
+    override fun write(writer: BinaryWriter) {
         // The global palette has nothing to write because the client assumes that
         // we are using the global palette if we send the right bits per entry
     }

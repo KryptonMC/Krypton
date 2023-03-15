@@ -17,19 +17,18 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.writeComponent
 
 @JvmRecord
 data class PacketOutSystemChat(val message: Component, val overlay: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readBoolean())
+    constructor(reader: BinaryReader) : this(reader.readComponent(), reader.readBoolean())
 
-    override fun write(buf: ByteBuf) {
-        buf.writeComponent(message)
-        buf.writeBoolean(overlay)
+    override fun write(writer: BinaryWriter) {
+        writer.writeComponent(message)
+        writer.writeBoolean(overlay)
     }
 }

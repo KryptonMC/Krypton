@@ -17,7 +17,7 @@
  */
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.util.map.IntBiMap
 
 interface Palette<T> {
@@ -28,7 +28,7 @@ interface Palette<T> {
 
     fun get(id: Int): T
 
-    fun write(buf: ByteBuf)
+    fun write(writer: BinaryWriter)
 
     fun calculateSerializedSize(): Int
 

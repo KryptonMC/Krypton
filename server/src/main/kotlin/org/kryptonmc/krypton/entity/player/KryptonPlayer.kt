@@ -58,7 +58,7 @@ import org.kryptonmc.krypton.entity.system.PlayerHungerSystem
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.network.NettyConnection
+import org.kryptonmc.krypton.network.NioConnection
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
@@ -90,7 +90,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class KryptonPlayer(
-    override val connection: NettyConnection,
+    override val connection: NioConnection,
     override val profile: GameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress
@@ -281,9 +281,9 @@ class KryptonPlayer(
     override fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId()
-        connection.send(PacketOutSetContainerSlot(0, stateId, slot, item))
+        connection.send(PacketOutSetContainerSlot(0, stateId, slot.toShort(), item))
         connection.send(PacketOutOpenBook(hand))
-        connection.send(PacketOutSetContainerSlot(0, stateId, slot, inventory.mainHand))
+        connection.send(PacketOutSetContainerSlot(0, stateId, slot.toShort(), inventory.mainHand))
     }
 
     override fun pointers(): Pointers {

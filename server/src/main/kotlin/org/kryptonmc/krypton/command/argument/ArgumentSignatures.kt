@@ -17,34 +17,35 @@
  */
 package org.kryptonmc.krypton.command.argument
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.network.buffer.BinaryReader
+import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.util.ByteBufExtras
-import org.kryptonmc.krypton.util.readCollection
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class ArgumentSignatures(val entries: List<Entry>) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readCollection(ByteBufExtras.limitValue(::ArrayList, MAX_ARGUMENT_COUNT), ::Entry))
+    constructor(reader: BinaryReader) : this(reader.readCollection(ByteBufExtras.limitValue(::ArrayList, MAX_ARGUMENT_COUNT), ::Entry))
 
     fun get(name: String): MessageSignature? = entries.firstOrNull { it.name == name }?.signature
 
-    override fun write(buf: ByteBuf) {
-        buf.writeCollection(entries) { it.write(buf) }
+    override fun write(writer: BinaryWriter) {
+        writer.writeCollection(entries) { it.write(writer) }
     }
 
     @JvmRecord
     data class Entry(val name: String, val signature: MessageSignature) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readString(MAX_ARGUMENT_NAME_LENGTH), MessageSignature.read(buf))
+        init {
+            require(name.length <= MAX_ARGUMENT_NAME_LENGTH) { "Name too long! Max: $MAX_ARGUMENT_NAME_LENGTH" }
+        }
 
-        override fun write(buf: ByteBuf) {
-            buf.writeString(name, MAX_ARGUMENT_NAME_LENGTH)
-            MessageSignature.write(buf, signature)
+        constructor(reader: BinaryReader) : this(reader.readString(), MessageSignature.read(reader))
+
+        override fun write(writer: BinaryWriter) {
+            writer.writeString(name)
+            MessageSignature.write(writer, signature)
         }
     }
 
