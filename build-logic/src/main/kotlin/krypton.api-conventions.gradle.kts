@@ -17,7 +17,7 @@ publishing {
     repositories {
         maven {
             name = "krypton"
-            url = uri("https://repo.kryptonmc.org/snapshots")
+            url = uri("https://repo.kryptonmc.org/releases")
 
             if (System.getenv("PUBLISH_USERNAME") != null) {
                 // If this env variable is present, we're running in CI, and we want to use the credentials from the secrets
