@@ -21,7 +21,6 @@ import org.kryptonmc.krypton.network.NioConnection
 import org.kryptonmc.krypton.network.handlers.PacketHandler
 import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.packet.Packet
 
 /**
  * This interface is used to enable the interception of packets, both inbound and outbound.
@@ -39,7 +38,7 @@ interface PacketInterceptor {
      * - If you do not want the packet to be sent, return `null`.
      * - If you want to modify the packet, return the modified packet.
      */
-    fun onSend(connection: NioConnection, packet: GenericPacket): Packet?
+    fun onSend(connection: NioConnection, packet: GenericPacket): GenericPacket?
 
     /**
      * Called when a packet is received from a client.
