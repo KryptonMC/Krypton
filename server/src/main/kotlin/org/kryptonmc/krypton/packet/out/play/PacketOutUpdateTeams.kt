@@ -18,7 +18,6 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.krypton.adventure.KryptonAdventure
@@ -81,7 +80,7 @@ data class PacketOutUpdateTeams(
         val options: Byte,
         val nameTagVisibility: String,
         val collisionRule: String,
-        val color: NamedTextColor,
+        val color: Int,
         val prefix: Component,
         val suffix: Component
     ) : Writable {
@@ -92,17 +91,17 @@ data class PacketOutUpdateTeams(
         }
 
         constructor(team: Team) : this(team.displayName, encodeOptions(team), team.nameTagVisibility.name.lowercase(),
-            team.collisionRule.name.lowercase(), team.color, team.prefix, team.suffix)
+            team.collisionRule.name.lowercase(), KryptonAdventure.getColorId(team.color), team.prefix, team.suffix)
 
         constructor(reader: BinaryReader) : this(reader.readComponent(), reader.readByte(), reader.readString(), reader.readString(),
-            KryptonAdventure.getColorFromId(reader.readVarInt()), reader.readComponent(), reader.readComponent())
+            reader.readVarInt(), reader.readComponent(), reader.readComponent())
 
         override fun write(writer: BinaryWriter) {
             writer.writeComponent(displayName)
             writer.writeByte(options)
             writer.writeString(nameTagVisibility)
             writer.writeString(collisionRule)
-            writer.writeVarInt(KryptonAdventure.getColorId(color))
+            writer.writeVarInt(color)
             writer.writeComponent(prefix)
             writer.writeComponent(suffix)
         }
