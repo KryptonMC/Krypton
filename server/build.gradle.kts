@@ -9,9 +9,6 @@ dependencies {
     api(projects.api)
     implementation(projects.annotationProcessor)
 
-    // Events
-    implementation(libs.lmbda)
-
     // Logging and console
     runtimeOnly(libs.log4j.core)
     implementation(libs.tca)

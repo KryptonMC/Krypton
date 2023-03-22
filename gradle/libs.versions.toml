@@ -3,63 +3,59 @@ metadata.format.version = "1.1"
 [versions]
 
 # API
-adventure = "4.12.0"
+adventure = "4.13.0"
 configurate = "4.1.2"
-log4j = "2.19.0"
-kotlin = "1.8.0-RC"
+log4j = "2.20.0"
+kotlin = "1.8.10"
 coroutines = "1.6.4"
 kotlinCollections = "0.3.5"
 guava = "31.1-jre"
-gson = "2.10"
+gson = "2.10.1"
 commonsLang = "3.12.0"
 guice = "5.1.0"
 kotlinGuice = "1.6.0"
 brigadier = "1.0.0-SNAPSHOT"
-annotations = "23.0.0"
+annotations = "24.0.1"
 
 # Generation
 kotlinpoet = "1.12.0"
 
 # Server
-netty = "4.1.85.Final"
-velocity = "3.1.0"
 tca = "1.3.0"
-jline = "3.21.0"
+jline = "3.23.0"
 dataConverter = "1.0.0-SNAPSHOT"
 nbt = "5.0"
 serialization = "1.3.2"
 articData = "1.19.3-21bc926b"
-caffeine = "3.1.2"
-fastutil = "8.5.9"
+caffeine = "3.1.5"
+fastutil = "8.5.12"
 flare = "2.0.1"
-clikt = "3.5.0"
-bstats = "3.0.0"
-lmbda = "2.0.0"
+clikt = "3.5.2"
+bstats = "3.0.1"
 jctools = "4.0.1"
 hydrazine = "1.8.1"
 
 # Test
-junit-jupiter = "5.9.1"
-junit-platform = "1.9.1"
-mockk = "1.13.3"
-bytebuddy = "1.12.19"
+junit-jupiter = "5.9.2"
+junit-platform = "1.9.2"
+mockk = "1.13.4"
+bytebuddy = "1.14.2"
 jimfs = "1.2"
 reflections = "0.10.2"
-equalsVerifier = "3.12.1"
+equalsVerifier = "3.14.1"
 jsonassert = "1.5.1"
 
 # Extras
-ksp = "1.8.0-RC-1.0.8"
+ksp = "1.8.10-1.0.9"
 apache-httpclient = "5.2.1"
 grgit = "5.0.0"
 
 # Plugin versions
 licenser = "0.6.1"
-dokka = "1.7.20"
+dokka = "1.8.10"
 detekt = "1.22.0"
 vanillaGradle = "0.2.1-SNAPSHOT"
-shadow = "7.1.2"
-pitestPlugin = "1.9.11"
+shadow = "8.1.1"
 
 [libraries]
 
@@ -94,14 +90,6 @@ kotlinGuice = { group = "dev.misfitlabs.kotlinguice4", name = "kotlin-guice", ve
 brigadier = { group = "org.kryptonmc", name = "krypton-brigadier", version.ref = "brigadier" }
 annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 
-# Networking
-netty-buffer = { group = "io.netty", name = "netty-buffer", version.ref = "netty" }
-netty-handler = { group = "io.netty", name = "netty-handler", version.ref = "netty" }
-netty-transport = { group = "io.netty", name = "netty-transport", version.ref = "netty" }
-netty-transport-native-epoll = { group = "io.netty", name = "netty-transport-native-epoll", version.ref = "netty" }
-netty-transport-native-kqueue = { group = "io.netty", name = "netty-transport-native-kqueue", version.ref = "netty" }
-velocity-native = { group = "com.velocitypowered", name = "velocity-native", version.ref = "velocity" }
-
 # Logging
 log4j-api = { group = "org.apache.logging.log4j", name = "log4j-api", version.ref = "log4j" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
@@ -124,7 +112,6 @@ bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
 
 # Generation
 kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinpoet" }
-lmbda = { group = "org.lanternpowered", name = "lmbda", version.ref = "lmbda" }
 
 # Collections and caching
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
@@ -157,7 +144,7 @@ plugin-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 plugin-dokka = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 plugin-detekt = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 plugin-vanillaGradle = { group = "org.spongepowered", name = "vanillagradle", version.ref = "vanillaGradle" }
-plugin-shadow = { group = "gradle.plugin.com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
+plugin-shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
 plugin-ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 
 # Extras dependencies
