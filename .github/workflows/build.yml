@@ -58,9 +58,9 @@ jobs:
       - name: "Generate documentation"
         uses: "gradle/gradle-build-action@v2.3.3"
         with:
-          arguments: "clean dokkaHtmlMultiModule"
+          arguments: "dokkaHtml"
       - name: "Deploy to pages"
         uses: "JamesIves/github-pages-deploy-action@v4.4.1"
         with:
           branch: "docs"
-          folder: "build/dokka/htmlMultiModule"
+          folder: "api/build/dokka/html"
