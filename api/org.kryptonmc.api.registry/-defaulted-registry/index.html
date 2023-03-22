@@ -40,8 +40,11 @@
             </a>
     </div>
     <div>
-a2bee54817    </div>
+f102eb87a1    </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":api:dokkaHtml/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -51,269 +54,273 @@ a2bee54817    </div>
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageIds="api::org.kryptonmc.api.registry/DefaultedRegistry///PointingToDeclaration//1245306095">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="api::org.kryptonmc.api.registry/DefaultedRegistry///PointingToDeclaration//1245306095">
   <div class="breadcrumbs"><a href="../../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.registry</a><span class="delimiter">/</span><span class="current">DefaultedRegistry</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Defaulted</span><wbr></wbr><span><span>Registry</span></span></h1>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">DefaultedRegistry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span> : <a href="../-registry/index.html">Registry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt; </span></div><p class="paragraph">A registry with a default key-value pair.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="508924885%2FFunctions%2F1245306095" anchor-label="containsKey" id="508924885%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/contains-key.html"><span>contains</span><wbr></wbr><span><span>Key</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="508924885%2FFunctions%2F1245306095" anchor-label="containsKey" id="508924885%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/contains-key.html"><span>contains</span><wbr></wbr><span><span>Key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="508924885%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/contains-key.html"><span class="token function">containsKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.12.0/net/kyori/adventure/key/Key.html">Key</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/contains-key.html"><span class="token function">containsKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Checks if the given <a href="../-registry/contains-key.html">key</a> has a registered value in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/contains-key.html"><span class="token function">containsKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.13.0/net/kyori/adventure/key/Key.html">Key</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/contains-key.html"><span class="token function">containsKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Checks if the given <a href="../-registry/contains-key.html">key</a> has a registered value in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1563812210%2FFunctions%2F1245306095" anchor-label="entries" id="-1563812210%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/entries.html"><span><span>entries</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/entries.html"><span><span>entries</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1563812210%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/entries.html"><span class="token function">entries</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html">Map.Entry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of entries registered in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/entries.html"><span class="token function">entries</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/-entry/index.html">Map.Entry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of entries registered in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1532301601%2FFunctions%2F1245306095" anchor-label="forEach" id="1532301601%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/index.html#1532301601%2FFunctions%2F1245306095"><span>for</span><wbr></wbr><span><span>Each</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/index.html#1532301601%2FFunctions%2F1245306095"><span>for</span><wbr></wbr><span><span>Each</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1532301601%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/index.html#1532301601%2FFunctions%2F1245306095"><span class="token function">forEach</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html">Consumer</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/index.html#1532301601%2FFunctions%2F1245306095"><span class="token function">forEach</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html">Consumer</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-713086089%2FFunctions%2F1245306095" anchor-label="get" id="-713086089%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="get.html"><span><span>get</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get.html"><span><span>get</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-713086089%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.12.0/net/kyori/adventure/key/Key.html">Key</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Gets a value by its namespaced <a href="get.html">key</a>, or null if there is no value associated with the given <a href="get.html">key</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Gets a value by its resource <a href="get.html">key</a>, or null if there is no value associated with the given <a href="get.html">key</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.13.0/net/kyori/adventure/key/Key.html">Key</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Gets a value by its namespaced <a href="get.html">key</a>, or null if there is no value associated with the given <a href="get.html">key</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Gets a value by its resource <a href="get.html">key</a>, or null if there is no value associated with the given <a href="get.html">key</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="322898797%2FFunctions%2F1245306095" anchor-label="getKey" id="322898797%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="get-key.html"><span>get</span><wbr></wbr><span><span>Key</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-key.html"><span>get</span><wbr></wbr><span><span>Key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="322898797%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-key.html"><span class="token function">getKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="index.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.12.0/net/kyori/adventure/key/Key.html">Key</a></div><div class="brief "><p class="paragraph">Gets a namespaced <a href="https://jd.adventure.kyori.net/key/4.12.0/net/kyori/adventure/key/Key.html">Key</a> by its <a href="get-key.html">value</a>, or null if there is no key associated with the given <a href="get-key.html">value</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-key.html"><span class="token function">getKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="index.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.13.0/net/kyori/adventure/key/Key.html">Key</a></div><div class="brief "><p class="paragraph">Gets a namespaced <a href="https://jd.adventure.kyori.net/key/4.13.0/net/kyori/adventure/key/Key.html">Key</a> by its <a href="get-key.html">value</a>, or null if there is no key associated with the given <a href="get-key.html">value</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="658868349%2FFunctions%2F1245306095" anchor-label="getResourceKey" id="658868349%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/get-resource-key.html"><span>get</span><wbr></wbr><span>Resource</span><wbr></wbr><span><span>Key</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/get-resource-key.html"><span>get</span><wbr></wbr><span>Resource</span><wbr></wbr><span><span>Key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="658868349%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/get-resource-key.html"><span class="token function">getResourceKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="index.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Gets the <a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a> for the given <a href="../-registry/get-resource-key.html">value</a>, or null if there is no key associated with the given <a href="../-registry/get-resource-key.html">value</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/get-resource-key.html"><span class="token function">getResourceKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="index.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Gets the <a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a> for the given <a href="../-registry/get-resource-key.html">value</a>, or null if there is no key associated with the given <a href="../-registry/get-resource-key.html">value</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="797459259%2FFunctions%2F1245306095" anchor-label="getTagValues" id="797459259%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/get-tag-values.html"><span>get</span><wbr></wbr><span>Tag</span><wbr></wbr><span><span>Values</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/get-tag-values.html"><span>get</span><wbr></wbr><span>Tag</span><wbr></wbr><span><span>Values</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="797459259%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/get-tag-values.html"><span class="token function">getTagValues</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="../../org.kryptonmc.api.tags/-tag-key/index.html">TagKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.tags/-tag-set/index.html">TagSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Gets the tag values for the given <a href="../-registry/get-tag-values.html">key</a>, or returns null if there are no tag values associated with the given <a href="../-registry/get-tag-values.html">key</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/get-tag-values.html"><span class="token function">getTagValues</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="../../org.kryptonmc.api.tags/-tag-key/index.html">TagKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.tags/-tag-set/index.html">TagSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Gets the tag values for the given <a href="../-registry/get-tag-values.html">key</a>, or returns null if there are no tag values associated with the given <a href="../-registry/get-tag-values.html">key</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-858216167%2FFunctions%2F1245306095" anchor-label="iterator" id="-858216167%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-858216167%2FFunctions%2F1245306095"><span><span>iterator</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-858216167%2FFunctions%2F1245306095"><span><span>iterator</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-858216167%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-858216167%2FFunctions%2F1245306095"><span class="token function">iterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterator/index.html">Iterator</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-858216167%2FFunctions%2F1245306095"><span class="token function">iterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterator/index.html">Iterator</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-558991736%2FFunctions%2F1245306095" anchor-label="keys" id="-558991736%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/keys.html"><span><span>keys</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/keys.html"><span><span>keys</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-558991736%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/keys.html"><span class="token function">keys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://jd.adventure.kyori.net/key/4.12.0/net/kyori/adventure/key/Key.html">Key</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of keys registered in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/keys.html"><span class="token function">keys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://jd.adventure.kyori.net/key/4.13.0/net/kyori/adventure/key/Key.html">Key</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of keys registered in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="821685323%2FFunctions%2F1245306095" anchor-label="registryKeys" id="821685323%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/registry-keys.html"><span>registry</span><wbr></wbr><span><span>Keys</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/registry-keys.html"><span>registry</span><wbr></wbr><span><span>Keys</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="821685323%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/registry-keys.html"><span class="token function">registryKeys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of registry keys registered in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/registry-keys.html"><span class="token function">registryKeys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of registry keys registered in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="199245083%2FFunctions%2F1245306095" anchor-label="size" id="199245083%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/size.html"><span><span>size</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/size.html"><span><span>size</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="199245083%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/size.html"><span class="token function">size</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Gets the size of this registry, which is the number of registered elements.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/size.html"><span class="token function">size</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Gets the size of this registry, which is the number of registered elements.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1387152138%2FFunctions%2F1245306095" anchor-label="spliterator" id="-1387152138%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-1387152138%2FFunctions%2F1245306095"><span><span>spliterator</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-1387152138%2FFunctions%2F1245306095"><span><span>spliterator</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1387152138%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-1387152138%2FFunctions%2F1245306095"><span class="token function">spliterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html">Spliterator</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.statistic/-statistic-type/index.html#-1387152138%2FFunctions%2F1245306095"><span class="token function">spliterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html">Spliterator</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-364161348%2FFunctions%2F1245306095" anchor-label="stream" id="-364161348%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/stream.html"><span><span>stream</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/stream.html"><span><span>stream</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-364161348%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/stream.html"><span class="token function">stream</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Creates a new stream of the elements in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/stream.html"><span class="token function">stream</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Creates a new stream of the elements in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-252945360%2FFunctions%2F1245306095" anchor-label="tagKeys" id="-252945360%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/tag-keys.html"><span>tag</span><wbr></wbr><span><span>Keys</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/tag-keys.html"><span>tag</span><wbr></wbr><span><span>Keys</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-252945360%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/tag-keys.html"><span class="token function">tagKeys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.tags/-tag-key/index.html">TagKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of keys for all the registered tags in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/tag-keys.html"><span class="token function">tagKeys</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.tags/-tag-key/index.html">TagKey</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of keys for all the registered tags in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-2021247997%2FFunctions%2F1245306095" anchor-label="tags" id="-2021247997%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/tags.html"><span><span>tags</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/tags.html"><span><span>tags</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2021247997%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/tags.html"><span class="token function">tags</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.tags/-tag-set/index.html">TagSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of keys for all the registered tags in this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-registry/tags.html"><span class="token function">tags</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.tags/-tag-set/index.html">TagSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the set of keys for all the registered tags in this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="1098491484%2FProperties%2F1245306095" anchor-label="defaultKey" id="1098491484%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="default-key.html"><span>default</span><wbr></wbr><span><span>Key</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1098491484%2FProperties%2F1245306095" anchor-label="defaultKey" id="1098491484%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="default-key.html"><span>default</span><wbr></wbr><span><span>Key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1098491484%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="1098491484%2FProperties%2F1245306095" anchor-label="defaultKey" id="1098491484%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="default-key.html">defaultKey</a><span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.12.0/net/kyori/adventure/key/Key.html">Key</a></div><div class="brief "><a data-name="1098491484%2FProperties%2F1245306095" anchor-label="defaultKey" id="1098491484%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The default key for this defaulted registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="default-key.html">defaultKey</a><span class="token operator">: </span><a href="https://jd.adventure.kyori.net/key/4.13.0/net/kyori/adventure/key/Key.html">Key</a></div><div class="brief "><p class="paragraph">The default key for this defaulted registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1592576993%2FProperties%2F1245306095" anchor-label="key" id="-1592576993%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-registry/key.html"><span><span>key</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-registry/key.html"><span><span>key</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1592576993%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="-1592576993%2FProperties%2F1245306095" anchor-label="key" id="-1592576993%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-registry/key.html">key</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../-registry/index.html">Registry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><a data-name="-1592576993%2FProperties%2F1245306095" anchor-label="key" id="-1592576993%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The registry key for this registry.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-registry/key.html">key</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.resource/-resource-key/index.html">ResourceKey</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../-registry/index.html">Registry</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The registry key for this registry.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>

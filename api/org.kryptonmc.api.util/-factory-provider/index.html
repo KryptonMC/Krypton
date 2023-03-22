@@ -40,8 +40,11 @@
             </a>
     </div>
     <div>
-a2bee54817    </div>
+f102eb87a1    </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":api:dokkaHtml/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -51,74 +54,74 @@ a2bee54817    </div>
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageIds="api::org.kryptonmc.api.util/FactoryProvider///PointingToDeclaration//1245306095">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="api::org.kryptonmc.api.util/FactoryProvider///PointingToDeclaration//1245306095">
   <div class="breadcrumbs"><a href="../../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.util</a><span class="delimiter">/</span><span class="current">FactoryProvider</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Factory</span><wbr></wbr><span><span>Provider</span></span></h1>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">FactoryProvider</a></div><p class="paragraph">Used to provide various factories from the backend for static factory functions.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Extensions">Extensions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="1241766668%2FFunctions%2F1245306095" anchor-label="provide" id="1241766668%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="provide.html"><span><span>provide</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1241766668%2FFunctions%2F1245306095" anchor-label="provide" id="1241766668%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="provide.html"><span><span>provide</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1241766668%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="provide.html">T</a><span class="token operator">&gt; </span><a href="provide.html"><span class="token function">provide</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="provide.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="provide.html">T</a></div><div class="brief "><p class="paragraph">Provides the factory with the given type <a href="provide.html">type</a>, or throws a <a href="../-type-not-found-exception/index.html">TypeNotFoundException</a> if there is no factory registered for the given type.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="provide.html">T</a><span class="token operator">&gt; </span><a href="provide.html"><span class="token function">provide</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="provide.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="provide.html">T</a></div><div class="brief "><p class="paragraph">Provides the factory with the given type <a href="provide.html">type</a>, or throws a <a href="../-type-not-found-exception/index.html">TypeNotFoundException</a> if there is no factory registered for the given type.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+<a data-name="-1048185937%2FFunctions%2F1245306095" anchor-label="provide" id="-1048185937%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../provide.html"><span><span>provide</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1048185937%2FFunctions%2F1245306095"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../provide.html">T</a><span class="token operator">&gt; </span><a href="index.html">FactoryProvider</a><span class="token punctuation">.</span><a href="../provide.html"><span class="token function">provide</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../provide.html">T</a></div><div class="brief "><p class="paragraph">Provides the factory with the given type <a href="../provide.html">T</a>, or throws a <a href="../-type-not-found-exception/index.html">TypeNotFoundException</a> if there is no factory registered for the given type.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="86796457%2FFunctions%2F1245306095" anchor-label="register" id="86796457%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="register.html"><span><span>register</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="register.html"><span><span>register</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="86796457%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="register.html">T</a><span class="token operator">&gt; </span><a href="register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="register.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">factory<span class="token operator">: </span><a href="register.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Registers the given <a href="register.html">factory</a> of the given <a href="register.html">type</a> to this factory provider.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="register.html">T</a><span class="token operator">&gt; </span><a href="register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="register.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">factory<span class="token operator">: </span><a href="register.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Registers the given <a href="register.html">factory</a> of the given <a href="register.html">type</a> to this factory provider.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <h2 class="tabbedcontent">Extensions</h2>
-      <div class="table" data-togglable="Extensions"><a data-name="-1048185937%2FExtensions%2F1245306095" anchor-label="provide" id="-1048185937%2FExtensions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../provide.html"><span><span>provide</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1048185937%2FExtensions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../provide.html">T</a><span class="token operator">&gt; </span><a href="index.html">FactoryProvider</a><span class="token punctuation">.</span><a href="../provide.html"><span class="token function">provide</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../provide.html">T</a></div><div class="brief "><p class="paragraph">Provides the factory with the given type <a href="../provide.html">T</a>, or throws a <a href="../-type-not-found-exception/index.html">TypeNotFoundException</a> if there is no factory registered for the given type.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1847316201%2FExtensions%2F1245306095" anchor-label="register" id="-1847316201%2FExtensions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../register.html"><span><span>register</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1847316201%2FExtensions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../register.html">T</a><span class="token operator">&gt; </span><a href="index.html">FactoryProvider</a><span class="token punctuation">.</span><a href="../register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">factory<span class="token operator">: </span><a href="../register.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Registers the given <a href="../register.html">factory</a> of the given type <a href="../register.html">T</a> to this factory provider.</p></div></div></div>
+<a data-name="-1847316201%2FFunctions%2F1245306095" anchor-label="register" id="-1847316201%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../register.html"><span><span>register</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1847316201%2FFunctions%2F1245306095"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../register.html">T</a><span class="token operator">&gt; </span><a href="index.html">FactoryProvider</a><span class="token punctuation">.</span><a href="../register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">factory<span class="token operator">: </span><a href="../register.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Registers the given <a href="../register.html">factory</a> of the given type <a href="../register.html">T</a> to this factory provider.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>

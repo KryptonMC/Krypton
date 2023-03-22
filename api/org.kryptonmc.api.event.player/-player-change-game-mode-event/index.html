@@ -40,8 +40,11 @@
             </a>
     </div>
     <div>
-a2bee54817    </div>
+f102eb87a1    </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":api:dokkaHtml/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -51,166 +54,172 @@ a2bee54817    </div>
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageIds="api::org.kryptonmc.api.event.player/PlayerChangeGameModeEvent///PointingToDeclaration//1245306095">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="api::org.kryptonmc.api.event.player/PlayerChangeGameModeEvent///PointingToDeclaration//1245306095">
   <div class="breadcrumbs"><a href="../../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.event.player</a><span class="delimiter">/</span><span class="current">PlayerChangeGameModeEvent</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Player</span><wbr></wbr><span>Change</span><wbr></wbr><span>Game</span><wbr></wbr><span>Mode</span><wbr></wbr><span><span>Event</span></span></h1>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">PlayerChangeGameModeEvent</a> : <a href="../../org.kryptonmc.api.event.type/-player-event/index.html">PlayerEvent</a>, <a href="../../org.kryptonmc.api.event.type/-deniable-event-with-result/index.html">DeniableEventWithResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a><span class="token operator">&gt; </span></div><p class="paragraph">Called when the given <span data-unresolved-link="org.kryptonmc.api.event.player/PlayerChangeGameModeEvent/player/#/PointingToDeclaration/">player</span> changes game mode.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="1682080993%2FClasslikes%2F1245306095" anchor-label="Result" id="1682080993%2FClasslikes%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-result/index.html"><span><span>Result</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1682080993%2FClasslikes%2F1245306095" anchor-label="Result" id="1682080993%2FClasslikes%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-result/index.html"><span><span>Result</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1682080993%2FClasslikes%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-record/index.html"><span class="token annotation builtin">JvmRecord</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-result/index.html">Result</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>newGameMode<span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-game-mode/index.html">GameMode</a></span></span><span class="token punctuation">)</span> : <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Record.html">Record</a></div><div class="brief "><p class="paragraph">The result of an attempt to change a player's game mode.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-record/index.html"><span class="token annotation builtin">JvmRecord</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-result/index.html">Result</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>newGameMode<span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-game-mode/index.html">GameMode</a></span></span><span class="token punctuation">)</span> : <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Record.html">Record</a></div><div class="brief "><p class="paragraph">The result of an attempt to change a player's game mode.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-207990017%2FFunctions%2F1245306095" anchor-label="allow" id="-207990017%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.type/-deniable-event/allow.html"><span><span>allow</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-207990017%2FFunctions%2F1245306095" anchor-label="allow" id="-207990017%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.event.type/-deniable-event/allow.html"><span><span>allow</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-207990017%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.event.type/-deniable-event/allow.html"><span class="token function">allow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Allows this event to occur.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.event.type/-deniable-event/allow.html"><span class="token function">allow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Allows this event to occur.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-2112313862%2FFunctions%2F1245306095" anchor-label="allowWithResult" id="-2112313862%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="index.html#-2112313862%2FFunctions%2F1245306095"><span>allow</span><wbr></wbr><span>With</span><wbr></wbr><span><span>Result</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-2112313862%2FFunctions%2F1245306095"><span>allow</span><wbr></wbr><span>With</span><wbr></wbr><span><span>Result</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2112313862%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#-2112313862%2FFunctions%2F1245306095"><span class="token function">allowWithResult</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">result<span class="token operator">: </span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Allows this event to occur, and sets the result to the given <a href="index.html#-2112313862%2FFunctions%2F1245306095">result</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#-2112313862%2FFunctions%2F1245306095"><span class="token function">allowWithResult</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">result<span class="token operator">: </span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Allows this event to occur, and sets the result to the given <a href="index.html#-2112313862%2FFunctions%2F1245306095">result</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="908399462%2FFunctions%2F1245306095" anchor-label="deny" id="908399462%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.type/-deniable-event/deny.html"><span><span>deny</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.event.type/-deniable-event/deny.html"><span><span>deny</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="908399462%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.event.type/-deniable-event/deny.html"><span class="token function">deny</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Denies an event from occurring.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.event.type/-deniable-event/deny.html"><span class="token function">deny</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Denies an event from occurring.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1169174477%2FFunctions%2F1245306095" anchor-label="denyWithResult" id="1169174477%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="index.html#1169174477%2FFunctions%2F1245306095"><span>deny</span><wbr></wbr><span>With</span><wbr></wbr><span><span>Result</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1169174477%2FFunctions%2F1245306095"><span>deny</span><wbr></wbr><span>With</span><wbr></wbr><span><span>Result</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1169174477%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#1169174477%2FFunctions%2F1245306095"><span class="token function">denyWithResult</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">result<span class="token operator">: </span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Denies this event from occur, and sets the result to the given <a href="index.html#1169174477%2FFunctions%2F1245306095">result</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#1169174477%2FFunctions%2F1245306095"><span class="token function">denyWithResult</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">result<span class="token operator">: </span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Denies this event from occur, and sets the result to the given <a href="index.html#1169174477%2FFunctions%2F1245306095">result</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1285507402%2FFunctions%2F1245306095" anchor-label="isAllowed" id="1285507402%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.type/-deniable-event/is-allowed.html"><span>is</span><wbr></wbr><span><span>Allowed</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.event.type/-deniable-event/is-allowed.html"><span>is</span><wbr></wbr><span><span>Allowed</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1285507402%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.event.type/-deniable-event/is-allowed.html"><span class="token function">isAllowed</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Checks if this event is allowed to happen.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.event.type/-deniable-event/is-allowed.html"><span class="token function">isAllowed</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Checks if this event is allowed to happen.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-2117064132%2FProperties%2F1245306095" anchor-label="newGameMode" id="-2117064132%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="new-game-mode.html"><span>new</span><wbr></wbr><span>Game</span><wbr></wbr><span><span>Mode</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-2117064132%2FProperties%2F1245306095" anchor-label="newGameMode" id="-2117064132%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="new-game-mode.html"><span>new</span><wbr></wbr><span>Game</span><wbr></wbr><span><span>Mode</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2117064132%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="-2117064132%2FProperties%2F1245306095" anchor-label="newGameMode" id="-2117064132%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="new-game-mode.html">newGameMode</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-game-mode/index.html">GameMode</a></div><div class="brief "><a data-name="-2117064132%2FProperties%2F1245306095" anchor-label="newGameMode" id="-2117064132%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The game mode that the player will be in after the change.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="new-game-mode.html">newGameMode</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-game-mode/index.html">GameMode</a></div><div class="brief "><p class="paragraph">The game mode that the player will be in after the change.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1017189013%2FProperties%2F1245306095" anchor-label="oldGameMode" id="1017189013%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="old-game-mode.html"><span>old</span><wbr></wbr><span>Game</span><wbr></wbr><span><span>Mode</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="old-game-mode.html"><span>old</span><wbr></wbr><span>Game</span><wbr></wbr><span><span>Mode</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1017189013%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="1017189013%2FProperties%2F1245306095" anchor-label="oldGameMode" id="1017189013%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="old-game-mode.html">oldGameMode</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-game-mode/index.html">GameMode</a></div><div class="brief "><a data-name="1017189013%2FProperties%2F1245306095" anchor-label="oldGameMode" id="1017189013%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The game mode that the player was in before the change.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="old-game-mode.html">oldGameMode</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-game-mode/index.html">GameMode</a></div><div class="brief "><p class="paragraph">The game mode that the player was in before the change.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1350612038%2FProperties%2F1245306095" anchor-label="player" id="1350612038%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.type/-player-event/player.html"><span><span>player</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.event.type/-player-event/player.html"><span><span>player</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1350612038%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="1350612038%2FProperties%2F1245306095" anchor-label="player" id="1350612038%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../org.kryptonmc.api.event.type/-player-event/player.html">player</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.entity.player/-player/index.html">Player</a></div><div class="brief "><a data-name="1350612038%2FProperties%2F1245306095" anchor-label="player" id="1350612038%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The player involved in this event.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../org.kryptonmc.api.event.type/-player-event/player.html">player</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.entity.player/-player/index.html">Player</a></div><div class="brief "><p class="paragraph">The player involved in this event.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-828472050%2FProperties%2F1245306095" anchor-label="result" id="-828472050%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.type/-event-with-result/result.html"><span><span>result</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.event.type/-event-with-result/result.html"><span><span>result</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-828472050%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="-828472050%2FProperties%2F1245306095" anchor-label="result" id="-828472050%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.kryptonmc.api.event.type/-event-with-result/result.html">result</a><span class="token operator">: </span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a><span class="token operator">?</span></div><div class="brief "><a data-name="-828472050%2FProperties%2F1245306095" anchor-label="result" id="-828472050%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The result that is returned by this event.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.kryptonmc.api.event.type/-event-with-result/result.html">result</a><span class="token operator">: </span><a href="-result/index.html">PlayerChangeGameModeEvent.Result</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The result that is returned by this event.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>

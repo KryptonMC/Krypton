@@ -40,8 +40,11 @@
             </a>
     </div>
     <div>
-a2bee54817    </div>
+f102eb87a1    </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":api:dokkaHtml/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -51,179 +54,183 @@ a2bee54817    </div>
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageIds="api::org.kryptonmc.api.world.chunk/Chunk///PointingToDeclaration//1245306095">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="api::org.kryptonmc.api.world.chunk/Chunk///PointingToDeclaration//1245306095">
   <div class="breadcrumbs"><a href="../../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.world.chunk</a><span class="delimiter">/</span><span class="current">Chunk</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Chunk</span></span></h1>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Chunk</a> : <a href="../../org.kryptonmc.api.block/-block-container/index.html">BlockContainer</a>, <a href="../../org.kryptonmc.api.fluid/-fluid-container/index.html">FluidContainer</a>, <a href="../../org.kryptonmc.api.world.biome/-biome-container/index.html">BiomeContainer</a>, <a href="../../org.kryptonmc.api.world/-entity-container/index.html">EntityContainer</a></div><p class="paragraph">Represents a chunk, or a 16 x 16 x world height area of blocks.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="1299359061%2FFunctions%2F1245306095" anchor-label="getBiome" id="1299359061%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html"><span>get</span><wbr></wbr><span><span>Biome</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1299359061%2FFunctions%2F1245306095" anchor-label="getBiome" id="1299359061%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html"><span>get</span><wbr></wbr><span><span>Biome</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1299359061%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html"><span class="token function">getBiome</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.api.util/-vec3i/index.html">Vec3i</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.world.biome/-biome/index.html">Biome</a></div><div class="brief "><p class="paragraph">Gets the biome at the given <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">position</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html"><span class="token function">getBiome</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">z<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.world.biome/-biome/index.html">Biome</a></div><div class="brief "><p class="paragraph">Gets the biome at the given <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">x</a>, <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">y</a>, and <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">z</a> coordinates.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html"><span class="token function">getBiome</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.api.util/-vec3i/index.html">Vec3i</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.world.biome/-biome/index.html">Biome</a></div><div class="brief "><p class="paragraph">Gets the biome at the given <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">position</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html"><span class="token function">getBiome</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">z<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.world.biome/-biome/index.html">Biome</a></div><div class="brief "><p class="paragraph">Gets the biome at the given <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">x</a>, <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">y</a>, and <a href="../../org.kryptonmc.api.world.biome/-biome-container/get-biome.html">z</a> coordinates.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-524738865%2FFunctions%2F1245306095" anchor-label="getBlock" id="-524738865%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.block/-block-container/get-block.html"><span>get</span><wbr></wbr><span><span>Block</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.block/-block-container/get-block.html"><span>get</span><wbr></wbr><span><span>Block</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-524738865%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.block/-block-container/get-block.html"><span class="token function">getBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.api.util/-vec3i/index.html">Vec3i</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.block/-block-state/index.html">BlockState</a></div><div class="brief "><p class="paragraph">Gets the block at the given <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">position</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.block/-block-container/get-block.html"><span class="token function">getBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">z<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.block/-block-state/index.html">BlockState</a></div><div class="brief "><p class="paragraph">Gets the block at the given <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">x</a>, <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">y</a>, and <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">z</a> coordinates.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.block/-block-container/get-block.html"><span class="token function">getBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.api.util/-vec3i/index.html">Vec3i</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.block/-block-state/index.html">BlockState</a></div><div class="brief "><p class="paragraph">Gets the block at the given <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">position</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.block/-block-container/get-block.html"><span class="token function">getBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">z<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.block/-block-state/index.html">BlockState</a></div><div class="brief "><p class="paragraph">Gets the block at the given <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">x</a>, <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">y</a>, and <a href="../../org.kryptonmc.api.block/-block-container/get-block.html">z</a> coordinates.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-957136813%2FFunctions%2F1245306095" anchor-label="getEntitiesOfType" id="-957136813%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html"><span>get</span><wbr></wbr><span>Entities</span><wbr></wbr><span>Of</span><wbr></wbr><span><span>Type</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html"><span>get</span><wbr></wbr><span>Entities</span><wbr></wbr><span>Of</span><wbr></wbr><span><span>Type</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-957136813%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator"> : </span><a href="../../org.kryptonmc.api.entity/-entity/index.html">Entity</a><span class="token operator">&gt; </span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html"><span class="token function">getEntitiesOfType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets all entities of the given <a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">type</a> contained within this container.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator"> : </span><a href="../../org.kryptonmc.api.entity/-entity/index.html">Entity</a><span class="token operator">&gt; </span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html"><span class="token function">getEntitiesOfType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">predicate<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html">Predicate</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets all entities of the given <a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">type</a> matching the given <a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">predicate</a> contained within this container.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator"> : </span><a href="../../org.kryptonmc.api.entity/-entity/index.html">Entity</a><span class="token operator">&gt; </span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html"><span class="token function">getEntitiesOfType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets all entities of the given <a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">type</a> contained within this container.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator"> : </span><a href="../../org.kryptonmc.api.entity/-entity/index.html">Entity</a><span class="token operator">&gt; </span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html"><span class="token function">getEntitiesOfType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">predicate<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html">Predicate</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">E</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets all entities of the given <a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">type</a> matching the given <a href="../../org.kryptonmc.api.world/-entity-container/get-entities-of-type.html">predicate</a> contained within this container.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="419501409%2FFunctions%2F1245306095" anchor-label="getFluid" id="419501409%2FFunctions%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html"><span>get</span><wbr></wbr><span><span>Fluid</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html"><span>get</span><wbr></wbr><span><span>Fluid</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="419501409%2FFunctions%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html"><span class="token function">getFluid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.api.util/-vec3i/index.html">Vec3i</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.fluid/-fluid-state/index.html">FluidState</a></div><div class="brief "><p class="paragraph">Gets the fluid at the given <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">position</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html"><span class="token function">getFluid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">z<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.fluid/-fluid-state/index.html">FluidState</a></div><div class="brief "><p class="paragraph">Gets the fluid at the given <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">x</a>, <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">y</a>, and <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">z</a> coordinates.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html"><span class="token function">getFluid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.api.util/-vec3i/index.html">Vec3i</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.fluid/-fluid-state/index.html">FluidState</a></div><div class="brief "><p class="paragraph">Gets the fluid at the given <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">position</a>.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html"><span class="token function">getFluid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">z<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.api.fluid/-fluid-state/index.html">FluidState</a></div><div class="brief "><p class="paragraph">Gets the fluid at the given <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">x</a>, <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">y</a>, and <a href="../../org.kryptonmc.api.fluid/-fluid-container/get-fluid.html">z</a> coordinates.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-1610973253%2FProperties%2F1245306095" anchor-label="entities" id="-1610973253%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="entities.html"><span><span>entities</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1610973253%2FProperties%2F1245306095" anchor-label="entities" id="-1610973253%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="entities.html"><span><span>entities</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1610973253%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="-1610973253%2FProperties%2F1245306095" anchor-label="entities" id="-1610973253%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="entities.html">entities</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.entity/-entity/index.html">Entity</a><span class="token operator">&gt;</span></div><div class="brief "><a data-name="-1610973253%2FProperties%2F1245306095" anchor-label="entities" id="-1610973253%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">All of the entities currently in this chunk.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="entities.html">entities</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.entity/-entity/index.html">Entity</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">All of the entities currently in this chunk.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="784817827%2FProperties%2F1245306095" anchor-label="inhabitedTime" id="784817827%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="inhabited-time.html"><span>inhabited</span><wbr></wbr><span><span>Time</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="inhabited-time.html"><span>inhabited</span><wbr></wbr><span><span>Time</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="784817827%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="784817827%2FProperties%2F1245306095" anchor-label="inhabitedTime" id="784817827%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="inhabited-time.html">inhabitedTime</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><a data-name="784817827%2FProperties%2F1245306095" anchor-label="inhabitedTime" id="784817827%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The cumulative number of ticks players have been in this chunk.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="inhabited-time.html">inhabitedTime</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">The cumulative number of ticks players have been in this chunk.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-868340099%2FProperties%2F1245306095" anchor-label="lastUpdate" id="-868340099%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="last-update.html"><span>last</span><wbr></wbr><span><span>Update</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="last-update.html"><span>last</span><wbr></wbr><span><span>Update</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-868340099%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="-868340099%2FProperties%2F1245306095" anchor-label="lastUpdate" id="-868340099%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="last-update.html">lastUpdate</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><a data-name="-868340099%2FProperties%2F1245306095" anchor-label="lastUpdate" id="-868340099%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The time that this chunk was last updated. This is set when the chunk is saved to disk.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="last-update.html">lastUpdate</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">The time that this chunk was last updated. This is set when the chunk is saved to disk.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="37955020%2FProperties%2F1245306095" anchor-label="players" id="37955020%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="players.html"><span><span>players</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="players.html"><span><span>players</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="37955020%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="37955020%2FProperties%2F1245306095" anchor-label="players" id="37955020%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="players.html">players</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.entity.player/-player/index.html">Player</a><span class="token operator">&gt;</span></div><div class="brief "><a data-name="37955020%2FProperties%2F1245306095" anchor-label="players" id="37955020%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">All of the players currently in this chunk.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="players.html">players</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.entity.player/-player/index.html">Player</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">All of the players currently in this chunk.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1164416044%2FProperties%2F1245306095" anchor-label="world" id="1164416044%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="world.html"><span><span>world</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="world.html"><span><span>world</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1164416044%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="1164416044%2FProperties%2F1245306095" anchor-label="world" id="1164416044%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="world.html">world</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-world/index.html">World</a></div><div class="brief "><a data-name="1164416044%2FProperties%2F1245306095" anchor-label="world" id="1164416044%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The world this chunk is in.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="world.html">world</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.world/-world/index.html">World</a></div><div class="brief "><p class="paragraph">The world this chunk is in.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="287565446%2FProperties%2F1245306095" anchor-label="x" id="287565446%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="x.html"><span><span>x</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="x.html"><span><span>x</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="287565446%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="287565446%2FProperties%2F1245306095" anchor-label="x" id="287565446%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="x.html">x</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><a data-name="287565446%2FProperties%2F1245306095" anchor-label="x" id="287565446%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The X position of this chunk.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="x.html">x</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The X position of this chunk.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="349605060%2FProperties%2F1245306095" anchor-label="z" id="349605060%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="z.html"><span><span>z</span></span></a></div>
+          <div class="table-row" data-filterable-current=":api:dokkaHtml/main" data-filterable-set=":api:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="z.html"><span><span>z</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="349605060%2FProperties%2F1245306095"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><a data-name="349605060%2FProperties%2F1245306095" anchor-label="z" id="349605060%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="z.html">z</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><a data-name="349605060%2FProperties%2F1245306095" anchor-label="z" id="349605060%2FProperties%2F1245306095" data-filterable-set=":api:dokkaHtml/main"></a><p class="paragraph">The Z position of this chunk.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="z.html">z</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The Z position of this chunk.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
