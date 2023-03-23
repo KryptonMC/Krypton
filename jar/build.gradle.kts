@@ -22,7 +22,7 @@ tasks {
         transform(Log4j2PluginsCacheFileTransformer::class.java)
 
         fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
-        dataExclusions(global.versions.minecraft.get(), "attributes", "biomes", "block_properties", "blocks", "commands", "custom_statistic",
+        dataExclusions(global.versions.minecraft.get(), "attributes", "biomes", "block_properties", "commands", "custom_statistic",
             "dimension_types", "dye_colors", "enchantments", "entities", "entity_data_serializers", "fluid_properties", "fluids", "game_events",
             "map_colors", "packets", "particles", "potion_effects", "potions", "recipes", "sound_sources", "villager_professions",
             "villager_types")

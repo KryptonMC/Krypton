@@ -19,6 +19,7 @@ package org.kryptonmc.krypton.plugin.server
 
 import com.google.common.jimfs.Jimfs
 import org.junit.jupiter.api.Test
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.test.assertEquals
@@ -47,6 +48,6 @@ class ServerPluginSourceTest {
 
     private class DummyDiscoverer(vararg val paths: Path) : ModuleDiscoverer {
 
-        override fun discover(): Collection<Path> = paths.toSet()
+        override fun discover(): Collection<URI> = paths.mapTo(mutableSetOf()) { it.toUri() }
     }
 }

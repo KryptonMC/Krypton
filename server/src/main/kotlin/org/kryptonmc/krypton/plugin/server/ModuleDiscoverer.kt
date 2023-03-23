@@ -17,9 +17,9 @@
  */
 package org.kryptonmc.krypton.plugin.server
 
-import java.nio.file.Path
+import java.net.URI
 
 interface ModuleDiscoverer {
 
-    fun discover(): Collection<Path>
+    fun discover(): Collection<URI>
 }

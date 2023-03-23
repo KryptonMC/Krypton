@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.plugin.module.PluginModule
 import org.kryptonmc.krypton.util.NoSpread
 import org.kryptonmc.processor.SerializedPluginDescription
 import java.io.InputStreamReader
-import java.nio.file.Files
+import java.net.URI
 import java.nio.file.Path
 
 class ServerPluginSource(
@@ -44,12 +44,12 @@ class ServerPluginSource(
     override fun loadDescriptions(): Collection<PluginDescription> {
         val moduleInfoFiles = moduleDiscoverer.discover()
         val result = ArrayList<PluginDescription>()
-        moduleInfoFiles.forEach { path ->
-            val moduleName = getModuleNameFromPath(path)
+        moduleInfoFiles.forEach { uri ->
+            val moduleName = getModuleNameFromUri(uri)
             if (!modules.isEnabled(moduleName)) return@forEach
 
             try {
-                result.add(loadDescription(path))
+                result.add(loadDescription(uri))
             } catch (exception: Exception) {
                 LOGGER.error("Failed to load internal module $moduleName!", exception)
             }
@@ -58,15 +58,15 @@ class ServerPluginSource(
         return result
     }
 
-    private fun loadDescription(source: Path): LoadedCandidateDescription {
-        val serialized = findMetadata(source) ?: throw InvalidModuleException("Module ${getModuleNameFromPath(source)} has invalid metadata!")
+    private fun loadDescription(source: URI): LoadedCandidateDescription {
+        val serialized = findMetadata(source) ?: throw InvalidModuleException("Module ${getModuleNameFromUri(source)} has invalid metadata!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidModuleException("Module ID ${serialized.id} is invalid!")
         return serializedToCandidate(serialized)
     }
 
-    private fun findMetadata(path: Path): SerializedPluginDescription? {
-        val reader = JsonReader(InputStreamReader(Files.newInputStream(path)))
-        return SerializedPluginDescription.read(reader)
+    private fun findMetadata(uri: URI): SerializedPluginDescription? {
+        val reader = JsonReader(InputStreamReader(uri.toURL().openStream()))
+        return reader.use { SerializedPluginDescription.read(it) }
     }
 
     override fun loadPlugin(candidate: PluginDescription): PluginDescription {
@@ -147,8 +147,10 @@ class ServerPluginSource(
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        private fun getModuleNameFromPath(path: Path): String {
-            val pathName = path.toString()
+        private fun getModuleNameFromUri(uri: URI): String {
+            // If we are running in the IDE, path should be non-null, as the URI will just be a path and nothing else.
+            // If we are running in a JAR, schemeSpecificPart will be a file:// location, and path will be null.
+            val pathName = uri.path ?: uri.schemeSpecificPart
             val lastSeparator = pathName.lastIndexOf('/')
 
             val lastPart = pathName.substring(lastSeparator + 1)
