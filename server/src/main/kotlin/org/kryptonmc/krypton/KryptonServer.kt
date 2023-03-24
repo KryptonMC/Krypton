@@ -90,7 +90,6 @@ class KryptonServer(
     private val tickDispatcher = TickDispatcher<KryptonChunk>(TickThreadProvider.counter(), 1)
     @Volatile
     private var running = true
-    private var stopped = false
 
     init {
         PacketFraming.setCompressionThreshold(config.server.compressionThreshold)
@@ -100,8 +99,6 @@ class KryptonServer(
     fun tickDispatcher(): TickDispatcher<KryptonChunk> = tickDispatcher
 
     override fun isRunning(): Boolean = running
-
-    fun isStopped(): Boolean = stopped
 
     // The order of loading here is pretty important, as some things depend on
     // others to function properly.
@@ -244,9 +241,13 @@ class KryptonServer(
     }
 
     override fun stop() {
+        if (!running) {
+            // We are already shutting down, don't try to shut down again.
+            return
+        }
+
         try {
             running = false
-            stopped = true
             stopServer()
         } catch (exception: Throwable) {
             LOGGER.error("Error whilst attempting to stop the server!", exception)
@@ -256,7 +257,6 @@ class KryptonServer(
     private fun stopServer() {
         // Stop server and shut down session manager (disconnecting all players)
         LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
-        running = false
         networkServer.stop()
         tickDispatcher.shutdown()
 
@@ -280,11 +280,14 @@ class KryptonServer(
         LOGGER.info("Shutting down plugins and unregistering listeners...")
         eventNode.fire(KryptonServerStopEvent)
 
-        // Shut down scheduler
+        // Say goodbye :)
         LOGGER.info("Goodbye")
 
         // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
+
+        // Halt the JVM to avoid shutdown hooks running
+        Runtime.getRuntime().halt(0)
     }
 
     fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {
