@@ -18,6 +18,7 @@
 package org.kryptonmc.krypton.entity.components
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.util.Direction
@@ -31,9 +32,22 @@ interface BasePlayer : BaseEntity, KryptonEquipable, HungerDelegate, AbilitiesDe
     override val scoreboard: KryptonScoreboard
         get() = world.scoreboard
     override val teamRepresentation: Component
-        get() = Component.text(name)
+        get() = nameOrDescription()
     override val facing: Direction
         get() = Directions.ofPitch(position.pitch.toDouble())
+
+    override val displayName: Component
+        get() {
+            val componentName = nameOrDescription()
+            val result = team?.formatName(componentName) ?: componentName
+            return result.style {
+                it.clickEvent(ClickEvent.suggestCommand("/tell $name "))
+                it.hoverEvent(asHoverEvent())
+                it.insertion(name)
+            }
+        }
+
+    override fun nameOrDescription(): Component = Component.text(name)
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
 }

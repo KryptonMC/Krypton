@@ -53,8 +53,9 @@ interface BaseEntity : BaseDataHolder, NameableTeamMember, Rideable, WaterPushab
 
     override fun getPermissionValue(permission: String): TriState = TriState.FALSE
 
-    override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> =
-        HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName)))
+    override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> {
+        return HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, nameOrDescription())))
+    }
 
     companion object {
 
