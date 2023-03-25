@@ -285,9 +285,6 @@ class KryptonServer(
 
         // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
-
-        // Halt the JVM to avoid shutdown hooks running
-        Runtime.getRuntime().halt(0)
     }
 
     fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {

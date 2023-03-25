@@ -21,6 +21,7 @@ import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.locale.CommandMessages
+import kotlin.system.exitProcess
 
 object StopCommand {
 
@@ -30,7 +31,10 @@ object StopCommand {
             requiresPermission(KryptonPermission.STOP)
             runs {
                 it.source.sendSuccess(CommandMessages.STOP, true)
-                it.source.server.stop()
+                // We use exit rather than stop because if this is executed from the console, the server will shut down before
+                // it is finished, due to the console handler thread being a daemon thread.
+                // Therefore, to avoid this, we use exit, which will call the shutdown hook that calls stop.
+                exitProcess(0)
             }
         })
     }
