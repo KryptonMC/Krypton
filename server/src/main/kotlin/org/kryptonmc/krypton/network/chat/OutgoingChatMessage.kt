@@ -32,7 +32,7 @@ sealed interface OutgoingChatMessage {
         override fun content(): Component = content
 
         override fun sendToPlayer(player: KryptonPlayer, filter: Boolean, type: RichChatType.Bound) {
-            player.connection.playHandler().sendDisguisedChatMessage(content, type)
+            player.chatTracker.sendDisguisedChatMessage(content, type)
         }
     }
 
@@ -43,7 +43,7 @@ sealed interface OutgoingChatMessage {
 
         override fun sendToPlayer(player: KryptonPlayer, filter: Boolean, type: RichChatType.Bound) {
             val filtered = message.filter(filter)
-            if (!filtered.isFullyFiltered()) player.connection.playHandler().sendPlayerChatMessage(filtered, type)
+            if (!filtered.isFullyFiltered()) player.chatTracker.sendPlayerChatMessage(filtered, type)
         }
     }
 

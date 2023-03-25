@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state.
  */
-class HandshakePacketHandler(private val server: KryptonServer, override val connection: NioConnection) : PacketHandler {
+class HandshakePacketHandler(private val server: KryptonServer, private val connection: NioConnection) : PacketHandler {
 
     fun handleHandshake(packet: PacketInHandshake) {
         when (packet.nextState) {

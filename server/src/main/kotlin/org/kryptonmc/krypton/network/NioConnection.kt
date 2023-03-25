@@ -23,7 +23,6 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.network.buffer.BinaryBuffer
 import org.kryptonmc.krypton.network.handlers.HandshakePacketHandler
 import org.kryptonmc.krypton.network.handlers.PacketHandler
-import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.network.handlers.TickablePacketHandler
 import org.kryptonmc.krypton.network.interceptor.PacketInterceptorRegistry
 import org.kryptonmc.krypton.network.socket.NetworkWorker
@@ -78,6 +77,10 @@ class NioConnection(
 
     override fun connectAddress(): SocketAddress = address
 
+    fun setAddress(newAddress: SocketAddress) {
+        address = newAddress
+    }
+
     override fun latency(): Int = latency
 
     fun setState(newState: PacketState) {
@@ -94,12 +97,6 @@ class NioConnection(
         val encryptCipher = createCipher(1, key)
         val decryptCipher = createCipher(2, key)
         encryptionContext = EncryptionContext(encryptCipher, decryptCipher)
-    }
-
-    fun inPlayState(): Boolean = handler is PlayPacketHandler
-
-    fun playHandler(): PlayPacketHandler {
-        return checkNotNull(handler as? PlayPacketHandler) { "Tried to use play handler before play state!" }
     }
 
     fun tickHandler() {
@@ -184,7 +181,7 @@ class NioConnection(
         }
     }
 
-    fun disconnect(reason: Component?) {
+    override fun disconnect(reason: Component?) {
         connected = false
         workerQueue.relaxedOffer {
             worker.disconnect(this, channel)

@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
  * - [Ping][org.kryptonmc.krypton.packet. in.status.PacketInPing] -
  *   pings the server (to calculate latency on its end)
  */
-class StatusPacketHandler(private val server: KryptonServer, override val connection: NioConnection) : PacketHandler {
+class StatusPacketHandler(private val server: KryptonServer, private val connection: NioConnection) : PacketHandler {
 
     private var requestedStatus = false
 

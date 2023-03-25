@@ -17,6 +17,7 @@
  */
 package org.kryptonmc.krypton.network
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.Packet
 import java.net.SocketAddress
@@ -32,4 +33,6 @@ interface NetworkConnection {
     }
 
     fun write(packet: GenericPacket)
+
+    fun disconnect(reason: Component?)
 }

@@ -34,6 +34,7 @@ import org.kryptonmc.api.user.BaseUser
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
 import java.net.InetSocketAddress
+import java.net.SocketAddress
 
 /**
  * A player that is connected to the server and playing the game.
@@ -44,7 +45,7 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     /**
      * The address that the player is currently connected from.
      */
-    public val address: InetSocketAddress
+    public val address: SocketAddress
 
     /**
      * If this player can fly.

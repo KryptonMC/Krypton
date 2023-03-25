@@ -167,11 +167,6 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
 
     override fun getAttribute(type: AttributeType): Attribute? = getAttribute(type.downcast())
 
-    protected fun removeEffectParticles() {
-        isPotionEffectAmbient = false
-        potionEffectColor = 0
-    }
-
     final override fun isAlive(): Boolean = super.isAlive() && health > 0F
 
     open fun canBeSeenAsEnemy(): Boolean = !isInvulnerable && canBeSeenByAnyone()

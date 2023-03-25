@@ -50,6 +50,7 @@ import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.nio.ByteBuffer
 import javax.crypto.spec.SecretKeySpec
 
@@ -65,7 +66,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 class LoginPacketHandler(
     private val server: KryptonServer,
-    override val connection: NioConnection,
+    private val connection: NioConnection,
     private val proxyForwardedData: ProxyForwardedData?
 ) : PacketHandler {
 
@@ -97,7 +98,7 @@ class LoginPacketHandler(
     private fun processOfflineLogin(name: String) {
         // Copy over the data from legacy forwarding
         // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-        val address = createAddress()
+        modifyAddressIfNeeded()
         val uuid = proxyForwardedData?.uuid ?: UUIDUtil.createOfflinePlayerId(name)
         val profile = KryptonGameProfile.full(uuid, name, proxyForwardedData?.properties ?: persistentListOf())
 
@@ -105,7 +106,7 @@ class LoginPacketHandler(
         if (!callLoginEvent(profile)) return
 
         // Initialize the player and setup their permissions.
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
+        val player = KryptonPlayer(connection, profile, server.worldManager.default)
         val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSION_FUNCTION))
         player.permissionFunction = permissionsEvent.result?.function ?: permissionsEvent.defaultFunction
 
@@ -120,8 +121,7 @@ class LoginPacketHandler(
         // cipher to use for encryption and decryption (see https://wiki.vg/Protocol_Encryption).
         val sharedSecret = Encryption.decrypt(packet.secret)
         connection.enableEncryption(SecretKeySpec(sharedSecret, Encryption.SYMMETRIC_ALGORITHM))
-
-        val address = createAddress()
+        modifyAddressIfNeeded()
 
         // Fire the authentication event.
         val authEvent = KryptonPlayerAuthenticationEvent(name)
@@ -134,7 +134,7 @@ class LoginPacketHandler(
         }
 
         if (!callLoginEvent(profile)) return
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
+        val player = KryptonPlayer(connection, profile, server.worldManager.default)
 
         val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSION_FUNCTION))
         player.permissionFunction = permissionsEvent.result?.function ?: permissionsEvent.defaultFunction
@@ -170,11 +170,12 @@ class LoginPacketHandler(
 
         val data = VelocityProxy.readData(reader)
         val address = connection.connectAddress() as InetSocketAddress
+        connection.setAddress(InetSocketAddress(data.remoteAddress, address.port))
 
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = KryptonGameProfile.full(data.uuid, data.username, data.properties)
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
+        val player = KryptonPlayer(connection, profile, server.worldManager.default)
 
         // Setup permissions for the player
         val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSION_FUNCTION))
@@ -205,14 +206,11 @@ class LoginPacketHandler(
         return true
     }
 
-    private fun createAddress(): InetSocketAddress {
-        val rawAddress = connection.connectAddress() as InetSocketAddress
-        return if (proxyForwardedData != null) {
-            val port = if (proxyForwardedData.forwardedPort != -1) proxyForwardedData.forwardedPort else rawAddress.port
-            InetSocketAddress(proxyForwardedData.forwardedAddress, port)
-        } else {
-            rawAddress
-        }
+    private fun modifyAddressIfNeeded() {
+        val address = connection.connectAddress() as? InetSocketAddress ?: return
+        val data = proxyForwardedData ?: return
+        val port = if (data.forwardedPort != -1) data.forwardedPort else address.port
+        connection.setAddress(InetSocketAddress(data.forwardedAddress, port))
     }
 
     private fun disconnect(reason: Component) {

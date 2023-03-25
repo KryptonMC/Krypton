@@ -58,13 +58,13 @@ import org.kryptonmc.krypton.entity.system.PlayerHungerSystem
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.network.NioConnection
+import org.kryptonmc.krypton.network.NetworkConnection
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
 import org.kryptonmc.krypton.network.chat.RemoteChatSession
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
@@ -83,17 +83,16 @@ import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
-import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.time.Instant
 import java.util.UUID
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class KryptonPlayer(
-    override val connection: NioConnection,
+    override val connection: NetworkConnection,
     override val profile: GameProfile,
-    world: KryptonWorld,
-    override val address: InetSocketAddress
+    world: KryptonWorld
 ) : KryptonLivingEntity(world), BasePlayer {
 
     override val type: KryptonEntityType<KryptonPlayer>
@@ -107,6 +106,8 @@ class KryptonPlayer(
     override var uuid: UUID
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.
+    override val address: SocketAddress
+        get() = connection.connectAddress()
     override val ping: Int
         get() = connection.latency()
 
@@ -124,6 +125,8 @@ class KryptonPlayer(
 
     override var settings: KryptonPlayerSettings = KryptonPlayerSettings.DEFAULT
     private var lastActionTime = System.currentTimeMillis()
+
+    val chatTracker: PlayerChatTracker = PlayerChatTracker(this)
     private var chatSession: RemoteChatSession? = null
 
     private var camera: KryptonEntity = this
@@ -172,7 +175,6 @@ class KryptonPlayer(
         } else {
             camera = this
         }
-        onAbilitiesUpdate()
         return event
     }
 
@@ -300,20 +302,14 @@ class KryptonPlayer(
     }
 
     override fun disconnect(text: Component) {
-        // We always use the play disconnect here because we should be in the play state by the time the player is constructed, and certainly
-        // by the time any plugin is able to access it.
-        connection.playHandler().disconnect(text)
+        connection.send(PacketOutDisconnect(text))
+        connection.disconnect(text)
     }
 
-    fun disconnect() {
+    fun onDisconnect() {
+        chatTracker.onDisconnect()
         vehicleSystem.ejectPassengers()
         // TODO: Stop sleeping if sleeping
-    }
-
-    fun onAbilitiesUpdate() {
-        if (connection.inPlayState()) connection.send(PacketOutAbilities.create(abilities))
-        removeEffectParticles()
-        isInvisible = gameMode == GameMode.SPECTATOR
     }
 
     fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {

@@ -18,16 +18,13 @@
 package org.kryptonmc.krypton.network.handlers
 
 import com.mojang.brigadier.StringReader
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.translation.Translator
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
@@ -48,15 +45,8 @@ import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.network.chat.ChatUtil
-import org.kryptonmc.krypton.network.chat.ChatTypes
-import org.kryptonmc.krypton.network.chat.LastSeenMessages
-import org.kryptonmc.krypton.network.chat.LastSeenMessagesValidator
-import org.kryptonmc.krypton.network.chat.MessageSignatureCache
-import org.kryptonmc.krypton.network.chat.PlayerChatMessage
 import org.kryptonmc.krypton.network.chat.RemoteChatSession
-import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.SignableCommand
-import org.kryptonmc.krypton.network.chat.SignedMessageBody
 import org.kryptonmc.krypton.network.chat.SignedMessageChain
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatCommand
@@ -87,14 +77,10 @@ import org.kryptonmc.krypton.packet.out.play.EntityAnimations
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommandSuggestionsResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
-import org.kryptonmc.krypton.packet.out.play.PacketOutDisguisedChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
-import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutTagQueryResponse
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.FutureChain
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
@@ -111,9 +97,6 @@ import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 import org.kryptonmc.krypton.network.NioConnection
 import org.kryptonmc.krypton.network.PacketGrouping
 import java.time.Duration
-import java.time.Instant
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.atomic.AtomicReference
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -126,24 +109,16 @@ import java.util.concurrent.atomic.AtomicReference
  */
 class PlayPacketHandler(
     private val server: KryptonServer,
-    override val connection: NioConnection,
+    private val connection: NioConnection,
     private val player: KryptonPlayer
 ) : TickablePacketHandler {
+
+    private val chatTracker = player.chatTracker
+    private var chatSession: RemoteChatSession? = null
 
     private var lastKeepAlive = System.currentTimeMillis()
     private var keepAliveChallenge = 0L
     private var pendingKeepAlive = false
-
-    private val lastChatTimestamp = AtomicReference(Instant.EPOCH)
-    private var chatSession: RemoteChatSession? = null
-    private var signedMessageDecoder = if (server.config.advanced.enforceSecureProfiles) {
-        SignedMessageChain.Decoder.REJECT_ALL
-    } else {
-        SignedMessageChain.Decoder.unsigned(player.uuid)
-    }
-    private val lastSeenMessages = LastSeenMessagesValidator(20)
-    private val messageSignatureCache = MessageSignatureCache.createDefault()
-    private val chatMessageChain = FutureChain { server.scheduler.scheduleTask(it, TaskTime.zero(), TaskTime.zero()) }
 
     override fun tick() {
         val time = System.currentTimeMillis()
@@ -158,18 +133,17 @@ class PlayPacketHandler(
         connection.send(PacketOutKeepAlive(keepAliveChallenge))
     }
 
-    fun disconnect(reason: Component) {
+    private fun disconnect(reason: Component) {
         connection.send(PacketOutDisconnect(reason))
         connection.disconnect(reason)
     }
 
     override fun onDisconnect(message: Component?) {
-        chatMessageChain.close()
         if (message != null) {
             val translated = MinecraftTranslationManager.render(message)
             LOGGER.info("${player.name} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
         }
-        player.disconnect()
+        player.onDisconnect()
         server.playerManager.removePlayer(player)
     }
 
@@ -188,29 +162,18 @@ class PlayPacketHandler(
         if (!event.isAllowed()) return
 
         val command = event.result?.command ?: packet.command
-        val lastSeen = tryHandleChat(command, packet.timestamp, packet.lastSeenMessages) ?: return
+        val lastSeen = chatTracker.handleChat(command, packet.timestamp, packet.lastSeenMessages) ?: return
 
         val source = player.createCommandSourceStack()
         val parsed = server.commandManager.parse(source, command)
         val arguments = try {
-            collectSignedArguments(packet, SignableCommand.of(parsed), lastSeen)
+            chatTracker.collectSignedArguments(packet, SignableCommand.of(parsed), lastSeen)
         } catch (exception: SignedMessageChain.DecodeException) {
             handleMessageDecodeFailure(exception)
             return
         }
 
         server.commandManager.dispatch(source.withSigningContext(CommandSigningContext.SignedArguments(arguments)), command)
-    }
-
-    private fun collectSignedArguments(packet: PacketInChatCommand, command: SignableCommand<*>,
-                                       lastSeenMessages: LastSeenMessages): Map<String, PlayerChatMessage> {
-        val result = Object2ObjectOpenHashMap<String, PlayerChatMessage>()
-        command.arguments.forEach {
-            val signature = packet.argumentSignatures.get(it.name())
-            val body = SignedMessageBody(it.value, packet.timestamp, packet.salt, lastSeenMessages)
-            result.put(it.name(), signedMessageDecoder.unpack(signature, body))
-        }
-        return result
     }
 
     fun handleChat(packet: PacketInChat) {
@@ -221,18 +184,16 @@ class PlayPacketHandler(
         val event = server.eventNode.fire(KryptonPlayerChatEvent(player, packet.message))
         if (!event.isAllowed()) return
 
-        val lastSeen = tryHandleChat(packet.message, packet.timestamp, packet.lastSeenMessages) ?: return
+        val lastSeen = chatTracker.handleChat(packet.message, packet.timestamp, packet.lastSeenMessages) ?: return
         val message = try {
-            getSignedMessage(packet, lastSeen)
+            chatTracker.getSignedMessage(packet, lastSeen)
         } catch (exception: SignedMessageChain.DecodeException) {
             handleMessageDecodeFailure(exception)
             return
         }
 
         val unsignedContent = event.result?.message ?: message.decoratedContent()
-        chatMessageChain.append {
-            CompletableFuture.supplyAsync({ broadcastChatMessage(message.withUnsignedContent(unsignedContent)) }, it)
-        }
+        chatTracker.addMessageToChain(message, unsignedContent)
     }
 
     private fun handleMessageDecodeFailure(exception: SignedMessageChain.DecodeException) {
@@ -241,66 +202,6 @@ class PlayPacketHandler(
         } else {
             player.sendSystemMessage(exception.asComponent().color(NamedTextColor.RED))
         }
-    }
-
-    private fun tryHandleChat(message: String, timestamp: Instant, update: LastSeenMessages.Update): LastSeenMessages? {
-        if (!updateChatOrder(timestamp)) {
-            LOGGER.warn("Out of order chat message '$message' received from ${player.profile.name}. Disconnecting...")
-            disconnect(DisconnectMessages.OUT_OF_ORDER_CHAT)
-            return null
-        }
-        if (player.settings.chatVisibility == ChatVisibility.HIDDEN) {
-            connection.send(PacketOutSystemChat(Component.translatable("chat.disabled.options", NamedTextColor.RED), false))
-            return null
-        }
-        val lastSeen = unpackAndApplyLastSeen(update)
-        player.resetLastActionTime()
-        return lastSeen
-    }
-
-    private fun unpackAndApplyLastSeen(update: LastSeenMessages.Update): LastSeenMessages? {
-        val updated = synchronized(lastSeenMessages) { lastSeenMessages.applyUpdate(update) }
-        if (updated == null) {
-            LOGGER.warn("Failed to validate message acknowledgements from ${player.profile.name}. Disconnecting...")
-            disconnect(DisconnectMessages.CHAT_VALIDATION_FAILED)
-        }
-        return updated
-    }
-
-    private fun updateChatOrder(timestamp: Instant): Boolean {
-        do {
-            val current = lastChatTimestamp.get()
-            if (timestamp.isBefore(current)) return false
-        } while (!lastChatTimestamp.compareAndSet(current, timestamp))
-        return true
-    }
-
-    private fun getSignedMessage(packet: PacketInChat, lastSeenMessages: LastSeenMessages): PlayerChatMessage =
-        signedMessageDecoder.unpack(packet.signature, SignedMessageBody(packet.message, packet.timestamp, packet.salt, lastSeenMessages))
-
-    private fun broadcastChatMessage(message: PlayerChatMessage) {
-        server.playerManager.broadcastChatMessage(message, player, RichChatType.bind(ChatTypes.CHAT, player))
-    }
-
-    private fun addPendingMessage(message: PlayerChatMessage) {
-        val signature = message.signature ?: return
-        messageSignatureCache.push(message)
-        val trackedMessageCount = synchronized(lastSeenMessages) {
-            lastSeenMessages.addPending(signature)
-            lastSeenMessages.trackedMessagesCount()
-        }
-        if (trackedMessageCount > 4096) disconnect(Component.translatable("multiplayer.disconnect.too_many_pending_chats"))
-    }
-
-    fun sendPlayerChatMessage(message: PlayerChatMessage, type: RichChatType.Bound) {
-        val packet = PacketOutPlayerChat(message.link.sender, message.link.index, message.signature, message.signedBody.pack(messageSignatureCache),
-            message.unsignedContent, message.filterMask, type.toNetwork())
-        connection.send(packet)
-        addPendingMessage(message)
-    }
-
-    fun sendDisguisedChatMessage(message: Component, type: RichChatType.Bound) {
-        connection.send(PacketOutDisguisedChat(message, type.toNetwork()))
     }
 
     fun handleChatSessionUpdate(packet: PacketInChatSessionUpdate) {
@@ -312,22 +213,16 @@ class PlayPacketHandler(
             disconnect(PlayerPublicKey.EXPIRED_KEY)
             return
         }
-        try {
-            resetPlayerChatState(session.validate(player.profile, SignatureValidator.YGGDRASIL, Duration.ZERO))
+
+        val newSession = try {
+            session.validate(player.profile, SignatureValidator.YGGDRASIL, Duration.ZERO)
         } catch (exception: PlayerPublicKey.ValidationException) {
             LOGGER.error("Failed to validate public key!", exception)
             disconnect(exception.asComponent())
+            return
         }
-    }
-
-    private fun resetPlayerChatState(session: RemoteChatSession) {
-        chatSession = session
-        signedMessageDecoder = session.createMessageDecoder(player.uuid)
-        chatMessageChain.append {
-            player.setChatSession(session)
-            PacketGrouping.sendGroupedPacket(server, PacketOutPlayerInfoUpdate(PacketOutPlayerInfoUpdate.Action.INITIALIZE_CHAT, player))
-            CompletableFuture.completedFuture(null)
-        }
+        chatSession = newSession
+        chatTracker.resetPlayerChatState(newSession)
     }
 
     fun handleClientInformation(packet: PacketInClientInformation) {

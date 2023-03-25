@@ -26,6 +26,7 @@ import org.kryptonmc.krypton.event.player.KryptonPlayerChangeGameModeEvent
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.PacketGrouping
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
+import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate.Action
@@ -84,6 +85,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         if (!event.isAllowed()) return event
 
         setGameMode(event.result?.newGameMode ?: mode, gameMode)
+        sendGameModeUpdate()
         return event
     }
 
@@ -91,7 +93,11 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         previousGameMode = previousMode
         gameMode = mode
         GameModes.updatePlayerAbilities(mode, player.abilities)
-        player.onAbilitiesUpdate()
+        player.isInvisible = mode == GameMode.SPECTATOR
+    }
+
+    private fun sendGameModeUpdate() {
+        player.connection.send(PacketOutAbilities.create(player.abilities))
         PacketGrouping.sendGroupedPacket(player.server, PacketOutPlayerInfoUpdate(Action.UPDATE_GAME_MODE, player))
     }
 
