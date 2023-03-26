@@ -33,7 +33,6 @@ import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.user.BaseUser
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
-import java.net.InetSocketAddress
 import java.net.SocketAddress
 
 /**

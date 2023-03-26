@@ -50,7 +50,6 @@ import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
-import java.net.SocketAddress
 import java.nio.ByteBuffer
 import javax.crypto.spec.SecretKeySpec
 

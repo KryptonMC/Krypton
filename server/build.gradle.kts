@@ -3,6 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp")
+    jacoco
 }
 
 dependencies {
@@ -74,6 +75,13 @@ tasks {
                 "minecraft" to minecraftVersion,
                 "data" to minecraftVersion.replace('.', '_')
             ))
+        }
+    }
+    jacocoTestReport {
+        dependsOn(test)
+        reports {
+            html.required.set(true)
+            xml.required.set(true)
         }
     }
 }

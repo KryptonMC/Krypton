@@ -17,6 +17,7 @@
  */
 package org.kryptonmc.krypton.testutil
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.network.NetworkConnection
 import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.Packet
@@ -29,6 +30,7 @@ import kotlin.test.assertTrue
 class TestConnection : NetworkConnection {
 
     private val sentPackets = ArrayDeque<GenericPacket>()
+    private var connected = true
 
     override fun connectAddress(): SocketAddress = InetSocketAddress(InetAddress.getLocalHost(), 25565)
 
@@ -39,7 +41,12 @@ class TestConnection : NetworkConnection {
     }
 
     override fun write(packet: GenericPacket) {
+        if (!connected) error("Connection was disconnected!")
         sentPackets.addFirst(packet)
+    }
+
+    override fun disconnect(reason: Component?) {
+        connected = false
     }
 
     fun popPacket(): GenericPacket = sentPackets.removeFirst()

@@ -96,12 +96,6 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     override var health: Float
         get() = data.get(MetadataKeys.LivingEntity.HEALTH)
         set(value) = data.set(MetadataKeys.LivingEntity.HEALTH, value)
-    private var potionEffectColor: Int
-        get() = data.get(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR)
-        set(value) = data.set(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR, value)
-    private var isPotionEffectAmbient: Boolean
-        get() = data.get(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE)
-        set(value) = data.set(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE, value)
     var arrowCount: Int
         get() = data.get(MetadataKeys.LivingEntity.ARROWS)
         set(value) = data.set(MetadataKeys.LivingEntity.ARROWS, value)

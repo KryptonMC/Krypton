@@ -29,7 +29,9 @@ import java.nio.ByteBuffer
 @Suppress("ArrayInDataClass")
 data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : Writable {
 
-    constructor(reader: BinaryReader) : this(reader.readNBT(), reader.readByteArray())
+    constructor(reader: BinaryReader) : this(reader.readNBT(), reader.readByteArray()) {
+        reader.readVarInt() // Number of block entities
+    }
 
     override fun write(writer: BinaryWriter) {
         writer.writeNBT(heightmaps) // Heightmaps

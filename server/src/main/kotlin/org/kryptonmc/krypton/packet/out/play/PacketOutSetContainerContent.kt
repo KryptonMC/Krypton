@@ -22,13 +22,11 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.buffer.BinaryReader
 import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.collection.FixedList
 
 @JvmRecord
 data class PacketOutSetContainerContent(val id: Byte, val stateId: Int, val items: List<KryptonItemStack>, val heldItem: KryptonItemStack) : Packet {
 
-    constructor(reader: BinaryReader) : this(reader.readByte(), reader.readVarInt(),
-        reader.readCollection({ FixedList(it, KryptonItemStack.EMPTY) }, BinaryReader::readItem), reader.readItem())
+    constructor(reader: BinaryReader) : this(reader.readByte(), reader.readVarInt(), reader.readList(BinaryReader::readItem), reader.readItem())
 
     override fun write(writer: BinaryWriter) {
         writer.writeByte(id)

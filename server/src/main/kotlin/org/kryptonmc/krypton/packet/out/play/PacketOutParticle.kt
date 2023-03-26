@@ -50,7 +50,7 @@ data class PacketOutParticle(
 ) : Packet {
 
     constructor(reader: BinaryReader) : this(reader, reader.readVarInt(), reader.readBoolean(), reader.readDouble(), reader.readDouble(),
-        reader.readDouble(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readVarInt())
+        reader.readDouble(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readInt())
 
     private constructor(reader: BinaryReader, typeId: Int, longDistance: Boolean, x: Double, y: Double, z: Double, offsetX: Float, offsetY: Float,
                         offsetZ: Float, maxSpeed: Float,

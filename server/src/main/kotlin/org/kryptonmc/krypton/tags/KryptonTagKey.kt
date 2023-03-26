@@ -45,7 +45,13 @@ data class KryptonTagKey<T>(override val registry: ResourceKey<out Registry<T>>,
 
         @JvmStatic
         fun <T> hashedCodec(registry: ResourceKey<out Registry<T>>): Codec<TagKey<T>> = Codec.STRING.comapFlatMap(
-            { input -> if (input.startsWith('#')) Keys.read(input).map { of(registry, it) } else DataResult.error("$input is not a valid tag ID!") },
+            { input ->
+                if (input.startsWith('#')) {
+                    Keys.read(input.substring(1)).map { of(registry, it) }
+                } else {
+                    DataResult.error("$input is not a valid tag ID!")
+                }
+            },
             { "#${it.location}" }
         )
     }

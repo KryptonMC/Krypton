@@ -22,7 +22,7 @@ import org.kryptonmc.krypton.network.buffer.BinaryWriter
 /**
  * Something that can write its data to a Netty ByteBuf.
  */
-interface Writable {
+fun interface Writable {
 
     /**
      * Writes the data contained within this writable to the given [writer].
