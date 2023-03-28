@@ -25,7 +25,6 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.random.RandomSource
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.data.WorldData
@@ -42,8 +41,6 @@ interface WorldAccessor : ReadOnlyWorld, WriteOnlyWorld, WorldTimeAccessor {
         get() = data.difficulty
     override val dayTime: Long
         get() = data.dayTime
-
-    fun blockUpdated(pos: Vec3i, block: KryptonBlock)
 
     fun neighbourShapeChanged(direction: Direction, state: KryptonBlockState, pos: Vec3i, neighbourPos: Vec3i, flags: Int,
                               recursionLeft: Int) {

@@ -181,6 +181,7 @@ class KryptonWorld(
         entityTracker.nearbyEntitiesOfType(position, range, EntityTypeTarget.ENTITIES) { if (type.isInstance(it)) callback.accept(it as E) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <E : Entity> getNearbyEntitiesOfType(position: Position, range: Double, type: Class<E>): Collection<E> {
         val result = ArrayList<E>()
         entityTracker.nearbyEntitiesOfType(position, range, EntityTypeTarget.ENTITIES) { if (type.isInstance(it)) result.add(it as E) }
@@ -251,18 +252,20 @@ class KryptonWorld(
 
     override fun setBlock(pos: Vec3i, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
         if (isOutsideBuildHeight(pos)) return false
-//        if (isDebug) return false
+
         val chunk = getChunk(pos.chunkX(), pos.chunkZ()) ?: return false
         val block = state.block
+
         val oldState = chunk.setBlock(pos, state, flags and SetBlockFlag.BLOCK_MOVING != 0) ?: return false
         val newState = getBlock(pos)
+
         if (flags and SetBlockFlag.LIGHTING == 0 && newState !== oldState && canUpdateLighting(pos, oldState, newState)) {
             // TODO: Update lighting for block
         }
         if (newState === state) {
-            if (flags and SetBlockFlag.NOTIFY_CLIENTS != 0) sendBlockUpdated(pos, oldState, newState)
+            if (flags and SetBlockFlag.NOTIFY_CLIENTS != 0) sendBlockUpdated(pos, newState)
             if (flags and SetBlockFlag.UPDATE_NEIGHBOURS != 0) {
-                blockUpdated(pos, oldState.block)
+                neighbourUpdater.updateNeighboursAtExceptFromFacing(pos, oldState.block, null)
                 if (state.hasAnalogOutputSignal()) updateNeighbourForOutputSignal(pos, block)
             }
             if (flags and SetBlockFlag.UPDATE_NEIGHBOUR_SHAPES == 0 && recursionLeft > 0) {
@@ -271,21 +274,20 @@ class KryptonWorld(
                 state.updateNeighbourShapes(this, pos, maskedFlags, recursionLeft - 1)
                 state.updateIndirectNeighbourShapes(this, pos, maskedFlags, recursionLeft - 1)
             }
-            onBlockStateChange(pos, oldState, newState)
+            // TODO: Do POI updates
         }
         return true
     }
 
     private fun canUpdateLighting(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState): Boolean {
         return newState.getLightBlock(this, pos) != oldState.getLightBlock(this, pos) ||
-                newState.lightEmission != oldState.lightEmission ||
-                newState.useShapeForLightOcclusion != oldState.useShapeForLightOcclusion
+                newState.lightEmission() != oldState.lightEmission() ||
+                newState.useShapeForLightOcclusion ||
+                oldState.useShapeForLightOcclusion
     }
 
-    @Suppress("UnusedPrivateMember")
-    fun sendBlockUpdated(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
+    fun sendBlockUpdated(pos: Vec3i, newState: KryptonBlockState) {
         PacketGrouping.sendGroupedPacket(players, PacketOutBlockUpdate(pos, newState))
-        // TODO: Update pathfinding mobs
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -305,32 +307,18 @@ class KryptonWorld(
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun updateNeighboursAt(pos: Vec3i, block: KryptonBlock) {
-        neighbourUpdater.updateNeighboursAtExceptFromFacing(pos, block, null)
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
     fun neighbourChanged(state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean) {
         neighbourUpdater.neighbourChanged(state, pos, block, neighbourPos, moving)
     }
 
-    @Suppress("MemberVisibilityCanBePrivate", "UnusedPrivateMember")
-    fun onBlockStateChange(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
-        // TODO: Do POI updates
+    override fun removeBlock(pos: Vec3i, moving: Boolean): Boolean {
+        return setBlock(pos, getFluid(pos).asBlock(), SetBlockFlag.UPDATE_NOTIFY or if (moving) SetBlockFlag.BLOCK_MOVING else 0)
     }
-
-    override fun blockUpdated(pos: Vec3i, block: KryptonBlock) {
-        updateNeighboursAt(pos, block)
-    }
-
-    override fun removeBlock(pos: Vec3i, moving: Boolean): Boolean =
-        setBlock(pos, getFluid(pos).asBlock(), SetBlockFlag.UPDATE_NOTIFY or if (moving) SetBlockFlag.BLOCK_MOVING else 0)
 
     override fun destroyBlock(pos: Vec3i, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean {
         val state = getBlock(pos)
         if (state.isAir()) return false
         val fluid = getFluid(pos)
-//        if (state.block !is BaseFireBlock) worldEvent(pos, WorldEvent.DESTROY_BLOCK, KryptonBlock.idOf(state)) TODO
         if (drop) {
             // TODO: Drop items
         }

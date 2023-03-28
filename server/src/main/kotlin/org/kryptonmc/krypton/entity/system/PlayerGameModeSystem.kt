@@ -219,10 +219,11 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         if (!player.inventory.mainHand.type.handler().canAttackBlock(player, player.world, state, pos)) return false
 
         // Check some conditions first
-        if (!player.canUseGameMasterBlocks()) { // FIXME: Check if is instance of GameMasterBlock
-            player.world.sendBlockUpdated(pos, state, state)
-            return false
-        }
+        // TODO: We need the check for instance of GameMasterBlock for this to not break other things
+//        if (!player.canUseGameMasterBlocks()) {
+//            player.world.sendBlockUpdated(pos, state)
+//            return false
+//        }
         if (player.isBlockActionRestricted(pos)) return false
 
         // Call pre-destroy, try and remove the block, and if we changed the block, call destroy
