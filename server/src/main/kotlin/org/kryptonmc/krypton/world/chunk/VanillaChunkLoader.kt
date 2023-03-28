@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.chunk
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.KryptonPlatform
@@ -97,7 +98,9 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
             }
         }
 
-        val chunk = KryptonChunk(world, pos, sections, data.getLong(LAST_UPDATE_TAG), data.getLong(INHABITED_TIME_TAG))
+        val chunk = KryptonChunk(world, pos, fillMissingSections(world, sections))
+        chunk.lastUpdate = data.getLong(LAST_UPDATE_TAG)
+        chunk.inhabitedTime = data.getLong(INHABITED_TIME_TAG)
 
         val toPrime = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
@@ -106,6 +109,19 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
         Heightmap.prime(chunk, toPrime)
 
         return chunk
+    }
+
+    private fun fillMissingSections(world: KryptonWorld, array: Array<ChunkSection?>): Array<ChunkSection> {
+        val result = arrayOfNulls<ChunkSection>(world.sectionCount())
+        if (result.size == array.size) {
+            System.arraycopy(array, 0, result, 0, result.size)
+        } else {
+            LOGGER.warn("Failed to set chunk sections! Expected ${result.size} sections, got ${array.size}! Loaded data will not be used.")
+        }
+        replaceMissingSections(world, result)
+
+        @Suppress("UNCHECKED_CAST") // The replacement replaces any null sections with empty sections, so the array contains no nulls after it.
+        return result as Array<ChunkSection>
     }
 
     override fun loadAllEntities(chunk: KryptonChunk) {
@@ -191,6 +207,8 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
 
     companion object {
 
+        private val LOGGER = LogManager.getLogger()
+
         // Chunk data tags
         private const val HEIGHTMAPS_TAG = "Heightmaps"
         private const val SECTIONS_TAG = "sections"
@@ -206,5 +224,13 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
         private const val ENTITY_ID_TAG = "id"
         private const val ENTITY_POSITION_TAG = "Position"
         private const val ENTITIES_TAG = "Entities"
+
+        @JvmStatic
+        private fun replaceMissingSections(world: KryptonWorld, sections: Array<ChunkSection?>) {
+            val biomeRegistry = world.registryHolder.getRegistry(ResourceKeys.BIOME) as KryptonRegistry<Biome>
+            for (i in sections.indices) {
+                if (sections[i] == null) sections[i] = ChunkSection(world.getSectionYFromSectionIndex(i), biomeRegistry)
+            }
+        }
     }
 }

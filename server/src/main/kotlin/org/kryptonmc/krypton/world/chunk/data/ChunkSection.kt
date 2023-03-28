@@ -21,9 +21,7 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
-import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 
@@ -46,13 +44,7 @@ class ChunkSection(
         recount()
     }
 
-    constructor(y: Int, biomeRegistry: KryptonRegistry<Biome>) : this(
-        y,
-        PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState),
-        PaletteHolder(PaletteHolder.Strategy.biomes(biomeRegistry), biomeRegistry.get(BiomeKeys.PLAINS)!!),
-        null,
-        null
-    )
+    constructor(y: Int, biomeRegistry: KryptonRegistry<Biome>) : this(y, PaletteHolder.blocks(), PaletteHolder.biomes(biomeRegistry), null, null)
 
     fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
 

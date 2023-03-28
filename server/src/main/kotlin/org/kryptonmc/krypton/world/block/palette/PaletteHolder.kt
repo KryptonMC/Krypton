@@ -30,8 +30,10 @@ import org.kryptonmc.krypton.util.map.IntBiMap
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.bits.SimpleBitStorage
 import org.kryptonmc.krypton.util.bits.ZeroBitStorage
+import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -230,6 +232,14 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 entries.add(checkNotNull(biome) { "Invalid palette data! Failed to find biome with key $it!" })
             }
             return read(Strategy.biomes(registry as KryptonRegistry<Biome>), entries, data.getLongArray(DATA_TAG))
+        }
+
+        @JvmStatic
+        fun blocks(): PaletteHolder<KryptonBlockState> = PaletteHolder(Strategy.BLOCKS, KryptonBlocks.AIR.defaultState)
+
+        @JvmStatic
+        fun biomes(registry: KryptonRegistry<Biome>): PaletteHolder<Biome> {
+            return PaletteHolder(Strategy.biomes(registry), registry.get(BiomeKeys.PLAINS)!!)
         }
 
         @Suppress("UNCHECKED_CAST")
