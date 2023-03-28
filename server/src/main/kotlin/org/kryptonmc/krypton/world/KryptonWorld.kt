@@ -64,10 +64,9 @@ import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkLoader
 import org.kryptonmc.krypton.world.chunk.ChunkManager
-import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
 import org.kryptonmc.krypton.world.components.BaseWorld
 import org.kryptonmc.krypton.world.data.WorldData
@@ -248,7 +247,7 @@ class KryptonWorld(
         return getChunk(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getFluid(x, y, z) ?: KryptonFluids.EMPTY.defaultState
     }
 
-    override fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
+    override fun getChunk(x: Int, z: Int, shouldCreate: Boolean): KryptonChunk? = null // FIXME
 
     override fun setBlock(pos: Vec3i, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
         if (isOutsideBuildHeight(pos)) return false

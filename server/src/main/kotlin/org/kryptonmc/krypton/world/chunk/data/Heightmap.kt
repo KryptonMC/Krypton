@@ -25,12 +25,12 @@ import org.kryptonmc.krypton.util.bits.SimpleBitStorage
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.serialization.Codec
 import java.util.EnumSet
 import java.util.function.Predicate
 
-class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
+class Heightmap(private val chunk: KryptonChunk, val type: Type) {
 
     private val data: BitStorage = SimpleBitStorage(Maths.ceillog2(chunk.height() + 1), 256)
 
@@ -58,7 +58,7 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
         return false
     }
 
-    fun setData(chunk: ChunkAccessor, type: Type, rawData: LongArray) {
+    fun setData(chunk: KryptonChunk, type: Type, rawData: LongArray) {
         val current = data.data
         if (current.size != rawData.size) {
             LOGGER.warn("Ignoring heightmap data for chunk ${chunk.position} as the size is not what was expected. " +
@@ -114,7 +114,7 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        fun prime(chunk: ChunkAccessor, toPrime: Set<Type>) {
+        fun prime(chunk: KryptonChunk, toPrime: Set<Type>) {
             val size = toPrime.size
             val heightmaps = ObjectArrayList<Heightmap>(size)
             val iterator = heightmaps.iterator()

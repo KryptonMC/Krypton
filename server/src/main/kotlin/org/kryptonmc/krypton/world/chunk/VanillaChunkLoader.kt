@@ -97,29 +97,13 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
             }
         }
 
-        val carvingMasks = if (data.contains(CARVING_MASKS_TAG, CompoundTag.ID)) {
-            val masks = data.getCompound(CARVING_MASKS_TAG)
-            Pair(masks.getByteArray(AIR_CARVING_MASK_TAG), masks.getByteArray(LIQUID_CARVING_MASK_TAG))
-        } else {
-            null
-        }
-        val structureData = if (data.contains(STRUCTURES_TAG, CompoundTag.ID)) data.getCompound(STRUCTURES_TAG) else null
+        val chunk = KryptonChunk(world, pos, sections, data.getLong(LAST_UPDATE_TAG), data.getLong(INHABITED_TIME_TAG))
 
-        val chunk = KryptonChunk(
-            world,
-            pos,
-            sections,
-            data.getLong(LAST_UPDATE_TAG),
-            data.getLong(INHABITED_TIME_TAG),
-            carvingMasks,
-            structureData
-        )
-
-        val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
+        val toPrime = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
-            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
+            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else toPrime.add(it)
         }
-        Heightmap.prime(chunk, noneOf)
+        Heightmap.prime(chunk, toPrime)
 
         return chunk
     }
@@ -155,16 +139,9 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
     private fun saveData(chunk: KryptonChunk): CompoundTag {
         val data = buildCompound {
             putInt("DataVersion", KryptonPlatform.worldVersion)
-            if (chunk.carvingMasks != null) {
-                compound(CARVING_MASKS_TAG) {
-                    putByteArray(AIR_CARVING_MASK_TAG, chunk.carvingMasks.first)
-                    putByteArray(LIQUID_CARVING_MASK_TAG, chunk.carvingMasks.second)
-                }
-            }
             putLong(LAST_UPDATE_TAG, chunk.lastUpdate)
             putLong(INHABITED_TIME_TAG, chunk.inhabitedTime)
             putString("Status", "full")
-            if (chunk.structures != null) put(STRUCTURES_TAG, chunk.structures)
             putInt("xPos", chunk.position.x)
             putInt("zPos", chunk.position.z)
         }
@@ -188,7 +165,7 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
         data.put(SECTIONS_TAG, sectionList.build())
 
         val heightmapData = ImmutableCompoundTag.builder()
-        chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData()) }
+        chunk.heightmaps().forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData()) }
         data.put(HEIGHTMAPS_TAG, heightmapData.build())
         return data.build()
     }
@@ -222,10 +199,6 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
         private const val BIOMES_TAG = "biomes"
         private const val BLOCK_LIGHT_TAG = "BlockLight"
         private const val SKY_LIGHT_TAG = "SkyLight"
-        private const val CARVING_MASKS_TAG = "CarvingMasks"
-        private const val AIR_CARVING_MASK_TAG = "AIR"
-        private const val LIQUID_CARVING_MASK_TAG = "LIQUID"
-        private const val STRUCTURES_TAG = "Structures"
         private const val LAST_UPDATE_TAG = "LastUpdate"
         private const val INHABITED_TIME_TAG = "InhabitedTime"
 

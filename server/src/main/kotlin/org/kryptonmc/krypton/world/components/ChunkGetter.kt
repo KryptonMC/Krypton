@@ -19,8 +19,7 @@ package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.coordinate.SectionPos
-import org.kryptonmc.krypton.world.chunk.ChunkAccessor
-import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 interface ChunkGetter : HeightAccessor {
 
@@ -48,9 +47,7 @@ interface ChunkGetter : HeightAccessor {
         return true
     }
 
-    fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus, shouldCreate: Boolean): ChunkAccessor?
+    fun getChunk(x: Int, z: Int, shouldCreate: Boolean): KryptonChunk?
 
-    fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus): ChunkAccessor? = getChunk(x, z, requiredStatus, true)
-
-    fun getChunk(x: Int, z: Int): ChunkAccessor? = getChunk(x, z, ChunkStatus.FULL, true)
+    fun getChunk(x: Int, z: Int): KryptonChunk?
 }

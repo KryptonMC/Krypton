@@ -22,7 +22,6 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
-import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 
 class ChunkProgressListener(radius: Int) {
 
@@ -43,8 +42,8 @@ class ChunkProgressListener(radius: Int) {
         startTime = nextTickTime
     }
 
-    fun updateStatus(status: ChunkStatus) {
-        if (status === ChunkStatus.FULL) ++count
+    fun updateStatus() {
+        ++count
         val progress = calculateProgress()
         if (System.currentTimeMillis() > nextTickTime) {
             nextTickTime += MILLISECONDS_PER_TICK

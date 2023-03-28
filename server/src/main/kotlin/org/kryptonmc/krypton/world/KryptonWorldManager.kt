@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.chunk.ChunkLoader
-import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.data.WorldDataSerializer
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
@@ -118,7 +117,7 @@ class KryptonWorldManager(
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
         default.chunkManager.loadStartingArea(SectionPos.blockToSection(default.data.spawnX), SectionPos.blockToSection(default.data.spawnZ)) {
-            listener.updateStatus(ChunkStatus.FULL)
+            listener.updateStatus()
         }
         listener.stop()
     }

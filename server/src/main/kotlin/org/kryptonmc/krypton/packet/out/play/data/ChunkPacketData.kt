@@ -48,9 +48,9 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
         @JvmStatic
         private fun extractHeightmaps(chunk: KryptonChunk): CompoundTag {
-            if (chunk.heightmaps.isEmpty()) return CompoundTag.EMPTY
+            if (chunk.heightmaps().isEmpty()) return CompoundTag.EMPTY
             val heightmaps = ImmutableCompoundTag.builder()
-            chunk.heightmaps.forEach { if (it.key.sendToClient()) heightmaps.putLongArray(it.key.name, it.value.rawData()) }
+            chunk.heightmaps().forEach { if (it.key.sendToClient()) heightmaps.putLongArray(it.key.name, it.value.rawData()) }
             return heightmaps.build()
         }
 
