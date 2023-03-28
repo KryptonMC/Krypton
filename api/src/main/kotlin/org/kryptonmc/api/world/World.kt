@@ -42,7 +42,6 @@ import org.kryptonmc.api.world.chunk.BlockChangeFlags
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
-import java.nio.file.Path
 import java.util.function.Consumer
 
 /**
@@ -59,11 +58,6 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * The name of this world.
      */
     public val name: String
-
-    /**
-     * The folder of this world on disk.
-     */
-    public val folder: Path
 
     /**
      * The dimension resource key for this world.

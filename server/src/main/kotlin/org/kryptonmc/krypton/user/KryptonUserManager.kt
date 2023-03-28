@@ -27,15 +27,14 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.requests.ApiService
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
+import org.kryptonmc.krypton.world.data.PlayerDataSerializer
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.io.TagCompression
-import org.kryptonmc.nbt.io.TagIO
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
-class KryptonUserManager(private val server: KryptonServer) : UserManager {
+class KryptonUserManager(private val server: KryptonServer, private val dataSerializer: PlayerDataSerializer) : UserManager {
 
     private val users: MutableMap<UUID, KryptonUser> = MapMaker().weakValues().makeMap()
     private val executor = Executors.newSingleThreadExecutor(daemonThreadFactory("Krypton User Data Loader"))
@@ -69,12 +68,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
 
     private fun loadUser(profile: GameProfile?): User? {
         if (profile == null) return null
-        val file = server.playerManager.dataFolder().resolve("${profile.uuid}.dat")
-        val nbt = try {
-            TagIO.read(file, TagCompression.GZIP)
-        } catch (_: Exception) {
-            return null
-        }
+        val nbt = dataSerializer.loadById(profile.uuid) ?: return null
 
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         val data = if (version < KryptonPlatform.worldVersion) DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version) else nbt

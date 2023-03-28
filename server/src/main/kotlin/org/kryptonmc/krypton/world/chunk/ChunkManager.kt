@@ -24,14 +24,12 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.tracking.EntityTypeTarget
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.region.RegionFileManager
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.function.Consumer
 
-class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
+class ChunkManager(private val world: KryptonWorld, private val chunkLoader: ChunkLoader) : AutoCloseable {
 
     private val chunkMap = Long2ObjectSyncMap.hashmap<KryptonChunk>()
-    private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
     fun chunks(): Collection<KryptonChunk> = chunkMap.values
 
@@ -85,12 +83,10 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         val packed = pos.pack()
         if (chunkMap.containsKey(packed)) return chunkMap.get(packed)!!
 
-        val nbt = regionFileManager.read(pos.x, pos.z) ?: return null
-        val chunk = ChunkSerialization.read(world, pos, nbt)
-
+        val chunk = chunkLoader.loadChunk(world, pos) ?: return null
         world.server.tickDispatcher().queuePartitionLoad(chunk)
         chunkMap.put(packed, chunk)
-        world.entityManager.loadAllInChunk(chunk)
+        chunkLoader.loadAllEntities(chunk)
         return chunk
     }
 
@@ -101,20 +97,18 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         world.server.tickDispatcher().queuePartitionUnload(loaded)
     }
 
-    fun saveAllChunks(flush: Boolean) {
+    fun saveAllChunks() {
         chunkMap.values.forEach(::saveChunk)
-        if (flush) regionFileManager.flush()
     }
 
     private fun saveChunk(chunk: KryptonChunk) {
-        val lastUpdate = world.time
-        chunk.lastUpdate = lastUpdate
-        regionFileManager.write(chunk.x, chunk.z, ChunkSerialization.write(chunk))
-        world.entityManager.saveAllInChunk(chunk)
+        chunk.lastUpdate = world.time
+        chunkLoader.saveChunk(chunk)
+        chunkLoader.saveAllEntities(chunk)
     }
 
     override fun close() {
-        regionFileManager.close()
+        chunkLoader.close()
     }
 
     companion object {

@@ -119,8 +119,7 @@ class KryptonPlayer(
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
     override var openInventory: Inventory? = null
 
-    override val statisticsTracker: KryptonStatisticsTracker =
-        KryptonStatisticsTracker(this, server.worldManager.statsFolder().resolve("$uuid.json"))
+    override val statisticsTracker: KryptonStatisticsTracker = KryptonStatisticsTracker(this)
     override val itemCooldownTracker: KryptonCooldownTracker = KryptonCooldownTracker(this)
 
     override var settings: KryptonPlayerSettings = KryptonPlayerSettings.DEFAULT

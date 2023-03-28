@@ -21,6 +21,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.util.Vec3i
@@ -63,70 +64,42 @@ import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.tags.TagSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
-import org.kryptonmc.krypton.world.data.PlayerDataManager
+import org.kryptonmc.krypton.world.data.PlayerDataSerializer
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.nbt.NbtOps
-import java.nio.file.Files
-import java.nio.file.Path
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class PlayerManager(private val server: KryptonServer) {
+class PlayerManager(
+    private val server: KryptonServer,
+    private val dataSerializer: PlayerDataSerializer,
+    private val statsSerializer: StatisticsSerializer?
+) {
 
     private val serializeData = server.config.advanced.serializePlayerData
-    private val dataManager = createDataManager(server)
     private val players = CopyOnWriteArrayList<KryptonPlayer>()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
     fun players(): List<KryptonPlayer> = players
 
-    fun dataFolder(): Path = dataManager.folder
-
-    private fun createDataManager(server: KryptonServer): PlayerDataManager {
-        val playerDataFolder = Path.of(server.config.world.name).resolve("playerdata")
-        if (serializeData && !Files.exists(playerDataFolder)) {
-            try {
-                Files.createDirectories(playerDataFolder)
-            } catch (exception: Exception) {
-                LOGGER.error("Unable to create player data directory!", exception)
-            }
-        }
-        return PlayerDataManager(playerDataFolder, serializeData)
-    }
-
     fun getPlayer(name: String): KryptonPlayer? = playersByName.get(name)
 
     fun getPlayer(uuid: UUID): KryptonPlayer? = playersByUUID.get(uuid)
 
     fun addPlayer(player: KryptonPlayer) {
-        val nbt = dataManager.load(player)
         val profile = player.profile
         val name = server.profileCache.getProfile(profile.uuid)?.name ?: profile.name
         server.profileCache.addProfile(profile)
-        val dimension = if (nbt != null) {
-            KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension")))
-                .resultOrPartial { LOGGER.error(it) }
-                .orElse(World.OVERWORLD)
-        } else {
-            World.OVERWORLD
-        }
-        if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
+        val dimension = loadPlayer(player)
         val world = server.worldManager.worlds.get(dimension) ?: server.worldManager.default
         player.world = world
-
-        if (!serializeData) {
-            // If we aren't serializing data, we need to make sure the player doesn't spawn at (0, 0, 0) every time
-            player.position = world.data.spawnPos().asPosition()
-            // We also would like for the player to have the default game mode if it is forced
-            if (server.config.world.forceDefaultGameMode) player.gameModeSystem.setGameMode(server.config.world.defaultGameMode, null)
-        }
 
         val location = player.position
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at $location")
@@ -203,6 +176,33 @@ class PlayerManager(private val server: KryptonServer) {
         player.connection.send(PacketOutSetContainerContent.fromPlayerInventory(player.inventory))
     }
 
+    private fun loadPlayer(player: KryptonPlayer): ResourceKey<World> {
+        if (!serializeData) {
+            // If we aren't serializing data, we need to make sure the player doesn't spawn at (0, 0, 0) every time
+            player.position = player.world.data.spawnPos().asPosition()
+            // We also would like for the player to have the default game mode if it is forced
+            if (server.config.world.forceDefaultGameMode) player.gameModeSystem.setGameMode(server.config.world.defaultGameMode, null)
+            // The overworld is the default dimension
+            return World.OVERWORLD
+        }
+
+        val nbt = dataSerializer.load(player)
+        val dimension = if (nbt != null) {
+            KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension")))
+                .resultOrPartial { LOGGER.error(it) }
+                .orElse(World.OVERWORLD)
+        } else {
+            World.OVERWORLD
+        }
+
+        if (nbt != null) {
+            server.userManager.updateUser(player.profile.uuid, nbt)
+            // Only load statistics if we are serializing player data
+            statsSerializer?.loadAll(player)
+        }
+        return dimension
+    }
+
     fun removePlayer(player: KryptonPlayer) {
         val event = server.eventNode.fire(KryptonPlayerQuitEvent(player))
 
@@ -272,8 +272,10 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun savePlayer(player: KryptonPlayer) {
-        dataManager.save(player)?.let { server.userManager.updateUser(player.uuid, it) }
-        player.statisticsTracker.save()
+        if (!serializeData) return
+        val savedData = dataSerializer.save(player)
+        server.userManager.updateUser(player.uuid, savedData)
+        statsSerializer?.saveAll(player)
     }
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {

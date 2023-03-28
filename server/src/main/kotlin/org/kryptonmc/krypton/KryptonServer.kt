@@ -43,6 +43,7 @@ import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.network.PacketFraming
 import org.kryptonmc.krypton.network.socket.NetworkServer
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
+import org.kryptonmc.krypton.server.InitContext
 import org.kryptonmc.krypton.ticking.TickDispatcher
 import org.kryptonmc.krypton.ticking.TickThreadProvider
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
@@ -55,7 +56,6 @@ import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.UnixDomainSocketAddress
-import java.nio.file.Path
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
@@ -64,27 +64,23 @@ import kotlin.math.max
  * This is the centre of operations here at Krypton Inc. Everything stems from
  * this class.
  */
-class KryptonServer(
-    override val config: KryptonConfig,
-    val profileCache: GameProfileCache,
-    worldFolder: Path
-) : BaseServer {
+class KryptonServer(override val config: KryptonConfig, val profileCache: GameProfileCache, initContext: InitContext) : BaseServer {
 
     private val networkServer = NetworkServer(this)
     // TODO: Use a better registry access that is dynamically populated from data packs.
-    override val playerManager: PlayerManager = PlayerManager(this)
+    override val playerManager: PlayerManager = PlayerManager(this, initContext.playerDataSerializer, initContext.statisticsSerializer)
     val statusManager: StatusManager = StatusManager(playerManager, config.status.motd, config.status.maxPlayers)
 
     override val console: KryptonConsole = KryptonConsole(this)
     override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
 
-    override val worldManager: KryptonWorldManager = KryptonWorldManager(this, worldFolder)
+    override val worldManager: KryptonWorldManager = KryptonWorldManager(this, initContext.worldDataSerializer, initContext.chunkLoader)
     override val commandManager: KryptonCommandManager = KryptonCommandManager()
     override val pluginManager: KryptonPluginManager = KryptonPluginManager()
     override val eventNode: GlobalEventNode = KryptonGlobalEventNode
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
     override val scheduler: KryptonScheduler = KryptonScheduler()
-    override val userManager: KryptonUserManager = KryptonUserManager(this)
+    override val userManager: KryptonUserManager = KryptonUserManager(this, initContext.playerDataSerializer)
     private val random = RandomSource.create()
 
     private val tickDispatcher = TickDispatcher<KryptonChunk>(TickThreadProvider.counter(), 1)
@@ -237,7 +233,7 @@ class KryptonServer(
 
     private fun saveEverything(suppressLog: Boolean, flush: Boolean, forced: Boolean): Boolean {
         playerManager.saveAll()
-        return worldManager.saveAllChunks(suppressLog, flush, forced)
+        return worldManager.saveAllChunks(suppressLog, forced)
     }
 
     override fun stop() {
@@ -267,7 +263,7 @@ class KryptonServer(
 
         LOGGER.info("Saving worlds...")
         worldManager.worlds.values.forEach { it.doNotSave = false }
-        worldManager.saveAllChunks(false, true, false)
+        worldManager.saveAllChunks(false, false)
         worldManager.worlds.values.forEach {
             try {
                 it.close()

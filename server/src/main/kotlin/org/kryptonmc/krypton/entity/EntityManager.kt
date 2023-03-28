@@ -17,25 +17,12 @@
  */
 package org.kryptonmc.krypton.entity
 
-import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import net.kyori.adventure.key.InvalidKeyException
-import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.entity.KryptonRemoveEntityEvent
 import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
-import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.DataConversion
-import org.kryptonmc.krypton.util.nbt.getDataVersion
-import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.region.RegionFileManager
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ImmutableListTag
-import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -46,12 +33,11 @@ import java.util.concurrent.ConcurrentHashMap
  * This provides fast lookups for entities by both internal ID and unique ID (UUID), and also
  * supports loading and saving entities to and from chunks.
  */
-class EntityManager(val world: KryptonWorld) : AutoCloseable {
+class EntityManager(private val world: KryptonWorld) {
 
     private val entityTracker = world.entityTracker
     private val byId = Int2ObjectSyncMap.hashmap<KryptonEntity>()
     private val byUUID = ConcurrentHashMap<UUID, KryptonEntity>()
-    private val regionFileManager = RegionFileManager(world.folder.resolve("entities"), world.server.config.advanced.synchronizeChunkWrites)
 
     fun entities(): MutableCollection<KryptonEntity> = byId.values
 
@@ -137,56 +123,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         world.server.tickDispatcher().queueElementRemove(entity)
     }
 
-    fun loadAllInChunk(chunk: KryptonChunk) {
-        val nbt = regionFileManager.read(chunk.x, chunk.z) ?: return
-
-        val dataVersion = nbt.getDataVersion()
-        val data = if (dataVersion < KryptonPlatform.worldVersion) DataConversion.upgrade(nbt, MCTypeRegistry.ENTITY_CHUNK, dataVersion) else nbt
-
-        data.getList(ENTITIES_TAG, CompoundTag.ID).forEachCompound {
-            val id = it.getString(ID_TAG)
-            if (id.isBlank()) return@forEachCompound
-
-            val key = try {
-                Key.key(id)
-            } catch (_: InvalidKeyException) {
-                return@forEachCompound
-            }
-            val type = KryptonRegistries.ENTITY_TYPE.get(key)
-
-            val entity = EntityFactory.create(type, world) ?: return@forEachCompound
-            entity.load(it)
-            spawnEntity(entity)
-        }
-    }
-
-    fun saveAllInChunk(chunk: KryptonChunk) {
-        val entities = entityTracker.entitiesInChunk(chunk.position)
-        if (entities.isEmpty()) return
-
-        val entityList = ImmutableListTag.builder(CompoundTag.ID)
-        entities.forEach { if (it !is KryptonPlayer) entityList.add(it.saveWithPassengers().build()) }
-
-        regionFileManager.write(chunk.x, chunk.z, compound {
-            putDataVersion()
-            putInts(POSITION_TAG, chunk.position.x, chunk.position.z)
-            put(ENTITIES_TAG, entityList.build())
-        })
-    }
-
-    fun flush() {
-        regionFileManager.flush()
-    }
-
-    override fun close() {
-        regionFileManager.close()
-    }
-
     companion object {
 
-        private const val ID_TAG = "id"
-        private const val POSITION_TAG = "Position"
-        private const val ENTITIES_TAG = "Entities"
         private val LOGGER = LogManager.getLogger()
     }
 }

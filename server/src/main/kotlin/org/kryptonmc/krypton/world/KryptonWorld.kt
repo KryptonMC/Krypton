@@ -65,6 +65,7 @@ import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.chunk.ChunkLoader
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
@@ -84,8 +85,7 @@ class KryptonWorld(
     override val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: KryptonDimensionType,
-    override val seed: Long,
-    private val tickTime: Boolean
+    chunkLoader: ChunkLoader
 ) : BaseWorld, AutoCloseable {
 
     override val scheduler: KryptonScheduler = KryptonScheduler()
@@ -100,7 +100,7 @@ class KryptonWorld(
     override val players: Collection<KryptonPlayer>
         get() = entityTracker.entitiesOfType(EntityTypeTarget.PLAYERS)
 
-    override val chunkManager: ChunkManager = ChunkManager(this)
+    override val chunkManager: ChunkManager = ChunkManager(this, chunkLoader)
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
     override val random: RandomSource = RandomSource.create()
     private val threadSafeRandom: RandomSource = RandomSource.createThreadSafe()
@@ -410,7 +410,6 @@ class KryptonWorld(
     }
 
     private fun tickTime() {
-        if (!tickTime) return
         data.time++
         if (gameRules().getBoolean(GameRuleKeys.DO_DAYLIGHT_CYCLE)) data.dayTime++
     }
@@ -431,16 +430,13 @@ class KryptonWorld(
 
     override fun generateSoundSeed(): Long = threadSafeRandom.nextLong()
 
-    fun save(flush: Boolean, skipSave: Boolean) {
-        if (skipSave) return
+    fun save() {
         // TODO: Save extra data for maps, raids, etc.
-        chunkManager.saveAllChunks(flush)
-        if (flush) entityManager.flush()
+        chunkManager.saveAllChunks()
     }
 
     override fun close() {
         chunkManager.close()
-        entityManager.close()
     }
 
     fun getRainLevel(delta: Float): Float = Maths.lerp(delta, oldRainLevel, rainLevel)

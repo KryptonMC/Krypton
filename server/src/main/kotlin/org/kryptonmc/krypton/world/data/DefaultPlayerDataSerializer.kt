@@ -30,31 +30,34 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.util.UUID
 
 /**
  * Responsible for loading and saving player data files.
  */
-class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
+class DefaultPlayerDataSerializer(val folder: Path) : PlayerDataSerializer {
 
-    fun load(player: KryptonPlayer): CompoundTag? {
-        if (!serializeData) return null
-
-        val playerFile = folder.resolve("${player.uuid}.dat")
+    override fun loadById(uuid: UUID): CompoundTag? {
+        val playerFile = folder.resolve("$uuid.dat")
         if (!Files.exists(playerFile)) {
             try {
                 Files.createFile(playerFile)
             } catch (exception: Exception) {
-                LOGGER.warn("Failed to create player file for player with UUID ${player.uuid}!", exception)
+                LOGGER.warn("Failed to create player file for player with UUID $uuid!", exception)
             }
             return null
         }
 
-        val nbt = try {
+        return try {
             TagIO.read(playerFile, TagCompression.GZIP)
         } catch (exception: IOException) {
-            LOGGER.warn("Failed to load player data for player ${player.profile.name}!", exception)
-            return null
+            LOGGER.warn("Failed to load player data for player $uuid!", exception)
+            null
         }
+    }
+
+    override fun load(player: KryptonPlayer): CompoundTag? {
+        val nbt = loadById(player.uuid) ?: return null
 
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         val data = if (version < KryptonPlatform.worldVersion) DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version) else nbt
@@ -63,9 +66,7 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
         return data
     }
 
-    fun save(player: KryptonPlayer): CompoundTag? {
-        if (!serializeData) return null
-
+    override fun save(player: KryptonPlayer): CompoundTag {
         val data = player.saveWithPassengers().build()
 
         // Create temp file and write data

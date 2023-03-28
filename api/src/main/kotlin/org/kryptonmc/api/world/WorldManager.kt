@@ -65,13 +65,17 @@ public interface WorldManager {
     public fun isLoaded(key: Key): Boolean
 
     /**
-     * Loads a world by its resource key.
+     * Loads a world by its resource key, if there is a world that can be
+     * loaded from the given key.
+     *
+     * If no world can be loaded from the given key, this returns a null
+     * result.
      *
      * @param key the resource key for the world
-     * @return a future representing the result of loading the world with the
-     * given key
+     * @return the loaded world, or null if no world could be loaded from
+     * the key
      */
-    public fun loadWorld(key: Key): CompletableFuture<out World>
+    public fun loadWorld(key: Key): CompletableFuture<out World?>
 
     /**
      * Saves the given [world] to disk.

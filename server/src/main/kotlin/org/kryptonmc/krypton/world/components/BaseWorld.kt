@@ -38,7 +38,6 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import java.nio.file.Path
 
 interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
@@ -54,8 +53,6 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override val name: String
         get() = data.name
-    override val folder: Path
-        get() = data.folder
     override val spawnLocation: Vec3i
         get() = Vec3i(data.spawnX, data.spawnY, data.spawnZ)
     override val difficulty: Difficulty
@@ -64,6 +61,8 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
         get() = data.gameMode
     override val time: Long
         get() = data.time
+    override val seed: Long
+        get() = data.generationSettings.seed
     override val scoreboard: KryptonScoreboard
         get() = server.scoreboard
 

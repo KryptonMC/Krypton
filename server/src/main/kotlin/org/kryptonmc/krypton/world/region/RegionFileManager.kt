@@ -30,7 +30,7 @@ import kotlin.concurrent.withLock
 /**
  * Manages region files. That's literally it.
  */
-class RegionFileManager(private val folder: Path, private val synchronizeWrites: Boolean) : AutoCloseable {
+class RegionFileManager(private val folder: Path) : AutoCloseable {
 
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
     private val regionCacheLock = ReentrantLock()
@@ -56,7 +56,7 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
         if (regionCache.size >= MAX_CACHE_SIZE) regionCacheLock.withLock { regionCache.removeLast().close() }
         Files.createDirectories(folder)
         val path = folder.resolve("r.$regionX.$regionZ$ANVIL_EXTENSION")
-        val regionFile = RegionFile(path, folder, synchronizeWrites)
+        val regionFile = RegionFile(path, folder)
         regionCacheLock.withLock { regionCache.putAndMoveToFirst(serialized, regionFile) }
         return regionFile
     }

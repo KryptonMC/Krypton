@@ -22,14 +22,13 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.WorldGameRules
-import java.nio.file.Path
+import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
 interface WorldData {
 
     // Settings
     val name: String
-    val folder: Path
     var gameMode: GameMode
     var difficulty: Difficulty
     var isHardcore: Boolean
@@ -58,4 +57,6 @@ interface WorldData {
     var wanderingTraderId: UUID?
 
     fun spawnPos(): Vec3i = Vec3i(spawnX, spawnY, spawnZ)
+
+    fun save(): CompoundTag
 }

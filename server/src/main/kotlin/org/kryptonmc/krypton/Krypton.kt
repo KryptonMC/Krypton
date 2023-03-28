@@ -27,8 +27,14 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.GameProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.server.Bootstrap
+import org.kryptonmc.krypton.server.InitContext
+import org.kryptonmc.krypton.server.StatisticsSerializer
 import org.kryptonmc.krypton.ticking.TickSchedulerThread
 import org.kryptonmc.krypton.util.executor.DefaultUncaughtExceptionHandler
+import org.kryptonmc.krypton.world.chunk.VanillaChunkLoader
+import org.kryptonmc.krypton.world.data.DefaultPlayerDataSerializer
+import org.kryptonmc.krypton.world.data.DefaultWorldDataSerializer
+import java.nio.file.Files
 import java.nio.file.Path
 
 fun main(args: Array<String>) {
@@ -87,7 +93,25 @@ private class KryptonCLI : CliktCommand(
         val cache = GameProfileCache(userCacheFile)
         cache.loadAll()
 
-        val server = KryptonServer(config, cache, worldFolder)
+        val defaultWorldFolder = worldFolder.resolve(config.world.name)
+
+        val playerDataFolder = defaultWorldFolder.resolve("playerdata")
+        if (config.advanced.serializePlayerData && !Files.exists(playerDataFolder)) {
+            try {
+                Files.createDirectories(playerDataFolder)
+            } catch (exception: Exception) {
+                logger.error("Unable to create player data directory!", exception)
+                return
+            }
+        }
+
+        val worldDataSerializer = DefaultWorldDataSerializer(worldFolder)
+        val playerDataSerializer = DefaultPlayerDataSerializer(playerDataFolder)
+        val statsSerializer = StatisticsSerializer(defaultWorldFolder.resolve("stats"))
+        val chunkLoader = VanillaChunkLoader(defaultWorldFolder)
+
+        val initContext = InitContext(statsSerializer, worldDataSerializer, playerDataSerializer, chunkLoader)
+        val server = KryptonServer(config, cache, initContext)
         if (!server.initialize()) {
             // We just return here if initialisation fails. The error will already have been logged.
             return
