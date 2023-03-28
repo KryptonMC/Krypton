@@ -7259,7 +7259,6 @@ $dokka.location:org.kryptonmc.api.world/World/difficulty/#/PointingToDeclaration
 $dokka.location:org.kryptonmc.api.world/World/dimension/#/PointingToDeclaration/api/org.kryptonmc.api.world/-world/dimension.html
 $dokka.location:org.kryptonmc.api.world/World/dimensionType/#/PointingToDeclaration/api/org.kryptonmc.api.world/-world/dimension-type.html
 $dokka.location:org.kryptonmc.api.world/World/entities/#/PointingToDeclaration/api/org.kryptonmc.api.world/-world/entities.html
-$dokka.location:org.kryptonmc.api.world/World/folder/#/PointingToDeclaration/api/org.kryptonmc.api.world/-world/folder.html
 $dokka.location:org.kryptonmc.api.world/World/gameMode/#/PointingToDeclaration/api/org.kryptonmc.api.world/-world/game-mode.html
 $dokka.location:org.kryptonmc.api.world/World/getBlock/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/api/org.kryptonmc.api.world/-world/get-block.html
 $dokka.location:org.kryptonmc.api.world/World/getBlock/#org.kryptonmc.api.util.Vec3i/PointingToDeclaration/api/org.kryptonmc.api.world/-world/get-block.html
