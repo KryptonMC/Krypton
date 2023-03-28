@@ -93,7 +93,7 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
 
                 val blockLight = if (sectionData.contains(BLOCK_LIGHT_TAG, ByteArrayTag.ID)) sectionData.getByteArray(BLOCK_LIGHT_TAG) else null
                 val skyLight = if (sectionData.contains(SKY_LIGHT_TAG, ByteArrayTag.ID)) sectionData.getByteArray(SKY_LIGHT_TAG) else null
-                val section = ChunkSection(y, blocks, biomes, blockLight, skyLight)
+                val section = ChunkSection(blocks, biomes, blockLight, skyLight)
                 sections[index] = section
             }
         }
@@ -229,7 +229,7 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
         private fun replaceMissingSections(world: KryptonWorld, sections: Array<ChunkSection?>) {
             val biomeRegistry = world.registryHolder.getRegistry(ResourceKeys.BIOME) as KryptonRegistry<Biome>
             for (i in sections.indices) {
-                if (sections[i] == null) sections[i] = ChunkSection(world.getSectionYFromSectionIndex(i), biomeRegistry)
+                if (sections[i] == null) sections[i] = ChunkSection(biomeRegistry)
             }
         }
     }

@@ -105,15 +105,19 @@ class KryptonChunk(
 
     fun sections(): Array<ChunkSection> = sections
 
-    private fun highestSection(): ChunkSection? {
+    private fun highestNonEmptySectionIndex(): Int {
         for (i in sections.size - 1 downTo 0) {
             val section = sections[i]
-            if (!section.hasOnlyAir()) return section
+            if (!section.hasOnlyAir()) return i
         }
-        return null
+        return -1
     }
 
-    fun highestSectionY(): Int = highestSection()?.bottomBlockY ?: minimumBuildHeight()
+    fun highestSectionY(): Int {
+        val highestSectionIndex = highestNonEmptySectionIndex()
+        if (highestSectionIndex == -1) return minimumBuildHeight()
+        return getSectionYFromSectionIndex(highestSectionIndex)
+    }
 
     fun heightmaps(): Map<Heightmap.Type, Heightmap> = heightmaps
 

@@ -18,7 +18,7 @@
 package org.kryptonmc.krypton.world.chunk.data
 
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.coordinate.SectionPos
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.network.buffer.BinaryWriter
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
@@ -30,21 +30,19 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
  * states and palette information.
  */
 class ChunkSection(
-    y: Int,
     val blocks: PaletteHolder<KryptonBlockState>,
     val biomes: PaletteHolder<Biome>,
     val blockLight: ByteArray?,
     val skyLight: ByteArray?
-) : NoiseBiomeSource {
+) : NoiseBiomeSource, Writable {
 
-    val bottomBlockY: Int = SectionPos.sectionToBlock(y)
     private var nonEmptyBlockCount = 0
 
     init {
         recount()
     }
 
-    constructor(y: Int, biomeRegistry: KryptonRegistry<Biome>) : this(y, PaletteHolder.blocks(), PaletteHolder.biomes(biomeRegistry), null, null)
+    constructor(biomeRegistry: KryptonRegistry<Biome>) : this(PaletteHolder.blocks(), PaletteHolder.biomes(biomeRegistry), null, null)
 
     fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
 
@@ -62,13 +60,12 @@ class ChunkSection(
     private fun recount() {
         nonEmptyBlockCount = 0
         blocks.forEachLocation { block, _ ->
-            val fluid = block.asFluid()
             if (!block.isAir()) nonEmptyBlockCount++
-            if (!fluid.isEmpty()) nonEmptyBlockCount++
+            if (!block.asFluid().isEmpty()) nonEmptyBlockCount++
         }
     }
 
-    fun write(writer: BinaryWriter) {
+    override fun write(writer: BinaryWriter) {
         writer.writeShort(nonEmptyBlockCount.toShort())
         blocks.write(writer)
         biomes.write(writer)
