@@ -181,7 +181,7 @@ class KryptonServer(override val config: KryptonConfig, val profileCache: GamePr
         if (config.world.autosaveInterval > 0) {
             val task = Runnable {
                 LOGGER.info("Auto save started.")
-                saveEverything(true, false, false)
+                saveEverything(true, false)
                 LOGGER.info("Auto save finished.")
             }
             scheduler.buildTask(task)
@@ -231,7 +231,7 @@ class KryptonServer(override val config: KryptonConfig, val profileCache: GamePr
         tickDispatcher.refreshThreads(tickTime)
     }
 
-    private fun saveEverything(suppressLog: Boolean, flush: Boolean, forced: Boolean): Boolean {
+    private fun saveEverything(suppressLog: Boolean, forced: Boolean): Boolean {
         playerManager.saveAll()
         return worldManager.saveAllChunks(suppressLog, forced)
     }

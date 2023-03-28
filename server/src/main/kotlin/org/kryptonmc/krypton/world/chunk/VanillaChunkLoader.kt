@@ -1,3 +1,20 @@
+/*
+ * This file is part of the Krypton project, licensed under the Apache License v2.0
+ *
+ * Copyright (C) 2021-2023 KryptonMC and the contributors of the Krypton project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
@@ -26,7 +43,6 @@ import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.ImmutableListTag
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
@@ -50,51 +66,51 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
 
         // Don't upgrade if the version is not older than our version.
         val data = if (dataVersion < KryptonPlatform.worldVersion) DataConversion.upgrade(nbt, MCTypeRegistry.CHUNK, dataVersion, true) else nbt
-        val heightmaps = data.getCompound("Heightmaps")
+        val heightmaps = data.getCompound(HEIGHTMAPS_TAG)
         val biomeRegistry = world.registryHolder.getRegistry(ResourceKeys.BIOME) as? KryptonRegistry<Biome>
             ?: error("Cannot find biome registry in $world!")
 
-        val sectionList = data.getList("sections", CompoundTag.ID)
+        val sectionList = data.getList(SECTIONS_TAG, CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount())
         for (i in 0 until sectionList.size()) {
             val sectionData = sectionList.getCompound(i)
-            val y = sectionData.getByte("Y").toInt()
+            val y = sectionData.getByte(Y_TAG).toInt()
 
             val index = world.getSectionIndexFromSectionY(y)
             if (index >= 0 && index < sections.size) {
-                val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
-                    PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
+                val blocks = if (sectionData.contains(BLOCK_STATES_TAG, CompoundTag.ID)) {
+                    PaletteHolder.readBlocks(sectionData.getCompound(BLOCK_STATES_TAG))
                 } else {
                     PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState)
                 }
 
-                val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
-                    PaletteHolder.readBiomes(sectionData.getCompound("biomes"), biomeRegistry)
+                val biomes = if (sectionData.contains(BIOMES_TAG, CompoundTag.ID)) {
+                    PaletteHolder.readBiomes(sectionData.getCompound(BIOMES_TAG), biomeRegistry)
                 } else {
                     PaletteHolder(PaletteHolder.Strategy.biomes(biomeRegistry), biomeRegistry.get(BiomeKeys.PLAINS)!!)
                 }
 
-                val blockLight = if (sectionData.contains("BlockLight", ByteArrayTag.ID)) sectionData.getByteArray("BlockLight") else null
-                val skyLight = if (sectionData.contains("SkyLight", ByteArrayTag.ID)) sectionData.getByteArray("SkyLight") else null
+                val blockLight = if (sectionData.contains(BLOCK_LIGHT_TAG, ByteArrayTag.ID)) sectionData.getByteArray(BLOCK_LIGHT_TAG) else null
+                val skyLight = if (sectionData.contains(SKY_LIGHT_TAG, ByteArrayTag.ID)) sectionData.getByteArray(SKY_LIGHT_TAG) else null
                 val section = ChunkSection(y, blocks, biomes, blockLight, skyLight)
                 sections[index] = section
             }
         }
 
-        val carvingMasks = if (data.contains("CarvingMasks", CompoundTag.ID)) {
-            val masks = data.getCompound("CarvingMasks")
-            Pair(masks.getByteArray("AIR"), masks.getByteArray("LIQUID"))
+        val carvingMasks = if (data.contains(CARVING_MASKS_TAG, CompoundTag.ID)) {
+            val masks = data.getCompound(CARVING_MASKS_TAG)
+            Pair(masks.getByteArray(AIR_CARVING_MASK_TAG), masks.getByteArray(LIQUID_CARVING_MASK_TAG))
         } else {
             null
         }
-        val structureData = if (data.contains("Structures", CompoundTag.ID)) data.getCompound("Structures") else null
+        val structureData = if (data.contains(STRUCTURES_TAG, CompoundTag.ID)) data.getCompound(STRUCTURES_TAG) else null
 
         val chunk = KryptonChunk(
             world,
             pos,
             sections,
-            data.getLong("LastUpdate"),
-            data.getLong("inhabitedTime"),
+            data.getLong(LAST_UPDATE_TAG),
+            data.getLong(INHABITED_TIME_TAG),
             carvingMasks,
             structureData
         )
@@ -140,22 +156,15 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
         val data = buildCompound {
             putInt("DataVersion", KryptonPlatform.worldVersion)
             if (chunk.carvingMasks != null) {
-                compound("CarvingMasks") {
-                    putByteArray("AIR", chunk.carvingMasks.first)
-                    putByteArray("LIQUID", chunk.carvingMasks.second)
+                compound(CARVING_MASKS_TAG) {
+                    putByteArray(AIR_CARVING_MASK_TAG, chunk.carvingMasks.first)
+                    putByteArray(LIQUID_CARVING_MASK_TAG, chunk.carvingMasks.second)
                 }
             }
-            putLong("LastUpdate", chunk.lastUpdate)
-            putList("Lights", ListTag.ID)
-            putList("LiquidsToBeTicked", ListTag.ID)
-            putList("LiquidTicks", ListTag.ID)
-            putLong("InhabitedTime", chunk.inhabitedTime)
-            putList("PostProcessing", ListTag.ID)
+            putLong(LAST_UPDATE_TAG, chunk.lastUpdate)
+            putLong(INHABITED_TIME_TAG, chunk.inhabitedTime)
             putString("Status", "full")
-            putList("TileEntities", CompoundTag.ID)
-            putList("TileTicks", CompoundTag.ID)
-            putList("ToBeTicked", ListTag.ID)
-            if (chunk.structures != null) put("Structures", chunk.structures)
+            if (chunk.structures != null) put(STRUCTURES_TAG, chunk.structures)
             putInt("xPos", chunk.position.x)
             putInt("zPos", chunk.position.z)
         }
@@ -167,20 +176,20 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
             if (sectionIndex >= 0 && sectionIndex < chunk.sections().size) {
                 val section = chunk.sections()[sectionIndex]
                 val sectionData = compound {
-                    putByte("Y", i.toByte())
-                    put("block_states", section.blocks.write { KryptonBlockState.CODEC.encodeStart(it, NbtOps.INSTANCE).result().get() })
-                    put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
-                    if (section.blockLight != null) putByteArray("BlockLight", section.blockLight)
-                    if (section.skyLight != null) putByteArray("SkyLight", section.skyLight)
+                    putByte(Y_TAG, i.toByte())
+                    put(BLOCK_STATES_TAG, section.blocks.write { KryptonBlockState.CODEC.encodeStart(it, NbtOps.INSTANCE).result().get() })
+                    put(BIOMES_TAG, section.biomes.write { StringTag.of(it.key().asString()) })
+                    if (section.blockLight != null) putByteArray(BLOCK_LIGHT_TAG, section.blockLight)
+                    if (section.skyLight != null) putByteArray(SKY_LIGHT_TAG, section.skyLight)
                 }
                 sectionList.add(sectionData)
             }
         }
-        data.put("sections", sectionList.build())
+        data.put(SECTIONS_TAG, sectionList.build())
 
         val heightmapData = ImmutableCompoundTag.builder()
         chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData()) }
-        data.put("Heightmaps", heightmapData.build())
+        data.put(HEIGHTMAPS_TAG, heightmapData.build())
         return data.build()
     }
 
@@ -205,6 +214,22 @@ class VanillaChunkLoader(worldFolder: Path) : ChunkLoader {
 
     companion object {
 
+        // Chunk data tags
+        private const val HEIGHTMAPS_TAG = "Heightmaps"
+        private const val SECTIONS_TAG = "sections"
+        private const val Y_TAG = "Y"
+        private const val BLOCK_STATES_TAG = "block_states"
+        private const val BIOMES_TAG = "biomes"
+        private const val BLOCK_LIGHT_TAG = "BlockLight"
+        private const val SKY_LIGHT_TAG = "SkyLight"
+        private const val CARVING_MASKS_TAG = "CarvingMasks"
+        private const val AIR_CARVING_MASK_TAG = "AIR"
+        private const val LIQUID_CARVING_MASK_TAG = "LIQUID"
+        private const val STRUCTURES_TAG = "Structures"
+        private const val LAST_UPDATE_TAG = "LastUpdate"
+        private const val INHABITED_TIME_TAG = "InhabitedTime"
+
+        // Entity data tags
         private const val ENTITY_ID_TAG = "id"
         private const val ENTITY_POSITION_TAG = "Position"
         private const val ENTITIES_TAG = "Entities"
