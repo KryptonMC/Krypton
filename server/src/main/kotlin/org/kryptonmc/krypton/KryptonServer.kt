@@ -67,7 +67,6 @@ import kotlin.math.max
 class KryptonServer(override val config: KryptonConfig, val profileCache: GameProfileCache, initContext: InitContext) : BaseServer {
 
     private val networkServer = NetworkServer(this)
-    // TODO: Use a better registry access that is dynamically populated from data packs.
     override val playerManager: PlayerManager = PlayerManager(this, initContext.playerDataSerializer, initContext.statisticsSerializer)
     val statusManager: StatusManager = StatusManager(playerManager, config.status.motd, config.status.maxPlayers)
 
