@@ -3396,9 +3396,11 @@ $dokka.location:org.kryptonmc.api.entity.player/Player/isFlying/#/PointingToDecl
 $dokka.location:org.kryptonmc.api.entity.player/Player/itemCooldownTracker/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/item-cooldown-tracker.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/openInventory/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/open-inventory.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/ping/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/ping.html
+$dokka.location:org.kryptonmc.api.entity.player/Player/resetScoreboard/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/reset-scoreboard.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/scoreboard/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/scoreboard.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/sendResourcePack/#org.kryptonmc.api.resource.ResourcePack/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/send-resource-pack.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/settings/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/settings.html
+$dokka.location:org.kryptonmc.api.entity.player/Player/showScoreboard/#org.kryptonmc.api.scoreboard.Scoreboard/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/show-scoreboard.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/spawnParticles/#org.kryptonmc.api.effect.particle.ParticleEffect#org.kryptonmc.api.util.Vec3d/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/spawn-particles.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/startGliding/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/start-gliding.html
 $dokka.location:org.kryptonmc.api.entity.player/Player/statisticsTracker/#/PointingToDeclaration/api/org.kryptonmc.api.entity.player/-player/statistics-tracker.html
@@ -5899,6 +5901,10 @@ $dokka.location:org.kryptonmc.api.scoreboard/Score/isLocked/#/PointingToDeclarat
 $dokka.location:org.kryptonmc.api.scoreboard/Score/member/#/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-score/member.html
 $dokka.location:org.kryptonmc.api.scoreboard/Score/objective/#/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-score/objective.html
 $dokka.location:org.kryptonmc.api.scoreboard/Score/score/#/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-score/score.html
+$dokka.location:org.kryptonmc.api.scoreboard/Scoreboard.Companion///PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/-companion/index.html
+$dokka.location:org.kryptonmc.api.scoreboard/Scoreboard.Companion/create/#/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/-companion/create.html
+$dokka.location:org.kryptonmc.api.scoreboard/Scoreboard.Factory///PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/-factory/index.html
+$dokka.location:org.kryptonmc.api.scoreboard/Scoreboard.Factory/create/#/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/-factory/create.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard///PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/index.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/addObjective/#kotlin.String#org.kryptonmc.api.scoreboard.criteria.Criterion#net.kyori.adventure.text.Component#org.kryptonmc.api.scoreboard.ObjectiveRenderType/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/add-objective.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/addTeam/#kotlin.String/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/add-team.html
@@ -7325,7 +7331,6 @@ $dokka.location:org.kryptonmc.api/Server/players/#/PointingToDeclaration/api/or
 $dokka.location:org.kryptonmc.api/Server/pluginManager/#/PointingToDeclaration/api/org.kryptonmc.api/-server/plugin-manager.html
 $dokka.location:org.kryptonmc.api/Server/registryHolder/#/PointingToDeclaration/api/org.kryptonmc.api/-server/registry-holder.html
 $dokka.location:org.kryptonmc.api/Server/scheduler/#/PointingToDeclaration/api/org.kryptonmc.api/-server/scheduler.html
-$dokka.location:org.kryptonmc.api/Server/scoreboard/#/PointingToDeclaration/api/org.kryptonmc.api/-server/scoreboard.html
 $dokka.location:org.kryptonmc.api/Server/servicesManager/#/PointingToDeclaration/api/org.kryptonmc.api/-server/services-manager.html
 $dokka.location:org.kryptonmc.api/Server/userManager/#/PointingToDeclaration/api/org.kryptonmc.api/-server/user-manager.html
 $dokka.location:org.kryptonmc.api/Server/worldManager/#/PointingToDeclaration/api/org.kryptonmc.api/-server/world-manager.html
