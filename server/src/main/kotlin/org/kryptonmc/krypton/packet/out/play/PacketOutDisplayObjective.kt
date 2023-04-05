@@ -36,7 +36,8 @@ data class PacketOutDisplayObjective(val slot: Int, val name: String) : Packet {
     companion object {
 
         @JvmStatic
-        fun create(slot: DisplaySlot, objective: Objective?): PacketOutDisplayObjective =
-            PacketOutDisplayObjective(slot.ordinal, objective?.name ?: "")
+        fun create(slot: DisplaySlot, objective: Objective?): PacketOutDisplayObjective {
+            return PacketOutDisplayObjective(slot.ordinal, objective?.name ?: "")
+        }
     }
 }

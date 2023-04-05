@@ -17,7 +17,6 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
-import com.google.common.collect.Multimaps
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.scoreboard.DisplaySlot
@@ -43,7 +42,6 @@ import java.util.function.Consumer
 class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     private val objectivesByName = HashMap<String, Objective>()
-    private val objectivesByCriterion = Multimaps.newListMultimap<Criterion, Objective>(HashMap(), ::ArrayList)
     private val displayObjectives = EnumMap<_, Objective>(DisplaySlot::class.java)
     private val teamsByName = HashMap<String, Team>()
     private val teamsByMember = HashMap<Component, Team>()
@@ -65,7 +63,6 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     override fun addObjective(name: String, criterion: Criterion, displayName: Component, renderType: ObjectiveRenderType): Objective {
         require(!objectivesByName.containsKey(name)) { "An objective with the name $name is already registered!" }
         val objective = KryptonObjective(this, name, criterion, displayName, renderType)
-        objectivesByCriterion.put(criterion, objective)
         objectivesByName.put(name, objective)
         makeDirty()
         return objective
@@ -74,7 +71,6 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     override fun removeObjective(objective: Objective) {
         objectivesByName.remove(objective.name)
         DISPLAY_SLOTS.forEach { if (displayObjectives.get(it) == objective) setDisplayObjective(it, null) }
-        objectivesByCriterion.remove(objective.criterion, objective)
         onObjectiveRemoved(objective)
     }
 
@@ -120,7 +116,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun getStartTrackingPackets(objective: Objective): List<Packet> {
         val packets = ArrayList<Packet>()
-        packets.add(PacketOutDisplayObjective.create(DisplaySlot.LIST, objective))
+        packets.add(PacketOutUpdateObjectives.create(objective))
         displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective.create(it.key, it.value)) }
         objective.scores.forEach { packets.add(PacketOutUpdateScore.createOrUpdate(it)) }
         return packets
@@ -128,13 +124,15 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     private fun getStopTrackingPackets(objective: Objective): List<Packet> {
         val packets = ArrayList<Packet>()
-        packets.add(PacketOutDisplayObjective.create(DisplaySlot.SIDEBAR, objective))
+        packets.add(PacketOutUpdateObjectives.remove(objective))
         displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective.create(it.key, it.value)) }
         return packets
     }
 
     fun forEachScore(criterion: Criterion, member: Component, action: Consumer<Score>) {
-        objectivesByCriterion.get(criterion).forEach { action.accept(it.getOrCreateScore(member)) }
+        objectivesByName.values.forEach { objective ->
+            if (objective.criterion == criterion) action.accept(objective.getOrCreateScore(member))
+        }
     }
 
     fun onEntityRemoved(entity: KryptonEntity?) {
@@ -182,8 +180,6 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     override fun getObjective(slot: DisplaySlot): Objective? = displayObjectives.get(slot)
-
-    override fun getObjectives(criterion: Criterion): Collection<Objective> = objectivesByCriterion.get(criterion)
 
     override fun updateSlot(objective: Objective?, slot: DisplaySlot) {
         require(objective == null || objectivesByName.containsValue(objective)) {

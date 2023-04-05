@@ -58,12 +58,14 @@ data class PacketOutUpdateScore(val name: String, val action: Int, val objective
         private const val MAX_OBJECTIVE_NAME_LENGTH = 16
 
         @JvmStatic
-        fun createOrUpdate(score: Score): PacketOutUpdateScore =
-            PacketOutUpdateScore(toLegacyString(score.member), Actions.CREATE_OR_UPDATE, score.objective?.name, score.score)
+        fun createOrUpdate(score: Score): PacketOutUpdateScore {
+            return PacketOutUpdateScore(toLegacyString(score.member), Actions.CREATE_OR_UPDATE, score.objective.name, score.score)
+        }
 
         @JvmStatic
-        fun remove(member: Component, objectiveName: String?, score: Int): PacketOutUpdateScore =
-            PacketOutUpdateScore(toLegacyString(member), Actions.REMOVE, objectiveName, score)
+        fun remove(member: Component, objectiveName: String?, score: Int): PacketOutUpdateScore {
+            return PacketOutUpdateScore(toLegacyString(member), Actions.REMOVE, objectiveName, score)
+        }
 
         @JvmStatic
         private fun toLegacyString(input: Component): String = LegacyComponentSerializer.legacySection().serialize(input)

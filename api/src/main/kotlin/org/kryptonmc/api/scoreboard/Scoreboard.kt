@@ -56,15 +56,6 @@ public interface Scoreboard {
     public fun getObjective(slot: DisplaySlot): Objective?
 
     /**
-     * Gets all objectives with the given [criterion] that are registered with
-     * this scoreboard.
-     *
-     * @param criterion the criterion
-     * @return all objectives with the criterion
-     */
-    public fun getObjectives(criterion: Criterion): Collection<Objective>
-
-    /**
      * Creates a new builder for building an objective that will be registered
      * to this scoreboard.
      *

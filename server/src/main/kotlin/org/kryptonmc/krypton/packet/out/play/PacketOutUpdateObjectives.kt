@@ -61,6 +61,17 @@ data class PacketOutUpdateObjectives(val name: String, val action: Byte, val dis
     companion object {
 
         @JvmStatic
+        fun create(objective: Objective): PacketOutUpdateObjectives = createOrRemove(objective, Actions.CREATE)
+
+        @JvmStatic
+        fun remove(objective: Objective): PacketOutUpdateObjectives = createOrRemove(objective, Actions.REMOVE)
+
+        @JvmStatic
+        private fun createOrRemove(objective: Objective, action: Byte): PacketOutUpdateObjectives {
+            return PacketOutUpdateObjectives(objective.name, action, objective.displayName, objective.renderType.ordinal)
+        }
+
+        @JvmStatic
         fun updateText(objective: Objective): PacketOutUpdateObjectives {
             return PacketOutUpdateObjectives(objective.name, Actions.UPDATE_TEXT, objective.displayName, objective.renderType.ordinal)
         }
