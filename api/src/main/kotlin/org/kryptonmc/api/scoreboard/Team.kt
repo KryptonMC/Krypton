@@ -152,12 +152,30 @@ public interface Team : ScoreboardBound {
         public fun suffix(suffix: Component): Builder
 
         /**
-         * Allows friendly fire for the team.
+         * Sets whether or not team members are allowed to attack each other.
+         *
+         * @param value the value for the setting
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun friendlyFire(value: Boolean): Builder
+
+        /**
+         * Allows all team members to attack each other.
          *
          * @return this builder
          */
         @Contract("-> this", mutates = "this")
-        public fun friendlyFire(): Builder
+        public fun allowFriendlyFire(): Builder = friendlyFire(true)
+
+        /**
+         * Sets whether or not team members can see invisible team members.
+         *
+         * @param value the value for the setting
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun canSeeInvisibleMembers(value: Boolean): Builder
 
         /**
          * Allows all team members to see invisible team members.
@@ -165,7 +183,7 @@ public interface Team : ScoreboardBound {
          * @return this builder
          */
         @Contract("-> this", mutates = "this")
-        public fun seeInvisibleMembers(): Builder
+        public fun seeInvisibleMembers(): Builder = canSeeInvisibleMembers(true)
 
         /**
          * Sets the name tag visibility for the team to the given [visibility].

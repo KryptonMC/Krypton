@@ -68,11 +68,11 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer) : StatisticsTr
 
     override fun incrementStatistic(statistic: Statistic<*>, amount: Int) {
         setStatistic(statistic, min(getStatistic(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
-        player.scoreboard.forEachObjective(statistic, player.teamRepresentation) { it.add(amount) }
+        player.scoreboard.forEachScore(statistic, player.teamRepresentation) { it.score += amount }
     }
 
     override fun decrementStatistic(statistic: Statistic<*>, amount: Int) {
         setStatistic(statistic, max(getStatistic(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
-        player.scoreboard.forEachObjective(statistic, player.teamRepresentation) { it.subtract(amount) }
+        player.scoreboard.forEachScore(statistic, player.teamRepresentation) { it.score -= amount }
     }
 }

@@ -18,11 +18,10 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.Score
 
-class KryptonScore(override val scoreboard: KryptonScoreboard, override val objective: Objective?, override val name: Component) : Score {
+class KryptonScore(override val scoreboard: KryptonScoreboard, override val objective: Objective, override val member: Component) : Score {
 
     override var score: Int = 0
         set(value) {
@@ -35,26 +34,4 @@ class KryptonScore(override val scoreboard: KryptonScoreboard, override val obje
         }
     override var isLocked: Boolean = true
     private var forceUpdate = true
-
-    private val nameString = LegacyComponentSerializer.legacySection().serialize(name)
-
-    fun add(amount: Int) {
-        require(objective == null || !objective.criterion.isMutable) { "Cannot modify read-only score!" }
-        score += amount
-    }
-
-    fun subtract(amount: Int) {
-        require(objective == null || !objective.criterion.isMutable) { "Cannot modify read-only score!" }
-        score -= amount
-    }
-
-    companion object {
-
-        @JvmField
-        val COMPARATOR: Comparator<KryptonScore> = Comparator { o1, o2 ->
-            if (o1.score > o2.score) return@Comparator 1
-            if (o1.score < o2.score) return@Comparator -1
-            o1.nameString.compareTo(o2.nameString, true)
-        }
-    }
 }

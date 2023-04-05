@@ -91,7 +91,8 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
             _collisionRule = value
             scoreboard.onTeamUpdated(this)
         }
-    override val members: List<Component> = Collections.unmodifiableList(_members)
+    override val members: List<Component>
+        get() = Collections.unmodifiableList(_members)
 
     override fun formatName(name: Component): Component = Component.text().append(prefix).append(name).append(suffix).color(color).build()
 
@@ -118,9 +119,9 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
 
         override fun suffix(suffix: Component): Team.Builder = apply { this.suffix = suffix }
 
-        override fun friendlyFire(): Team.Builder = apply { friendlyFire = true }
+        override fun friendlyFire(value: Boolean): Team.Builder = apply { friendlyFire = value }
 
-        override fun seeInvisibleMembers(): Team.Builder = apply { seeInvisibles = true }
+        override fun canSeeInvisibleMembers(value: Boolean): Team.Builder = apply { seeInvisibles = value }
 
         override fun nameTagVisibility(visibility: Visibility): Team.Builder = apply { nameTags = visibility }
 

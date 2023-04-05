@@ -38,11 +38,6 @@ public interface Scoreboard {
     public val teams: Collection<Team>
 
     /**
-     * All scores tracked by this scoreboard.
-     */
-    public val scores: Collection<Score>
-
-    /**
      * Gets the objective with the given [name], or returns null if there are
      * no objectives registered with this scoreboard with the given [name].
      *
@@ -67,7 +62,7 @@ public interface Scoreboard {
      * @param criterion the criterion
      * @return all objectives with the criterion
      */
-    public fun getObjectives(criterion: Criterion): Set<Objective>
+    public fun getObjectives(criterion: Criterion): Collection<Objective>
 
     /**
      * Creates a new builder for building an objective that will be registered
@@ -116,26 +111,6 @@ public interface Scoreboard {
      * @param slot the slot to clear
      */
     public fun clearSlot(slot: DisplaySlot)
-
-    /**
-     * Gets all scores with the given [name] that are tracked by this
-     * scoreboard, across all objectives.
-     *
-     * If the same [Score] has been added to multiple objectives, it will only
-     * appear once in the set. Duplicates will not be found in the set.
-     *
-     * @param name the name
-     * @return all scores with the name
-     */
-    public fun getScores(name: Component): Set<Score>
-
-    /**
-     * Removes all scores with the given [name] from the set of all scores
-     * tracked by this scoreboard.
-     *
-     * @param name the name
-     */
-    public fun removeScores(name: Component)
 
     /**
      * Gets the team with the given [name] if there is one registered with this

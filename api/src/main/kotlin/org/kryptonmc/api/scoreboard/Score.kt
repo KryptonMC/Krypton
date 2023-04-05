@@ -25,15 +25,14 @@ import net.kyori.adventure.text.Component
 public interface Score : ScoreboardBound {
 
     /**
-     * The name of the score.
+     * The name of the member who's score this is.
      */
-    public val name: Component
+    public val member: Component
 
     /**
-     * The objective this score is registered to, or null if this score is not
-     * currently registered to an objective.
+     * The objective this score is registered to.
      */
-    public val objective: Objective?
+    public val objective: Objective
 
     /**
      * The underlying value of this score.

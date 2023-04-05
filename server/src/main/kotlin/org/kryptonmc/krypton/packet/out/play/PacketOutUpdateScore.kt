@@ -59,7 +59,7 @@ data class PacketOutUpdateScore(val name: String, val action: Int, val objective
 
         @JvmStatic
         fun createOrUpdate(score: Score): PacketOutUpdateScore =
-            PacketOutUpdateScore(toLegacyString(score.name), Actions.CREATE_OR_UPDATE, score.objective?.name, score.score)
+            PacketOutUpdateScore(toLegacyString(score.member), Actions.CREATE_OR_UPDATE, score.objective?.name, score.score)
 
         @JvmStatic
         fun remove(member: Component, objectiveName: String?, score: Int): PacketOutUpdateScore =

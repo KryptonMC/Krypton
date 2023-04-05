@@ -21,7 +21,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.api.scoreboard.criteria.Criterion
+import java.util.Collections
 
 class KryptonObjective(
     override val scoreboard: KryptonScoreboard,
@@ -41,6 +43,22 @@ class KryptonObjective(
             field = value
             scoreboard.onObjectiveUpdated(this)
         }
+
+    private val scoresByMember = HashMap<Component, KryptonScore>()
+    override val scores: Collection<Score>
+        get() = Collections.unmodifiableCollection(scoresByMember.values)
+
+    override fun getScore(member: Component): Score? = scoresByMember.get(member)
+
+    override fun getOrCreateScore(member: Component): Score = scoresByMember.computeIfAbsent(member) { KryptonScore(scoreboard, this, member) }
+
+    override fun removeScore(member: Component): Boolean {
+        if (!scoresByMember.containsKey(member)) return false
+        scoresByMember.remove(member)
+        return true
+    }
+
+    override fun removeScore(score: Score): Boolean = removeScore(score.member)
 
     class Builder(private val scoreboard: KryptonScoreboard) : Objective.Builder, Objective.Builder.NamedStep, Objective.Builder.EndStep {
 

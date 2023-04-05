@@ -46,7 +46,45 @@ public interface Objective : ScoreboardBound {
      * The setting for how this objective should be displayed on the
      * scoreboard.
      */
-    public val renderType: ObjectiveRenderType
+    public var renderType: ObjectiveRenderType
+
+    /**
+     * All the scores on this objective.
+     */
+    public val scores: Collection<Score>
+
+    /**
+     * Gets the score for the given [member], if the member has a score.
+     *
+     * @param member the member
+     * @return the score, or null if not present
+     */
+    public fun getScore(member: Component): Score?
+
+    /**
+     * Gets the score for the given [member], or creates a new score if the
+     * member does not have a score.
+     *
+     * @param member the member
+     * @return the score
+     */
+    public fun getOrCreateScore(member: Component): Score
+
+    /**
+     * Removes the score for the given [member], if the member has a score.
+     *
+     * @param member the member
+     * @return whether the score was removed
+     */
+    public fun removeScore(member: Component): Boolean
+
+    /**
+     * Removes the given [score], if it exists on this objective.
+     *
+     * @param score the score to remove
+     * @return whether the score was removed
+     */
+    public fun removeScore(score: Score): Boolean
 
     /**
      * A builder for objectives.
