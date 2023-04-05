@@ -76,6 +76,7 @@ import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.util.function.Consumer
 import java.util.function.Predicate
 
@@ -98,6 +99,8 @@ class KryptonWorld(
         get() = entityTracker.entities()
     override val players: Collection<KryptonPlayer>
         get() = entityTracker.entitiesOfType(EntityTypeTarget.PLAYERS)
+
+    override val scoreboard: KryptonScoreboard = KryptonScoreboard()
 
     override val chunkManager: ChunkManager = ChunkManager(this, chunkLoader)
     override val biomeManager: BiomeManager = BiomeManager(this, seed)

@@ -18,8 +18,11 @@
 package org.kryptonmc.api.scoreboard
 
 import net.kyori.adventure.text.Component
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A [Scoreboard] is a method of keeping track of scores.
@@ -157,4 +160,22 @@ public interface Scoreboard {
      * @param team the team
      */
     public fun removeTeam(team: Team)
+
+    @ApiStatus.Internal
+    @TypeFactory
+    public interface Factory {
+
+        public fun create(): Scoreboard
+    }
+
+    public companion object {
+
+        /**
+         * Creates a new blank scoreboard, with no objectives or teams.
+         *
+         * @return a new blank scoreboard
+         */
+        @JvmStatic
+        public fun create(): Scoreboard = Krypton.factory<Factory>().create()
+    }
 }

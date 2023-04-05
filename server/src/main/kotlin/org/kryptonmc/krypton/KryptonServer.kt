@@ -51,7 +51,6 @@ import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -71,8 +70,6 @@ class KryptonServer(override val config: KryptonConfig, val profileCache: GamePr
     val statusManager: StatusManager = StatusManager(playerManager, config.status.motd, config.status.maxPlayers)
 
     override val console: KryptonConsole = KryptonConsole(this)
-    override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
-
     override val worldManager: KryptonWorldManager = KryptonWorldManager(this, initContext.worldDataSerializer, initContext.chunkLoader)
     override val commandManager: KryptonCommandManager = KryptonCommandManager()
     override val pluginManager: KryptonPluginManager = KryptonPluginManager()

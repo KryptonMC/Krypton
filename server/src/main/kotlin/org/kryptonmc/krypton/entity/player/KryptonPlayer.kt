@@ -34,6 +34,7 @@ import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Position
@@ -82,6 +83,7 @@ import org.kryptonmc.krypton.util.ImmutableLists
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.nbt.CompoundTag
 import java.net.SocketAddress
 import java.time.Instant
@@ -121,6 +123,7 @@ class KryptonPlayer(
 
     override val statisticsTracker: KryptonStatisticsTracker = KryptonStatisticsTracker(this)
     override val itemCooldownTracker: KryptonCooldownTracker = KryptonCooldownTracker(this)
+    override var scoreboard: KryptonScoreboard = world.scoreboard
 
     override var settings: KryptonPlayerSettings = KryptonPlayerSettings.DEFAULT
     private var lastActionTime = System.currentTimeMillis()
@@ -255,6 +258,17 @@ class KryptonPlayer(
             // Send particles to player at location
             else -> connection.send(packet)
         }
+    }
+
+    override fun showScoreboard(scoreboard: Scoreboard) {
+        if (scoreboard !is KryptonScoreboard) return
+        this.scoreboard.removeViewer(this, true) // The player is no longer viewing the old scoreboard
+        this.scoreboard = scoreboard
+        scoreboard.addViewer(this) // The player is now viewing the new scoreboard
+    }
+
+    override fun resetScoreboard() {
+        showScoreboard(world.scoreboard)
     }
 
     override fun sendPositionUpdate(packet: Packet, old: Position, new: Position) {

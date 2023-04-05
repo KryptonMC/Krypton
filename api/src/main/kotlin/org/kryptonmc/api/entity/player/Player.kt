@@ -159,6 +159,19 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     public fun sendResourcePack(pack: ResourcePack)
 
     /**
+     * Shows the given [scoreboard] to this player, hiding the old scoreboard
+     * this player was viewing from them.
+     *
+     * @param scoreboard the scoreboard to show
+     */
+    public fun showScoreboard(scoreboard: Scoreboard)
+
+    /**
+     * Resets the scoreboard shown to the player back to the default one.
+     */
+    public fun resetScoreboard()
+
+    /**
      * Makes this player start gliding (elytra flying).
      *
      * This may fire the [PlayerStartGlidingEvent], which may cause this

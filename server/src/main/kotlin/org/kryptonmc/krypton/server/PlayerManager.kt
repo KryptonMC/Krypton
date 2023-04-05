@@ -22,7 +22,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
@@ -51,7 +50,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEnabledFeatures
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.locale.DisconnectMessages
@@ -67,7 +65,6 @@ import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataSerializer
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.nbt.NbtOps
 import java.time.Instant
@@ -139,7 +136,7 @@ class PlayerManager(
         sendCommands(player)
         player.statisticsTracker.invalidate()
         player.connection.send(PacketOutUpdateRecipeBook(PacketOutUpdateRecipeBook.Action.INIT, emptyList(), emptyList(), RecipeBookSettings()))
-        updateScoreboard(world.scoreboard, player)
+        world.scoreboard.addViewer(player)
         server.statusManager.invalidateStatus()
 
         // Add the player to the list and cache maps
@@ -209,6 +206,7 @@ class PlayerManager(
         player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME.get())
         savePlayer(player)
         player.world.chunkManager.removePlayer(player)
+        player.world.scoreboard.removeViewer(player, false)
 
         // Remove from caches
         player.world.removeEntity(player)
@@ -218,7 +216,6 @@ class PlayerManager(
 
         // Send info and quit message
         server.statusManager.invalidateStatus()
-//        server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
         event.quitMessage?.let { server.sendMessage(it) }
     }
 
@@ -286,16 +283,6 @@ class PlayerManager(
             player.connection.send(PacketOutGameEvent(GameEventTypes.BEGIN_RAINING))
             player.connection.send(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
             player.connection.send(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
-        }
-    }
-
-    private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
-        val objectives = HashSet<Objective>()
-        scoreboard.teams.forEach { player.connection.send(PacketOutUpdateTeams.create(it)) }
-        for (objective in scoreboard.displayObjectives()) {
-            if (objectives.contains(objective)) continue
-            scoreboard.getStartTrackingPackets(objective).forEach(player.connection::send)
-            objectives.add(objective)
         }
     }
 

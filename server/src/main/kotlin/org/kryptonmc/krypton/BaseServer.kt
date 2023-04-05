@@ -30,13 +30,11 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.world.KryptonWorldManager
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.util.UUID
 
 interface BaseServer : ServerAudience {
 
     override val console: KryptonConsole
-    override val scoreboard: KryptonScoreboard
 
     override val worldManager: KryptonWorldManager
     override val commandManager: KryptonCommandManager

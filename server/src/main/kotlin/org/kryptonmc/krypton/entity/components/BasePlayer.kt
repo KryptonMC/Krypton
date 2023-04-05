@@ -23,14 +23,11 @@ import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.util.enumhelper.Directions
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
 interface BasePlayer : BaseEntity, KryptonEquipable, HungerDelegate, AbilitiesDelegate, PlayerAudience, Glider, GameModePlayer {
 
     val permissionFunction: PermissionFunction
 
-    override val scoreboard: KryptonScoreboard
-        get() = world.scoreboard
     override val teamRepresentation: Component
         get() = nameOrDescription()
     override val facing: Direction

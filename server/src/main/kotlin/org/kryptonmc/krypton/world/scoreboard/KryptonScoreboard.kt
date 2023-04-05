@@ -26,7 +26,6 @@ import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.scoreboard.criteria.Criterion
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.PacketGrouping
@@ -39,7 +38,7 @@ import java.util.Collections
 import java.util.EnumMap
 import java.util.function.Consumer
 
-class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
+class KryptonScoreboard : Scoreboard {
 
     private val objectivesByName = HashMap<String, Objective>()
     private val displayObjectives = EnumMap<_, Objective>(DisplaySlot::class.java)
@@ -47,24 +46,21 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     private val teamsByMember = HashMap<Component, Team>()
 
     private val trackedObjectives = HashSet<Objective>()
-    private val listeners = ArrayList<Runnable>()
+    private val viewers = ArrayList<KryptonPlayer>()
 
     override val objectives: Collection<Objective>
         get() = Collections.unmodifiableCollection(objectivesByName.values)
     override val teams: Collection<Team>
         get() = Collections.unmodifiableCollection(teamsByName.values)
 
-    fun displayObjectives(): Collection<Objective> = displayObjectives.values
-
     override fun getObjective(name: String): Objective? = objectivesByName.get(name)
 
     override fun createObjectiveBuilder(): Objective.Builder = KryptonObjective.Builder(this)
 
     override fun addObjective(name: String, criterion: Criterion, displayName: Component, renderType: ObjectiveRenderType): Objective {
-        require(!objectivesByName.containsKey(name)) { "An objective with the name $name is already registered!" }
+        require(!objectivesByName.containsKey(name)) { "An objective called '$name' is already registered!" }
         val objective = KryptonObjective(this, name, criterion, displayName, renderType)
         objectivesByName.put(name, objective)
-        makeDirty()
         return objective
     }
 
@@ -81,7 +77,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     override fun createTeamBuilder(name: String): Team.Builder = KryptonTeam.Builder(this, name)
 
     override fun addTeam(name: String): KryptonTeam {
-        require(!teamsByName.containsKey(name)) { "A team with the name $name is already registered!" }
+        require(!teamsByName.containsKey(name)) { "A team called '$name is already registered!" }
         return doAddTeam(name)
     }
 
@@ -89,9 +85,13 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     private fun doAddTeam(name: String): KryptonTeam {
         val team = KryptonTeam(this, name)
-        teamsByName.put(name, team)
-        onTeamAdded(team)
+        addTeam(team)
         return team
+    }
+
+    fun addTeam(team: KryptonTeam) {
+        teamsByName.put(team.name, team)
+        onTeamAdded(team)
     }
 
     override fun removeTeam(team: Team) {
@@ -102,19 +102,19 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     private fun startTrackingObjective(objective: Objective) {
         for (packet in getStartTrackingPackets(objective)) {
-            PacketGrouping.sendGroupedPacket(server, packet)
+            PacketGrouping.sendGroupedPacket(viewers, packet)
         }
         trackedObjectives.add(objective)
     }
 
     private fun stopTrackingObjective(objective: Objective) {
         for (packet in getStopTrackingPackets(objective)) {
-            PacketGrouping.sendGroupedPacket(server, packet)
+            PacketGrouping.sendGroupedPacket(viewers, packet)
         }
         trackedObjectives.remove(objective)
     }
 
-    fun getStartTrackingPackets(objective: Objective): List<Packet> {
+    private fun getStartTrackingPackets(objective: Objective): List<Packet> {
         val packets = ArrayList<Packet>()
         packets.add(PacketOutUpdateObjectives.create(objective))
         displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective.create(it.key, it.value)) }
@@ -150,8 +150,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun addMemberToTeam(member: Component, team: Team): Boolean {
         if (tryAddMember(member, team)) {
-            PacketGrouping.sendGroupedPacket(server, PacketOutUpdateTeams.addOrRemoveMember(team, member, true))
-            makeDirty()
+            PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateTeams.addOrRemoveMember(team, member, true))
             return true
         }
         return false
@@ -160,7 +159,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     private fun tryAddMember(member: Component, team: Team): Boolean {
         if (getMemberTeam(member) != null) removeMemberFromTeam(member)
         teamsByMember.put(member, team)
-        return team.removeMember(member)
+        return team.addMember(member)
     }
 
     private fun removeMemberFromTeam(member: Component): Boolean {
@@ -171,12 +170,11 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     private fun removeMemberFromTeam(member: Component, team: Team) {
         check(getMemberTeam(member) === team) {
-            "Cannot remove member ${PlainTextComponentSerializer.plainText().serialize(member)} from team ${team.name}! Member is not on the team!"
+            "Cannot remove ${PlainTextComponentSerializer.plainText().serialize(member)} from ${team.name}! Member is not on that team!"
         }
         teamsByMember.remove(member)
         team.removeMember(member)
-        PacketGrouping.sendGroupedPacket(server, PacketOutUpdateTeams.addOrRemoveMember(team, member, false))
-        makeDirty()
+        PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateTeams.addOrRemoveMember(team, member, false))
     }
 
     override fun getObjective(slot: DisplaySlot): Objective? = displayObjectives.get(slot)
@@ -193,19 +191,18 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         if (objective != null) displayObjectives.put(slot, objective) else displayObjectives.remove(slot)
         if (existing !== objective && existing != null) {
             if (getObjectiveSlotCount(existing) > 0) {
-                PacketGrouping.sendGroupedPacket(server, PacketOutDisplayObjective.create(slot, objective))
+                PacketGrouping.sendGroupedPacket(viewers, PacketOutDisplayObjective.create(slot, objective))
             } else {
                 stopTrackingObjective(existing)
             }
         }
         if (objective != null) {
             if (trackedObjectives.contains(objective)) {
-                PacketGrouping.sendGroupedPacket(server, PacketOutDisplayObjective.create(slot, objective))
+                PacketGrouping.sendGroupedPacket(viewers, PacketOutDisplayObjective.create(slot, objective))
             } else {
                 startTrackingObjective(objective)
             }
         }
-        makeDirty()
     }
 
     private fun getObjectiveSlotCount(objective: Objective): Int = displayObjectives.count { it.value === objective }
@@ -214,54 +211,77 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         displayObjectives.remove(slot)
     }
 
-    private fun makeDirty() {
-        listeners.forEach(Runnable::run)
-    }
-
     fun onObjectiveUpdated(objective: Objective) {
         if (trackedObjectives.contains(objective)) {
-            PacketGrouping.sendGroupedPacket(server, PacketOutUpdateObjectives.updateText(objective))
+            PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateObjectives.updateText(objective))
         }
-        makeDirty()
     }
 
     private fun onObjectiveRemoved(objective: Objective) {
         if (trackedObjectives.contains(objective)) stopTrackingObjective(objective)
-        makeDirty()
     }
 
     fun onScoreUpdated(score: KryptonScore) {
         if (trackedObjectives.contains(score.objective)) {
-            PacketGrouping.sendGroupedPacket(server, PacketOutUpdateScore.createOrUpdate(score))
+            PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateScore.createOrUpdate(score))
         }
-        makeDirty()
     }
 
     private fun onMemberRemoved(member: Component) {
-        PacketGrouping.sendGroupedPacket(server, PacketOutUpdateScore.remove(member, null, 0))
-        makeDirty()
+        PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateScore.remove(member, null, 0))
     }
 
     private fun onMemberScoreRemoved(objective: Objective, member: Component) {
         if (trackedObjectives.contains(objective)) {
-            PacketGrouping.sendGroupedPacket(server, PacketOutUpdateScore.remove(member, objective.name, 0))
+            PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateScore.remove(member, objective.name, 0))
         }
-        makeDirty()
     }
 
     private fun onTeamAdded(team: Team) {
-        PacketGrouping.sendGroupedPacket(server, PacketOutUpdateTeams.create(team))
-        makeDirty()
+        PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateTeams.create(team))
     }
 
     fun onTeamUpdated(team: Team) {
-        PacketGrouping.sendGroupedPacket(server, PacketOutUpdateTeams.update(team))
-        makeDirty()
+        PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateTeams.update(team))
     }
 
     private fun onTeamRemoved(team: Team) {
-        PacketGrouping.sendGroupedPacket(server, PacketOutUpdateTeams.remove(team))
-        makeDirty()
+        PacketGrouping.sendGroupedPacket(viewers, PacketOutUpdateTeams.remove(team))
+    }
+
+    fun addViewer(player: KryptonPlayer) {
+        if (viewers.contains(player)) return
+        viewers.add(player)
+
+        // Send all the teams
+        teams.forEach { player.connection.send(PacketOutUpdateTeams.create(it)) }
+
+        // Send all the objectives
+        val objectives = HashSet<Objective>()
+        for (objective in displayObjectives.values) {
+            if (objectives.contains(objective)) continue
+            getStartTrackingPackets(objective).forEach(player.connection::send)
+            objectives.add(objective)
+        }
+    }
+
+    fun removeViewer(player: KryptonPlayer, sendRemovePackets: Boolean) {
+        if (!viewers.contains(player)) return
+        viewers.remove(player)
+
+        if (!sendRemovePackets) return // Stops us sending remove packets for removePlayer
+        // Remove all the teams
+        teams.forEach { player.connection.send(PacketOutUpdateTeams.remove(it)) }
+
+        // Remove all the objectives
+        for (objective in displayObjectives.values) {
+            getStopTrackingPackets(objective).forEach(player.connection::send)
+        }
+    }
+
+    object Factory : Scoreboard.Factory {
+
+        override fun create(): Scoreboard = KryptonScoreboard()
     }
 
     companion object {

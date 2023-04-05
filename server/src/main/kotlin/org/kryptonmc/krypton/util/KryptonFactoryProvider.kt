@@ -40,6 +40,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scheduling.TaskAction
 import org.kryptonmc.api.scheduling.TaskTime
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.TypeNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
@@ -87,6 +88,7 @@ import org.kryptonmc.krypton.world.chunk.flag.KryptonBlockChangeFlags
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
 object KryptonFactoryProvider : FactoryProvider {
 
@@ -135,5 +137,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<EventNode.Factory>(KryptonEventNode.Factory)
         register<EventListener.Factory>(KryptonEventListener.Factory)
         register<BlockChangeFlags.Factory>(KryptonBlockChangeFlags.Factory)
+        register<Scoreboard.Factory>(KryptonScoreboard.Factory)
     }
 }

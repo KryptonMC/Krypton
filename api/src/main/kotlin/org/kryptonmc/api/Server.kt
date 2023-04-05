@@ -29,7 +29,6 @@ import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
-import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.user.UserManager
 import java.util.UUID
 
@@ -129,11 +128,6 @@ public interface Server : ForwardingAudience {
      * The console's [Sender] object.
      */
     public val console: ConsoleSender
-
-    /**
-     * The server's [Scoreboard], or null if there isn't one.
-     */
-    public val scoreboard: Scoreboard
 
     /**
      * Gets the online player with the given [uuid], or returns null if there

@@ -37,7 +37,6 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.rule.WorldGameRules
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
 interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
@@ -63,8 +62,6 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
         get() = data.time
     override val seed: Long
         get() = data.generationSettings.seed
-    override val scoreboard: KryptonScoreboard
-        get() = server.scoreboard
 
     override fun isHardcore(): Boolean = data.isHardcore
 

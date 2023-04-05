@@ -134,7 +134,8 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
         override fun addMember(member: Component): Team.Builder = apply { members.add(member) }
 
         override fun buildAndRegister(): Team {
-            val team = scoreboard.addTeam(name)
+            require(scoreboard.getTeam(name) == null) { "A team called '$name' is already registered!" }
+            val team = KryptonTeam(scoreboard, name)
             team._displayName = displayName
             team._prefix = prefix
             team._suffix = suffix
@@ -145,6 +146,7 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
             team._color = color
             team._collisionRule = collision
             team._members.addAll(members)
+            scoreboard.addTeam(team)
             return team
         }
     }
