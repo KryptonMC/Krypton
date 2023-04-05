@@ -5908,7 +5908,6 @@ $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/createTeamBuilder/#kotli
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/getMemberTeam/#net.kyori.adventure.text.Component/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/get-member-team.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/getObjective/#kotlin.String/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/get-objective.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/getObjective/#org.kryptonmc.api.scoreboard.DisplaySlot/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/get-objective.html
-$dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/getObjectives/#org.kryptonmc.api.scoreboard.criteria.Criterion/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/get-objectives.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/getOrAddTeam/#kotlin.String/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/get-or-add-team.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/getTeam/#kotlin.String/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/get-team.html
 $dokka.location:org.kryptonmc.api.scoreboard/Scoreboard/objectives/#/PointingToDeclaration/api/org.kryptonmc.api.scoreboard/-scoreboard/objectives.html
