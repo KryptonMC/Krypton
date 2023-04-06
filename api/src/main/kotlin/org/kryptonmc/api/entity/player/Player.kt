@@ -100,6 +100,11 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     public val scoreboard: Scoreboard
 
     /**
+     * The tab list for this player.
+     */
+    public val tabList: TabList
+
+    /**
      * The inventory of this player.
      *
      * This holds information on all of the items that are currently held by

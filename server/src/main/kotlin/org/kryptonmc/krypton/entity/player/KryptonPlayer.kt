@@ -30,6 +30,7 @@ import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
+import org.kryptonmc.api.entity.player.TabList
 import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
@@ -123,7 +124,9 @@ class KryptonPlayer(
 
     override val statisticsTracker: KryptonStatisticsTracker = KryptonStatisticsTracker(this)
     override val itemCooldownTracker: KryptonCooldownTracker = KryptonCooldownTracker(this)
+
     override var scoreboard: KryptonScoreboard = world.scoreboard
+    override val tabList: TabList = KryptonTabList(this)
 
     override var settings: KryptonPlayerSettings = KryptonPlayerSettings.DEFAULT
     private var lastActionTime = System.currentTimeMillis()
