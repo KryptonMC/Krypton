@@ -18,7 +18,7 @@ tasks {
         dependsOn(shadowJar)
     }
     withType<ShadowJar> {
-        archiveFileName.set("Krypton-${project.version}.jar")
+        archiveFileName.set("Krypton.jar")
         transform(Log4j2PluginsCacheFileTransformer::class.java)
 
         fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
