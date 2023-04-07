@@ -1,5 +1,5 @@
 plugins {
-    id("krypton.basic-conventions")
+    id("krypton.common-conventions")
 }
 
 dependencies {

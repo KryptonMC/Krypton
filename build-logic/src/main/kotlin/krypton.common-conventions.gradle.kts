@@ -1,12 +1,14 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("krypton.basic-conventions")
+    kotlin("jvm")
+    id("org.cadixdev.licenser")
 }
 
-configurations.all {
-    exclude("junit")
-    exclude("org.checkerframework", "checker-qual")
+license {
+    header(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine(false)
 }
 
 java {
@@ -22,20 +24,11 @@ kotlin {
 }
 
 tasks {
-    build {
-        dependsOn(test)
-    }
     compileJava {
         options.encoding = "UTF-8"
         options.release.set(17)
     }
     withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-            freeCompilerArgs = listOf("-Xjvm-default=all", "-verbose")
-        }
-    }
-    withType<Test> {
-        useJUnitPlatform()
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
     }
 }

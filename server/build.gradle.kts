@@ -1,6 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
+    id("krypton.api-conventions")
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp")
     jacoco
@@ -83,6 +84,15 @@ tasks {
             html.required.set(true)
             xml.required.set(true)
         }
+    }
+    build {
+        dependsOn(test)
+    }
+    compileKotlin {
+        compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
+    }
+    withType<Test> {
+        useJUnitPlatform()
     }
 }
 

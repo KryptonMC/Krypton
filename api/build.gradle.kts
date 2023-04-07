@@ -1,6 +1,7 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
+    id("krypton.api-conventions")
     id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp")
@@ -8,6 +9,10 @@ plugins {
 
 sourceSets.main {
     java.srcDir("src/generated/kotlin")
+}
+
+configurations.all {
+    exclude("org.checkerframework", "checker-qual")
 }
 
 dependencies {
@@ -70,6 +75,9 @@ kotlin {
 }
 
 tasks {
+    compileKotlin {
+        compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
+    }
     create<Jar>("dokkaJavadocJar") {
         archiveClassifier.set("javadoc")
         from(dokkaJavadoc)

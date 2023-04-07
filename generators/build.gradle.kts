@@ -1,6 +1,7 @@
 import org.spongepowered.gradle.vanilla.repository.MinecraftPlatform
 
 plugins {
+    id("krypton.common-conventions")
     id("org.spongepowered.gradle.vanilla")
 }
 

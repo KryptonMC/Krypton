@@ -6,7 +6,7 @@ metadata.format.version = "1.1"
 adventure = "4.13.0"
 configurate = "4.1.2"
 log4j = "2.20.0"
-kotlin = "1.8.10"
+kotlin = "1.8.20"
 coroutines = "1.6.4"
 kotlinCollections = "0.3.5"
 guava = "31.1-jre"
@@ -18,7 +18,7 @@ brigadier = "1.0.0-SNAPSHOT"
 annotations = "24.0.1"
 
 # Generation
-kotlinpoet = "1.12.0"
+kotlinpoet = "1.13.0"
 
 # Server
 tca = "1.3.0"
@@ -31,7 +31,7 @@ caffeine = "3.1.5"
 fastutil = "8.5.12"
 flare = "2.0.1"
 clikt = "3.5.2"
-bstats = "3.0.1"
+bstats = "3.0.2"
 jctools = "4.0.1"
 hydrazine = "1.8.1"
 
@@ -39,14 +39,14 @@ hydrazine = "1.8.1"
 junit-jupiter = "5.9.2"
 junit-platform = "1.9.2"
 mockk = "1.13.4"
-bytebuddy = "1.14.2"
+bytebuddy = "1.14.4"
 jimfs = "1.2"
 reflections = "0.10.2"
 equalsVerifier = "3.14.1"
 jsonassert = "1.5.1"
 
 # Extras
-ksp = "1.8.10-1.0.9"
+ksp = "1.8.20-1.0.10"
 apache-httpclient = "5.2.1"
 grgit = "5.0.0"
 
