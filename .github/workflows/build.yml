@@ -16,7 +16,7 @@ jobs:
       - name: "Validate Gradle Wrapper"
         uses: "gradle/wrapper-validation-action@v1.0.5"
       - name: "Build & Test"
-        uses: "gradle/gradle-build-action@v2.3.3"
+        uses: "gradle/gradle-build-action@v2.4.2"
         with:
           # Don't bother starting and using a daemon for actions builds as it can't be reused
           arguments: "build --no-daemon"
