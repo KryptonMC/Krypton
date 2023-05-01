@@ -51,7 +51,7 @@ jobs:
           java-version: 17
           distribution: "temurin"
       - name: "Generate documentation"
-        uses: "gradle/gradle-build-action@v2.3.3"
+        uses: "gradle/gradle-build-action@v2.4.2"
         with:
           arguments: "dokkaHtml"
       - name: "Deploy to pages"
