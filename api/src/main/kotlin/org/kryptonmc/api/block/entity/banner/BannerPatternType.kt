@@ -31,7 +31,7 @@ public interface BannerPatternType : Keyed {
 
     /**
      * The shortened code identifying the banner pattern, as specified by
-     * https://minecraft.fandom.com/wiki/Banner#Block_data
+     * https://minecraft.wiki/w/Banner#Block_data
      */
     @get:JvmName("code")
     public val code: String

@@ -29,7 +29,7 @@ import kotlin.math.sqrt
 class PlayerHungerSystem(private val player: KryptonPlayer) {
 
     // Sources for vanilla hunger system values:
-    //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+    //      -> Minecraft Wiki https://minecraft.wiki/w/Hunger
     // 20 is the default vanilla food level
     var foodLevel: Int = 20
     private var tickTimer = 0
@@ -46,7 +46,7 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
         tickTimer++
 
         // Sources:
-        //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+        //      -> Minecraft Wiki https://minecraft.wiki/w/Hunger
         //      -> 3 other implementations of this exact mechanic (lines up with wiki)
 
         // Food System
@@ -153,7 +153,7 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
     }
 
     fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {
-        // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
+        // Source: https://minecraft.wiki/w/Hunger#Exhaustion_level_increase
         if (player.isSwimming) {
             val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
             if (value > 0) exhaustionLevel += SWIMMING_EXHAUSTION_MODIFIER * value.toFloat()

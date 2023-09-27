@@ -119,7 +119,7 @@ helping to make this possible.
 - [The Velocity project](https://velocitypowered.com/), for providing the plugin loading and permission systems that the Krypton API contains derivatives of.
 - [Minestom](https://minestom.net), for their support, API, and amazing community of welcoming individuals that have helped this project since it's very beginning.
 - [The Minecraft Coalition](https://wiki.vg), for their hard work and effort documenting the protocol, allowing these projects to exist.
-- [The Minecraft Wiki](https://minecraft.gamepedia.com), for their amazing efforts documenting just about everything
+- [The Minecraft Wiki](https://minecraft.wiki), for their amazing efforts documenting just about everything
   there is to know about Minecraft, and making it available for everyone to use.
 - The project's dependencies, each and every one helping to make our lives as developers easier.
 
