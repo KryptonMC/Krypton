@@ -46,7 +46,7 @@ import org.kryptonmc.internal.annotations.Catalogue
 /**
  * All built-in block state properties.
  *
- * See [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)
+ * See [here](https://minecraft.wiki/w/Java_Edition_data_values#Block_states)
  * for information on what types of blocks each property is applicable to.
  */
 @Catalogue(Property::class)
@@ -77,11 +77,11 @@ public object Properties {
      * generic property for certain types of plants. This has a range of 0-3.
      *
      * This is applicable to:
-     * - [Beetroots][Blocks.BEETROOTS] - see [here](https://minecraft.fandom.com/wiki/Block_states#Beetroots)
-     * - [Frosted Ice][Blocks.FROSTED_ICE] - see [here](https://minecraft.fandom.com/wiki/Block_states#Frosted_Ice)
-     * - [Nether Wart][Blocks.NETHER_WART] - see [here](https://minecraft.fandom.com/wiki/Block_states#Nether_Wart)
+     * - [Beetroots][Blocks.BEETROOTS] - see [here](https://minecraft.wiki/w/Block_states#Beetroots)
+     * - [Frosted Ice][Blocks.FROSTED_ICE] - see [here](https://minecraft.wiki/w/Block_states#Frosted_Ice)
+     * - [Nether Wart][Blocks.NETHER_WART] - see [here](https://minecraft.wiki/w/Block_states#Nether_Wart)
      * - [Sweet Berry Bush][Blocks.SWEET_BERRY_BUSH] - see
-     * [here](https://minecraft.fandom.com/wiki/Block_states#Sweet_Berry_Bush)
+     * [here](https://minecraft.wiki/w/Block_states#Sweet_Berry_Bush)
      */
     @JvmField
     public val AGE_3: Property<Int> = factory().forInt("AGE_3")
@@ -91,7 +91,7 @@ public object Properties {
      * generic property for certain types of plants. This has a range of 0-4.
      *
      * This is applicable to:
-     * - [Mangrove Propagules][Blocks.MANGROVE_PROPAGULE] - see [here](https://minecraft.fandom.com/wiki/Sapling#Block_states)
+     * - [Mangrove Propagules][Blocks.MANGROVE_PROPAGULE] - see [here](https://minecraft.wiki/w/Sapling#Block_states)
      */
     @JvmField
     public val AGE_4: Property<Int> = factory().forInt("AGE_4")
@@ -101,7 +101,7 @@ public object Properties {
      * generic property for certain types of plants. This has a range of 0-5.
      *
      * This is applicable to:
-     * - [Chorus flower][Blocks.CHORUS_FLOWER] - see [here](https://minecraft.fandom.com/wiki/Block_states#Chorus_Flower)
+     * - [Chorus flower][Blocks.CHORUS_FLOWER] - see [here](https://minecraft.wiki/w/Block_states#Chorus_Flower)
      */
     @JvmField
     public val AGE_5: Property<Int> = factory().forInt("AGE_5")
@@ -111,8 +111,8 @@ public object Properties {
      * generic property for certain types of plants. This has a range of 0-7.
      *
      * This is applicable to:
-     * - [Melon Stem][Blocks.MELON_STEM] - see [here](https://minecraft.fandom.com/wiki/Block_states#Melon_Stem)
-     * - [Pumpkin Stem][Blocks.PUMPKIN_STEM] - see [here](https://minecraft.fandom.com/wiki/Block_states#Pumpkin_Stem)
+     * - [Melon Stem][Blocks.MELON_STEM] - see [here](https://minecraft.wiki/w/Block_states#Melon_Stem)
+     * - [Pumpkin Stem][Blocks.PUMPKIN_STEM] - see [here](https://minecraft.wiki/w/Block_states#Pumpkin_Stem)
      */
     @JvmField
     public val AGE_7: Property<Int> = factory().forInt("AGE_7")
@@ -122,9 +122,9 @@ public object Properties {
      * generic property for certain types of plants. This has a range of 0, 5.
      *
      * This is applicable to:
-     * - [Cactus][Blocks.CACTUS] - see [here](https://minecraft.fandom.com/wiki/Block_states#Cactus)
-     * - [Fire][Blocks.FIRE] - see [here](https://minecraft.fandom.com/wiki/Block_states#Fire)
-     * - [Sugar Cane][Blocks.SUGAR_CANE] - see [here](https://minecraft.fandom.com/wiki/Block_states#Sugar_Cane)
+     * - [Cactus][Blocks.CACTUS] - see [here](https://minecraft.wiki/w/Block_states#Cactus)
+     * - [Fire][Blocks.FIRE] - see [here](https://minecraft.wiki/w/Block_states#Fire)
+     * - [Sugar Cane][Blocks.SUGAR_CANE] - see [here](https://minecraft.wiki/w/Block_states#Sugar_Cane)
      */
     @JvmField
     public val AGE_15: Property<Int> = factory().forInt("AGE_15")
@@ -134,7 +134,7 @@ public object Properties {
      * generic property for certain types of plants. This has a range of 0, 5.
      *
      * This is applicable to:
-     * - [Kelp][Blocks.KELP] - see [here](https://minecraft.fandom.com/wiki/Block_states#Kelp)
+     * - [Kelp][Blocks.KELP] - see [here](https://minecraft.wiki/w/Block_states#Kelp)
      */
     @JvmField
     public val AGE_25: Property<Int> = factory().forInt("AGE_25")
@@ -168,9 +168,9 @@ public object Properties {
      * This is applicable to all types of logs, stripped logs, wood, stripped
      * wood, stems, stripped stems, hyphae, stripped hyphae, as well as the
      * following other blocks:
-     * - [Bone Block][Blocks.BONE_BLOCK] - see [here](https://minecraft.fandom.com/wiki/Block_states#Bone_Block)
-     * - [Chain][Blocks.CHAIN] - see [here](https://minecraft.fandom.com/wiki/Block_states#Chain)
-     * - [Hay Bale][Blocks.HAY_BLOCK] - see [here](https://minecraft.fandom.com/wiki/Block_states#Hay_Bale)
+     * - [Bone Block][Blocks.BONE_BLOCK] - see [here](https://minecraft.wiki/w/Block_states#Bone_Block)
+     * - [Chain][Blocks.CHAIN] - see [here](https://minecraft.wiki/w/Block_states#Chain)
+     * - [Hay Bale][Blocks.HAY_BLOCK] - see [here](https://minecraft.wiki/w/Block_states#Hay_Bale)
      * - [Basalt][Blocks.BASALT]
      * - [Polished Basalt][Blocks.POLISHED_BASALT]
      * - [Quartz Pillar][Blocks.QUARTZ_PILLAR]
@@ -472,7 +472,7 @@ public object Properties {
 
     /**
      * How close the [Turtle Egg][Blocks.TURTLE_EGG] this property is applied
-     * to is to hatching. See [here](https://minecraft.fandom.com/wiki/Block_states#Turtle_Egg)
+     * to is to hatching. See [here](https://minecraft.wiki/w/Block_states#Turtle_Egg)
      * for more information.
      */
     @JvmField

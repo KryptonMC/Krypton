@@ -219,7 +219,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * The amount of ticks this entity has been freezing for.
      *
      * Whilst this is available for all entities, it will only affect entities
-     * that are not in the ["freeze_immune_entity_types" entity type tag][https://minecraft.fandom.com/wiki/Tag#Entity_types].
+     * that are not in the ["freeze_immune_entity_types" entity type tag][https://minecraft.wiki/w/Tag#Entity_types].
      *
      * This value will increase by 1 for every tick this entity is in powder
      * snow, to a maximum of 300, and decrease by 2 for every tick this entity

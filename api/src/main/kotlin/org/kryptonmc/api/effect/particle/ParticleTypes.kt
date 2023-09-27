@@ -25,7 +25,7 @@ import org.kryptonmc.internal.annotations.Catalogue
 /**
  * All of the built-in vanilla particle types.
  *
- * See [here](https://minecraft.fandom.com/wiki/Particles) for more information
+ * See [here](https://minecraft.wiki/w/Particles) for more information
  * on all of these types.
  */
 @Catalogue(ParticleType::class)

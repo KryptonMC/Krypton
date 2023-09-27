@@ -60,7 +60,7 @@ public interface Chunk : BlockContainer, FluidContainer, BiomeContainer, EntityC
      * Also note that regional difficulty is capped when this value reaches
      * 3600000, meaning that none of the above will increase past that point.
      *
-     * See [here](https://minecraft.gamepedia.com/Chunk_format#NBT_structure)
+     * See [here](https://minecraft.wiki/w/Chunk_format#NBT_structure)
      * for more details.
      */
     public val inhabitedTime: Long
